@@ -40,6 +40,7 @@ public class Utilisateur {
     @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
     private List<MembreGroupe> groupes;
 
+    // getters et setters
     public List<ConversationPri> getConversationsCommeA() {
         return conversationsCommeA;
     }
@@ -68,11 +69,6 @@ public class Utilisateur {
         return evenements;
     }
 
-    public void setEvenements(List<Evenement> evenements) {
-        this.evenements = evenements;
-    }
-
-    // getters et setters
     public Long getId() {
         return id;
     }
@@ -124,5 +120,15 @@ public class Utilisateur {
     public void addPost(Post post) {
         this.posts.add(post);
 
+    }
+
+    public void addEvenement(Evenement evenement) {
+        this.evenements.add(evenement);
+        evenement.getParticipants().add(this);
+    }
+
+    public void removeEvenement(Evenement evenement) {
+        this.evenements.remove(evenement);
+        evenement.getParticipants().remove(this);
     }
 }
