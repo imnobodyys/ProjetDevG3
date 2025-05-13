@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +19,6 @@ public class Evenement {
     @Enumerated(EnumType.STRING)
     private VisibiliteEvenement visibilite;
 
-    
     @ManyToOne
     @JoinColumn(name = "auteur_id")
     private Utilisateur auteur;
@@ -27,8 +26,7 @@ public class Evenement {
     @ManyToMany(mappedBy = "evenements")
     private List<Utilisateur> participants = new ArrayList<>();
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -89,13 +87,10 @@ public class Evenement {
         this.participants.add(participant);
         participant.getEvenements().add(this);
     }
-    
+
     public void removeParticipant(Utilisateur participant) {
         this.participants.remove(participant);
         participant.getEvenements().remove(this);
     }
-
-
-    
 
 }

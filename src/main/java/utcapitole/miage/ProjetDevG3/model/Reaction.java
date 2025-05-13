@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ public class Reaction {
     private Long id;
 
     private LocalDateTime dtEnvoi;
-    
+
     @Enumerated(EnumType.STRING)
     private TypeReaction type;
 
@@ -22,8 +22,7 @@ public class Reaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -60,5 +59,4 @@ public class Reaction {
         this.post = post;
     }
 
-   
 }

@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,6 @@ public class DemandeAmi {
     @Enumerated(EnumType.STRING)
     private StatutDemande statut;
 
-
     @ManyToOne
     @JoinColumn(name = "expediteur_id")
     private Utilisateur expediteur;
@@ -23,8 +22,7 @@ public class DemandeAmi {
     @JoinColumn(name = "destinataire_id")
     private Utilisateur destinataire;
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -60,8 +58,5 @@ public class DemandeAmi {
     public void setDestinataire(Utilisateur destinataire) {
         this.destinataire = destinataire;
     }
-
-   
-    
 
 }

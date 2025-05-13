@@ -64,6 +64,14 @@ public class Utilisateur {
         this.groupes = groupes;
     }
 
+    public List<Evenement> getEvenements() {
+        return evenements;
+    }
+
+    public void setEvenements(List<Evenement> evenements) {
+        this.evenements = evenements;
+    }
+
     // getters et setters
     public Long getId() {
         return id;
