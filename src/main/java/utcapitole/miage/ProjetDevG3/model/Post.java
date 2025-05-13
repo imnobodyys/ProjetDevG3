@@ -1,12 +1,12 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Poste {
+public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
@@ -15,7 +15,7 @@ public class Poste {
     private String contenu;
 
     @ManyToOne
-    private Poste originalPost;
+    private Post originalPost;
 
     @ManyToOne
     private Groupe groupe;
@@ -24,5 +24,4 @@ public class Poste {
 
     private LocalDateTime datePublication;
 
-    // Getters / Setters 或用 Lombok
 }
