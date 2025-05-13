@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -17,4 +17,28 @@ public class MembreGroupe {
 
     @Enumerated(EnumType.STRING)
     private StatutMembre statut; // EN_ATTENTE, ACCEPTE, REFUSE
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
+
+    public Utilisateur getMembre() {
+        return membre;
+    }
+
+    public void setMembre(Utilisateur membre) {
+        this.membre = membre;
+    }
+
+    public StatutMembre getStatut() {
+        return statut;
+    }
+
+    public void setStatut(StatutMembre statut) {
+        this.statut = statut;
+    }
 }

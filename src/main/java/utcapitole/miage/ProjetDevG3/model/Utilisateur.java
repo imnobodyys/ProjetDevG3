@@ -1,7 +1,9 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +28,47 @@ public class Utilisateur {
     private List<Post> posts = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-        name = "utilisateur_evenement",
-        joinColumns = @JoinColumn(name = "utilisateur_id"),
-        inverseJoinColumns = @JoinColumn(name = "evenement_id")
-    )
+    @JoinTable(name = "utilisateur_evenement", joinColumns = @JoinColumn(name = "utilisateur_id"), inverseJoinColumns = @JoinColumn(name = "evenement_id"))
     private List<Evenement> evenements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "expediteur")
+    private List<ConversationPri> conversationsCommeA;
 
-    //getters et setters
+    @OneToMany(mappedBy = "destinataire")
+    private List<ConversationPri> conversationsCommeB;
+
+    @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
+    private List<MembreGroupe> groupes;
+
+    // getters et setters
+    public List<ConversationPri> getConversationsCommeA() {
+        return conversationsCommeA;
+    }
+
+    public void setConversationsCommeA(List<ConversationPri> conversationsCommeA) {
+        this.conversationsCommeA = conversationsCommeA;
+    }
+
+    public List<ConversationPri> getConversationsCommeB() {
+        return conversationsCommeB;
+    }
+
+    public void setConversationsCommeB(List<ConversationPri> conversationsCommeB) {
+        this.conversationsCommeB = conversationsCommeB;
+    }
+
+    public List<MembreGroupe> getGroupes() {
+        return groupes;
+    }
+
+    public void setGroupes(List<MembreGroupe> groupes) {
+        this.groupes = groupes;
+    }
+
+    public List<Evenement> getEvenements() {
+        return evenements;
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,27 +119,16 @@ public class Utilisateur {
 
     public void addPost(Post post) {
         this.posts.add(post);
-        post.setAuteur(this);
-    }
-    
-    public void removePost(Post post) {
-        this.posts.remove(post);
-        post.setAuteur(null);
-    }
 
-    public List<Evenement> getEvenements() {
-        return evenements;
     }
 
     public void addEvenement(Evenement evenement) {
         this.evenements.add(evenement);
         evenement.getParticipants().add(this);
     }
-    
+
     public void removeEvenement(Evenement evenement) {
         this.evenements.remove(evenement);
         evenement.getParticipants().remove(this);
     }
-
-    
 }

@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 public enum VisibiliteEvenement {
     PUBLIC, PRIVE

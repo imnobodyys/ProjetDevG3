@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class Post {
     private Utilisateur auteur;
 
     @ManyToOne
-    @JoinColumn(name = "original_post_id") 
+    @JoinColumn(name = "original_post_id")
     private Post originalPost;
 
     @OneToMany(mappedBy = "originalPost")
@@ -31,8 +31,7 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Commentaire> commentaires = new ArrayList<>();
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -85,7 +84,7 @@ public class Post {
         this.reposts.add(repost);
         repost.setOriginalPost(this);
     }
-    
+
     public void removeRepost(Post repost) {
         this.reposts.remove(repost);
         repost.setOriginalPost(null);
@@ -99,11 +98,10 @@ public class Post {
         this.commentaires.add(commentaire);
         commentaire.setPost(this);
     }
-    
+
     public void removeCommentaire(Commentaire commentaire) {
         this.commentaires.remove(commentaire);
         commentaire.setPost(null);
     }
-
 
 }

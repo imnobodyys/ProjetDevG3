@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.model;
+package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -20,8 +20,7 @@ public class Commentaire {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -57,6 +56,5 @@ public class Commentaire {
     public void setPost(Post post) {
         this.post = post;
     }
-    
-    
+
 }
