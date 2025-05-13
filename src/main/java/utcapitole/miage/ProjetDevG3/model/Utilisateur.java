@@ -39,10 +39,6 @@ public class Utilisateur {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getNom() {
         return nom;
     }

@@ -20,48 +20,42 @@ public class Commentaire {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    
 
-    
     //getters et setters
     public Long getId() {
         return id;
-    }
-
-    public Utilisateur getExpediteur() {
-        return expediteur;
     }
 
     public String getContenu() {
         return contenu;
     }
 
-    public Post getPost() {
-        return post;
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
     }
 
     public LocalDateTime getDateEnvoi() {
         return dateEnvoi;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDateEnvoi(LocalDateTime dateEnvoi) {
+        this.dateEnvoi = dateEnvoi;
+    }
+
+    public Utilisateur getExpediteur() {
+        return expediteur;
     }
 
     public void setExpediteur(Utilisateur expediteur) {
         this.expediteur = expediteur;
     }
 
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
+    public Post getPost() {
+        return post;
     }
 
     public void setPost(Post post) {
         this.post = post;
-    }
-
-    public void setDateEnvoi(LocalDateTime dateEnvoi) {
-        this.dateEnvoi = dateEnvoi;
     }
     
     

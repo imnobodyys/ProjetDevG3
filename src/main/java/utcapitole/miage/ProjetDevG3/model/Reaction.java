@@ -22,5 +22,43 @@ public class Reaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
+
+    //getters et setters
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDtEnvoi() {
+        return dtEnvoi;
+    }
+
+    public void setDtEnvoi(LocalDateTime dtEnvoi) {
+        this.dtEnvoi = dtEnvoi;
+    }
+
+    public TypeReaction getType() {
+        return type;
+    }
+
+    public void setType(TypeReaction type) {
+        this.type = type;
+    }
+
+    public Utilisateur getExpedient() {
+        return expedient;
+    }
+
+    public void setExpedient(Utilisateur expedient) {
+        this.expedient = expedient;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
    
 }

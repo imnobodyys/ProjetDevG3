@@ -23,6 +23,44 @@ public class DemandeAmi {
     @JoinColumn(name = "destinataire_id")
     private Utilisateur destinataire;
 
+
+    //getters et setters
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDtEnvoi() {
+        return dtEnvoi;
+    }
+
+    public void setDtEnvoi(LocalDateTime dtEnvoi) {
+        this.dtEnvoi = dtEnvoi;
+    }
+
+    public StatutDemande getStatut() {
+        return statut;
+    }
+
+    public void setStatut(StatutDemande statut) {
+        this.statut = statut;
+    }
+
+    public Utilisateur getExpediteur() {
+        return expediteur;
+    }
+
+    public void setExpediteur(Utilisateur expediteur) {
+        this.expediteur = expediteur;
+    }
+
+    public Utilisateur getDestinataire() {
+        return destinataire;
+    }
+
+    public void setDestinataire(Utilisateur destinataire) {
+        this.destinataire = destinataire;
+    }
+
    
     
 
