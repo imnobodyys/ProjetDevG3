@@ -1,6 +1,7 @@
 package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
