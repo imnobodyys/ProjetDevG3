@@ -1,0 +1,24 @@
+package utcapitole.miage.projetDevG3.Repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import utcapitole.miage.projetDevG3.model.Evenement;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetDevG3.model.VisibiliteEvenement;
+
+@Repository
+public interface EvenementRepository extends JpaRepository<Evenement, Long> {
+   
+    // Méthode pour trouver tous les événements d'un utilisateur
+    List<Evenement> findByUtilisateur(Utilisateur utilisateur);
+
+    // Méthode pour trouver tous les événements d'une visibilité
+    List<Evenement> findByVisibilite(VisibiliteEvenement visibilite);
+    
+    // Méthode pour trouver un événement par son ID
+    Evenement findById(long id);
+
+}
