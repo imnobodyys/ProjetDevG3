@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+@Entity
 public class Reaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

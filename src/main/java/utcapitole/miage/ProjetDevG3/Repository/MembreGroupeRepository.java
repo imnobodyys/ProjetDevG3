@@ -16,6 +16,6 @@ public interface MembreGroupeRepository extends JpaRepository<MembreGroupe, Long
     List<MembreGroupe> findByGroupe(Groupe groupe);
 
     // Méthode pour trouver tous les groupes d'un utilisateur
-    List<MembreGroupe> findByUtilisateur(Utilisateur utilisateur);
+    List<MembreGroupe> findByMembre(Utilisateur membre);
 
 }

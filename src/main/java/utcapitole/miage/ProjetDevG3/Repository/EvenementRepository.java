@@ -13,7 +13,7 @@ import utcapitole.miage.projetDevG3.model.VisibiliteEvenement;
 public interface EvenementRepository extends JpaRepository<Evenement, Long> {
    
     // Méthode pour trouver tous les événements d'un utilisateur
-    List<Evenement> findByUtilisateur(Utilisateur utilisateur);
+    List<Evenement> findByAuteur(Utilisateur auteur);
 
     // Méthode pour trouver tous les événements d'une visibilité
     List<Evenement> findByVisibilite(VisibiliteEvenement visibilite);
