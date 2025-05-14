@@ -14,5 +14,6 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     Conversation findById(long id);
     // Méthode pour trouver toutes les conversations d'un utilisateur
     List<Conversation> findByUtilisateur(Utilisateur utilisateur);
+    
 
 }
