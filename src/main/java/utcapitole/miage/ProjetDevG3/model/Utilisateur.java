@@ -45,8 +45,17 @@ public class Utilisateur {
     @OneToMany(mappedBy = "destinataire")
     private List<ConversationPri> conversationsCommeB;
 
+    @OneToMany(mappedBy = "expediteurami")
+    private List<ConversationPri> demandeAmiExp;
+
+    @OneToMany(mappedBy = "destinataireami")
+    private List<ConversationPri> demandeAmiDes;
+
     @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
     private List<MembreGroupe> groupes;
+
+    @OneToMany(mappedBy = "expedi", cascade = CascadeType.ALL)
+    private List<Message> messages;
 
     // getters et setters
     public List<ConversationPri> getConversationsCommeA() {

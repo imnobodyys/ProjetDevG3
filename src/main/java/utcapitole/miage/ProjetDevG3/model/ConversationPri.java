@@ -6,9 +6,11 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class ConversationPri extends Conversation {
     @ManyToOne
+    @JoinColumn(name = "expediteur_id", nullable = false)
     private Utilisateur expediteur;
 
     @ManyToOne
+    @JoinColumn(name = "destinataire_id", nullable = false)
     private Utilisateur destinataire;
 
     public Utilisateur getExpediteur() {
