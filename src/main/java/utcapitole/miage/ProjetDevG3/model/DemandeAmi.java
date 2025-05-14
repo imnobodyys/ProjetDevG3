@@ -16,11 +16,17 @@ public class DemandeAmi {
 
     @ManyToOne
     @JoinColumn(name = "expediteur_id")
-    private Utilisateur expediteur;
+    private Utilisateur expediteurAmi;
 
     @ManyToOne
     @JoinColumn(name = "destinataire_id")
-    private Utilisateur destinataire;
+    private Utilisateur destinataireAmi;
+
+    @PrePersist
+    protected void onCreate() {
+        dtEnvoi = LocalDateTime.now();
+        statut = StatutDemande.EN_ATTENTE; // 默认状态
+    }
 
     // getters et setters
     public Long getId() {
@@ -44,19 +50,19 @@ public class DemandeAmi {
     }
 
     public Utilisateur getExpediteur() {
-        return expediteur;
+        return expediteurAmi;
     }
 
     public void setExpediteur(Utilisateur expediteur) {
-        this.expediteur = expediteur;
+        this.expediteurAmi = expediteur;
     }
 
     public Utilisateur getDestinataire() {
-        return destinataire;
+        return destinataireAmi;
     }
 
     public void setDestinataire(Utilisateur destinataire) {
-        this.destinataire = destinataire;
+        this.destinataireAmi = destinataire;
     }
 
 }
