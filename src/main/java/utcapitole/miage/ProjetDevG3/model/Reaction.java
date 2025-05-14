@@ -22,6 +22,7 @@ public class Reaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    
     // getters et setters
     public Long getId() {
         return id;

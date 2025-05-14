@@ -10,7 +10,7 @@ public class Commentaire {
     private Long id;
 
     private String contenu;
-    private LocalDateTime dateEnvoi;
+    private LocalDateTime dtEnvoi;
 
     @ManyToOne
     @JoinColumn(name = "expedient_id")
@@ -34,11 +34,11 @@ public class Commentaire {
     }
 
     public LocalDateTime getDateEnvoi() {
-        return dateEnvoi;
+        return dtEnvoi;
     }
 
-    public void setDateEnvoi(LocalDateTime dateEnvoi) {
-        this.dateEnvoi = dateEnvoi;
+    public void setDateEnvoi(LocalDateTime dtEnvoi) {
+        this.dtEnvoi = dtEnvoi;
     }
 
     public Utilisateur getExpediteur() {

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+@Entity
 public class DemandeAmi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,20 +13,20 @@ public class DemandeAmi {
     private LocalDateTime dtEnvoi;
 
     @Enumerated(EnumType.STRING)
-    private StatutDemande statut;
+    private StatutDemande statut; // EN_ATTENTE, ACCEPTE, REFUSE
 
     @ManyToOne
-    @JoinColumn(name = "expediteur_id")
+    @JoinColumn(name = "expediteurAmi_id")
     private Utilisateur expediteurAmi;
 
     @ManyToOne
-    @JoinColumn(name = "destinataire_id")
+    @JoinColumn(name = "destinataireAmi_id")
     private Utilisateur destinataireAmi;
 
     @PrePersist
     protected void onCreate() {
         dtEnvoi = LocalDateTime.now();
-        statut = StatutDemande.EN_ATTENTE; // 默认状态
+        statut = StatutDemande.EN_ATTENTE; 
     }
 
     // getters et setters
@@ -49,19 +50,19 @@ public class DemandeAmi {
         this.statut = statut;
     }
 
-    public Utilisateur getExpediteur() {
+    public Utilisateur getExpediteurAmi() {
         return expediteurAmi;
     }
 
-    public void setExpediteur(Utilisateur expediteur) {
+    public void setExpediteurAmi(Utilisateur expediteur) {
         this.expediteurAmi = expediteur;
     }
 
-    public Utilisateur getDestinataire() {
+    public Utilisateur getDestinataireAmi() {
         return destinataireAmi;
     }
 
-    public void setDestinataire(Utilisateur destinataire) {
+    public void setDestinataireAmi(Utilisateur destinataire) {
         this.destinataireAmi = destinataire;
     }
 

@@ -6,26 +6,27 @@ import jakarta.persistence.*;
 public class ConversationPri extends Conversation {
     @ManyToOne
     @JoinColumn(name = "expediteur_id", nullable = false)
-    private Utilisateur expediteur;
+    private Utilisateur expediteurCP;
 
     @ManyToOne
     @JoinColumn(name = "destinataire_id", nullable = false)
-    private Utilisateur destinataire;
+    private Utilisateur destinataireCP;
 
-    public Utilisateur getExpediteur() {
-        return expediteur;
+    //getters et setters
+    public Utilisateur getExpediteurCP() {
+        return expediteurCP;
     }
 
-    public void setExpediteur(Utilisateur expediteur) {
-        this.expediteur = expediteur;
+    public void setExpediteurCP(Utilisateur expediteur) {
+        this.expediteurCP = expediteur;
     }
 
-    public Utilisateur getDestinataire() {
-        return destinataire;
+    public Utilisateur getDestinataireCP() {
+        return destinataireCP;
     }
 
-    public void setDestinataire(Utilisateur destinataire) {
-        this.destinataire = destinataire;
+    public void setDestinataireCP(Utilisateur destinataire) {
+        this.destinataireCP = destinataire;
     }
 
 }

@@ -14,7 +14,7 @@ public class Evenement {
     private String titre;
     private String description;
     private String contenu;
-    private LocalDateTime datePublication;
+    private LocalDateTime dtPublication;
 
     @Enumerated(EnumType.STRING)
     private VisibiliteEvenement visibilite;
@@ -26,6 +26,7 @@ public class Evenement {
     @ManyToMany(mappedBy = "evenements")
     private List<Utilisateur> participants = new ArrayList<>();
 
+    
     // getters et setters
     public Long getId() {
         return id;
@@ -56,11 +57,11 @@ public class Evenement {
     }
 
     public LocalDateTime getDatePublication() {
-        return datePublication;
+        return dtPublication;
     }
 
-    public void setDatePublication(LocalDateTime datePublication) {
-        this.datePublication = datePublication;
+    public void setDatePublication(LocalDateTime dtPublication) {
+        this.dtPublication = dtPublication;
     }
 
     public VisibiliteEvenement getVisibilite() {
@@ -84,13 +85,17 @@ public class Evenement {
     }
 
     public void addParticipant(Utilisateur participant) {
-        this.participants.add(participant);
-        participant.getEvenements().add(this);
+        if (participant != null && !participants.contains(participant)) {
+            participants.add(participant);
+            participant.addEvenement(this);
+        }
     }
-
+    
     public void removeParticipant(Utilisateur participant) {
-        this.participants.remove(participant);
-        participant.getEvenements().remove(this);
+        if (participant != null) {
+            participants.remove(participant);
+            participant.removeEvenement(this);
+        }
     }
 
 }

@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 public class Message {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     private String contenu;
 
@@ -19,6 +19,19 @@ public class Message {
 
     @ManyToOne(optional = false)
     private Conversation conversation;
+
+
+    @PrePersist
+    public void setDateEnvoi() {
+        this.dtEnvoi = LocalDateTime.now();
+    }
+
+
+
+     //getters et setters
+    public Long getId() {
+        return id;
+    }
 
     public String getContenu() {
         return contenu;
@@ -51,9 +64,5 @@ public class Message {
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
     }
-
-    @PrePersist
-    public void setDateEnvoi() {
-        this.dtEnvoi = LocalDateTime.now();
-    }
+    
 }

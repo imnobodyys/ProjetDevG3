@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 public class Utilisateur {
@@ -32,52 +31,30 @@ public class Utilisateur {
     private List<Evenement> evenements = new ArrayList<>();
 
     @OneToMany(mappedBy = "expediteur")
-    private List<ConversationPri> conversationsCommeA;
+    private List<Commentaire> commentaires = new ArrayList<>();
 
-    @OneToMany(mappedBy = "destinataire")
-    private List<ConversationPri> conversationsCommeB;
+    @OneToMany(mappedBy = "expediteurCP")
+    private List<ConversationPri> conversationsCommeA = new ArrayList<>();
 
-    @OneToMany(mappedBy = "expediteurami")
-    private List<ConversationPri> demandeAmiExp;
-
-    @OneToMany(mappedBy = "destinataireami")
-    private List<ConversationPri> demandeAmiDes;
+    @OneToMany(mappedBy = "destinataireCP")
+    private List<ConversationPri> conversationsCommeB = new ArrayList<>();
 
     @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
-    private List<MembreGroupe> groupes;
+    private List<MembreGroupe> groupes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "expediteurAmi")
+    private List<DemandeAmi> demandeAmiExp = new ArrayList<>();
+
+    @OneToMany(mappedBy = "destinataireAmi")
+    private List<DemandeAmi> demandeAmiDes = new ArrayList<>();
 
     @OneToMany(mappedBy = "expedi", cascade = CascadeType.ALL)
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
 
-    // getters et setters
-    public List<ConversationPri> getConversationsCommeA() {
-        return conversationsCommeA;
-    }
 
-    public void setConversationsCommeA(List<ConversationPri> conversationsCommeA) {
-        this.conversationsCommeA = conversationsCommeA;
-    }
 
-    public List<ConversationPri> getConversationsCommeB() {
-        return conversationsCommeB;
-    }
 
-    public void setConversationsCommeB(List<ConversationPri> conversationsCommeB) {
-        this.conversationsCommeB = conversationsCommeB;
-    }
-
-    public List<MembreGroupe> getGroupes() {
-        return groupes;
-    }
-
-    public void setGroupes(List<MembreGroupe> groupes) {
-        this.groupes = groupes;
-    }
-
-    public List<Evenement> getEvenements() {
-        return evenements;
-    }
-
+    //getters et setters
     public Long getId() {
         return id;
     }
@@ -127,17 +104,160 @@ public class Utilisateur {
     }
 
     public void addPost(Post post) {
-        this.posts.add(post);
+        if (post != null && !posts.contains(post)) {
+            posts.add(post);
+            post.setAuteur(this);
+        }
+    }
 
+    public void removePost(Post post) {
+        if (post != null) {
+            posts.remove(post);
+            post.setAuteur(null);
+        }
+    }
+
+    public List<Evenement> getEvenements() {
+        return evenements;
     }
 
     public void addEvenement(Evenement evenement) {
-        this.evenements.add(evenement);
-        evenement.getParticipants().add(this);
+        if (evenement != null && !evenements.contains(evenement)) {
+            evenements.add(evenement);
+            evenement.addParticipant(this);
+        }
+    }
+    
+    public void removeEvenement(Evenement evenement) {
+        if (evenement != null) {
+            evenements.remove(evenement);
+            evenement.removeParticipant(this);
+        }
     }
 
-    public void removeEvenement(Evenement evenement) {
-        this.evenements.remove(evenement);
-        evenement.getParticipants().remove(this);
+    public List<Commentaire> getCommentaires() {
+        return commentaires;
     }
+
+    public void addCommentaire(Commentaire commentaire) {
+        if (commentaire != null && !commentaires.contains(commentaire)) {
+            commentaires.add(commentaire);
+            commentaire.setExpediteur(this);
+        }
+    }
+
+    public void removeCommentaire(Commentaire commentaire) {
+        if (commentaire != null) {
+            commentaires.remove(commentaire);
+            commentaire.setExpediteur(null);
+        }
+    }
+
+    public List<ConversationPri> getConversationsCommeA() {
+        return conversationsCommeA;
+    }
+
+    public void addConversationCommeA(ConversationPri conversation) {
+        if (conversation != null && !conversationsCommeA.contains(conversation)) {
+            conversationsCommeA.add(conversation);
+            conversation.setExpediteurCP(this);
+        }
+    }
+
+    public void removeConversationCommeA(ConversationPri conversation) {
+        if (conversation != null) {
+            conversationsCommeA.remove(conversation);
+            conversation.setExpediteurCP(null);
+        }
+    }
+
+    public List<ConversationPri> getConversationsCommeB() {
+        return conversationsCommeB;
+    }
+
+    public void addConversationCommeB(ConversationPri conversation) {
+        if (conversation != null && !conversationsCommeB.contains(conversation)) {
+            conversationsCommeB.add(conversation);
+            conversation.setDestinataireCP(this);
+        }
+    }
+
+    public void removeConversationCommeB(ConversationPri conversation) {
+        if (conversation != null) {
+            conversationsCommeB.remove(conversation);
+            conversation.setDestinataireCP(null);
+        }
+    }
+
+    public List<MembreGroupe> getGroupes() {
+        return groupes;
+    }
+
+    public void addGroupe(MembreGroupe membreGroupe) {
+        if (membreGroupe != null && !groupes.contains(membreGroupe)) {
+            groupes.add(membreGroupe);
+            membreGroupe.setMembre(this);
+        }
+    }
+
+    public void removeGroupe(MembreGroupe membreGroupe) {
+        if (membreGroupe != null) {
+            groupes.remove(membreGroupe);
+            membreGroupe.setMembre(null);
+        }
+    }
+
+    public List<DemandeAmi> getDemandeAmiExp() {
+        return demandeAmiExp;
+    }
+
+    public void addDemandeAmiExp(DemandeAmi demande) {
+        if (demande != null && !demandeAmiExp.contains(demande)) {
+            demandeAmiExp.add(demande);
+            demande.setExpediteurAmi(this);
+        }
+    }
+
+    public void removeDemandeAmiExp(DemandeAmi demande) {
+        if (demande != null) {
+            demandeAmiExp.remove(demande);
+            demande.setExpediteurAmi(null);
+        }
+    }
+
+    public List<DemandeAmi> getDemandeAmiDes() {
+        return demandeAmiDes;
+    }
+
+    public void addDemandeAmiDes(DemandeAmi demande) {
+        if (demande != null && !demandeAmiDes.contains(demande)) {
+            demandeAmiDes.add(demande);
+            demande.setDestinataireAmi(this);
+        }
+    }
+
+    public void removeDemandeAmiDes(DemandeAmi demande) {
+        if (demande != null) {
+            demandeAmiDes.remove(demande);
+            demande.setDestinataireAmi(null);
+        }
+    }
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void addMessage(Message message) {
+        if (message != null && !messages.contains(message)) {
+            messages.add(message);
+            message.setExpedi(this);
+        }
+    }
+
+    public void removeMessage(Message message) {
+        if (message != null) {
+            messages.remove(message);
+            message.setExpedi(null);
+        }
+    }
+    
 }

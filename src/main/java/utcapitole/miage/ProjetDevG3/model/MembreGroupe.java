@@ -1,7 +1,6 @@
 package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class MembreGroupe {
@@ -9,15 +8,18 @@ public class MembreGroupe {
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private StatutMembre statut; // EN_ATTENTE, ACCEPTE, REFUSE
+
     @ManyToOne
     private Groupe groupe;
 
     @ManyToOne
     private Utilisateur membre;
 
-    @Enumerated(EnumType.STRING)
-    private StatutMembre statut; // EN_ATTENTE, ACCEPTE, REFUSE
+    
 
+    //getters et setters
     public Groupe getGroupe() {
         return groupe;
     }

@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 @Entity
 public class ConversationGrp extends Conversation {
     @OneToOne
-    @JoinColumn(name = "group id", unique = true)
+    @JoinColumn(name = "group_id", unique = true)
     private Groupe groupeCon;
 
+    //getters et setters
     public Groupe getGroupeCon() {
         return groupeCon;
     }
