@@ -9,5 +9,4 @@ import utcapitole.miage.projetDevG3.model.Post;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByPostOrderByDtEnvoiAsc(Post post);
 }

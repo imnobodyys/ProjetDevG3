@@ -14,7 +14,7 @@ public class Post {
     private Long id;
 
     private String contenu;
-    private LocalDateTime datePublication;
+    private LocalDateTime dtPublication;
 
     @Enumerated(EnumType.STRING)
     private VisibilitePost visibilite;
@@ -46,12 +46,12 @@ public class Post {
         this.contenu = contenu;
     }
 
-    public LocalDateTime getDatePublication() {
-        return datePublication;
+    public LocalDateTime getDtPublication() {
+        return dtPublication;
     }
 
-    public void setDatePublication(LocalDateTime datePublication) {
-        this.datePublication = datePublication;
+    public void setDtPublication(LocalDateTime dtPublication) {
+        this.dtPublication = dtPublication;
     }
 
     public VisibilitePost getVisibilite() {

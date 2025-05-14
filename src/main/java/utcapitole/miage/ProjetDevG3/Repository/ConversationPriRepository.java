@@ -10,7 +10,4 @@ public interface ConversationPriRepository extends JpaRepository<ConversationPri
     // Méthode pour trouver une conversation privée par son ID
     ConversationPri findById(long id);
 
-    // Méthode pour trouver une conversation privée par son nom
-    ConversationPri findByNom(String nom);
-
 }

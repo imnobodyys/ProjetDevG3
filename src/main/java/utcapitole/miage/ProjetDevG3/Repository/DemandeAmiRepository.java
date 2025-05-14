@@ -10,10 +10,10 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
     // Méthode pour trouver toutes les demandes d'ami envoyées par un utilisateur
-    List<DemandeAmi> findByExpediteur(Utilisateur expediteur);
+    List<DemandeAmi> findByExpediteurAmi(Utilisateur expediteurAmi);
 
     // Méthode pour trouver toutes les demandes d'ami reçues par un utilisateur
-    List<DemandeAmi> findByDestinataire(Utilisateur destinataire);
+    List<DemandeAmi> findByDestinataireAmi(Utilisateur destinataireAmi);
 
     // Méthode pour trouver une demande d'ami par son statut
     List<DemandeAmi> findByStatut(StatutDemande statut);
