@@ -33,4 +33,5 @@ build/
 .vscode/
 
 # ignore touts les db
+db/
 *.db
