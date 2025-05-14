@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @Entity
 public class Groupe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nom;
@@ -25,14 +25,12 @@ public class Groupe {
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     private List<MembreGroupe> membres;
 
-    
     @PrePersist
     protected void onCreate() {
         this.dtCreation = LocalDateTime.now();
     }
 
-
-    //getters et setters
+    // getters et setters
     public Long getId() {
         return id;
     }
@@ -102,5 +100,4 @@ public class Groupe {
         }
     }
 
-    
 }

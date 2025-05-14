@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class MembreGroupe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -17,9 +17,7 @@ public class MembreGroupe {
     @ManyToOne
     private Utilisateur membre;
 
-    
-
-    //getters et setters
+    // getters et setters
     public Groupe getGroupe() {
         return groupe;
     }

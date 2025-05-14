@@ -8,14 +8,13 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Conversation {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
 
-
-    //getters et setters
+    // getters et setters
     public long getId() {
         return id;
     }
@@ -25,7 +24,8 @@ public class Conversation {
     }
 
     public void addMessage(Message message) {
-        if (message == null) return;
+        if (message == null)
+            return;
         if (!messages.contains(message)) {
             messages.add(message);
             message.setConversation(this);
@@ -33,10 +33,11 @@ public class Conversation {
     }
 
     public void removeMessage(Message message) {
-        if (message == null) return;
+        if (message == null)
+            return;
         if (messages.remove(message)) {
             message.setConversation(null);
         }
     }
-    
+
 }
