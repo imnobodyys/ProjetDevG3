@@ -1,8 +1,6 @@
 package utcapitole.miage.projetDevG3.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class ConversationGrp extends Conversation {

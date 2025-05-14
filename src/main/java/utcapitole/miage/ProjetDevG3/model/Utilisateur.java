@@ -3,7 +3,7 @@ package utcapitole.miage.projetDevG3.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import jakarta.persistence.*;
 
 @Entity
 public class Utilisateur {
