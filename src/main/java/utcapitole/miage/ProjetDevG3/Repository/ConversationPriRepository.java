@@ -13,8 +13,4 @@ public interface ConversationPriRepository extends JpaRepository<ConversationPri
     // Méthode pour trouver une conversation privée par son nom
     ConversationPri findByNom(String nom);
 
-    // Méthode pour supprimer une conversation privée par son ID
-    void deleteById(Long id);
-    
-
 }
