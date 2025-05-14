@@ -2,8 +2,6 @@ package utcapitole.miage.projetDevG3.model;
 
 import java.util.List;
 
-import org.apache.logging.log4j.message.Message;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +11,32 @@ public class Conversation {
     @GeneratedValue
     private long id;
 
-    @OneToMany(mappedBy = "Conversation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
+
+
+    //getters et setters
+    public long getId() {
+        return id;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void addMessage(Message message) {
+        if (message == null) return;
+        if (!messages.contains(message)) {
+            messages.add(message);
+            message.setConversation(this);
+        }
+    }
+
+    public void removeMessage(Message message) {
+        if (message == null) return;
+        if (messages.remove(message)) {
+            message.setConversation(null);
+        }
+    }
+    
 }
