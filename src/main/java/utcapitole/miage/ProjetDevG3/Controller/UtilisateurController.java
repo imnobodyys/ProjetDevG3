@@ -1,6 +1,7 @@
 package utcapitole.miage.projetDevG3.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,9 @@ public class UtilisateurController {
      * Affiche le formulaire d'inscription
      */
     @GetMapping("/creer")
-    public String afficherFormulaire(Model model) {
+    public String afficherFormulaire(Model model, CsrfToken token) {
         model.addAttribute("utilisateur", new Utilisateur());
+        model.addAttribute("_csrf", token);
         return "creerUtilisateur"; 
     }
 
