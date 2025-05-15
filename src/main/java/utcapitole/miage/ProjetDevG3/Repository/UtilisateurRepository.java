@@ -15,11 +15,10 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     Optional<Utilisateur> findByEmail(String email);
 
-    // method pour rechercher utilisateur
     @Query("SELECT u FROM Utilisateur u WHERE " +
-            "LOWER(u.nom) LIKE    OR " +
-            "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    "LOWER(u.nom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+    "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+    "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
 
     List<Utilisateur> searchByKeyword(@Param("keyword") String keyword);
 }
