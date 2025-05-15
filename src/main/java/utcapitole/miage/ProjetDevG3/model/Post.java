@@ -4,11 +4,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
-
+/**
+ * Classe Post
+ * Représente un post sur le réseau social
+ */
 @Entity
 public class Post {
+    /**
+     * Attributs
+     * id : identifiant du post
+     * contenu : contenu du post
+     * dtPublication : date de publication du post
+     * visibilite : visibilité du post (publique ou privée)
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,20 +34,43 @@ public class Post {
     private String contenu;
     private LocalDateTime dtPublication;
 
+    /**
+     * Enumération représentant les différentes visibilités d'un post.
+     * VisibilitePost : PUBLIQUE, PRIVE
+     */
     @Enumerated(EnumType.STRING)
     private VisibilitePost visibilite;
 
+    /**
+     * Relations
+     * auteur : utilisateur qui a créé le post
+     * originalPost : post d'origine (si le post est un repost)
+     * reposts : liste des reposts du post
+     * commentaires : liste des commentaires sur le post
+     */
     @ManyToOne
     @JoinColumn(name = "auteur_id")
     private Utilisateur auteur;
 
+    /**
+     * Relation
+     * originalPost : post d'origine (si le post est un repost)
+     */
     @ManyToOne
     @JoinColumn(name = "original_post_id")
     private Post originalPost;
 
+    /**
+     * Relation
+     * reposts : liste des reposts du post
+     */
     @OneToMany(mappedBy = "originalPost")
     private List<Post> reposts = new ArrayList<>();
 
+    /**
+     * Relation
+     * commentaires : liste des commentaires sur le post
+     */
     @OneToMany(mappedBy = "post")
     private List<Commentaire> commentaires = new ArrayList<>();
 

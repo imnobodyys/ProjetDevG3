@@ -15,9 +15,20 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Classe Utilisateur
+ * Représente un utilisateur du système
+ * Chaque utilisateur peut avoir plusieurs posts, événements, commentaires, conversations, groupes et demandes d'amis
+ */
 @Entity
 public class Utilisateur {
 
+    /**
+     * Attributs
+     * id : identifiant de l'utilisateur
+     * nom : nom de l'utilisateur
+     * prenom : prénom de l'utilisateur
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +36,12 @@ public class Utilisateur {
     private String nom;
     private String prenom;
 
+    /**
+     * Attributs
+     * email : adresse email de l'utilisateur
+     * mdp : mot de passe de l'utilisateur
+     * dtInscription : date d'inscription de l'utilisateur
+     */
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -32,31 +49,67 @@ public class Utilisateur {
 
     private LocalDateTime dtInscription;
 
+    /**
+     * Relations
+     * posts : liste des posts de l'utilisateur
+     */
     @OneToMany(mappedBy = "auteur")
     private List<Post> posts = new ArrayList<>();
 
+    /**
+     * Relation
+     * evenements : liste des événements auxquels l'utilisateur participe
+     */
     @ManyToMany
     @JoinTable(name = "utilisateur_evenement", joinColumns = @JoinColumn(name = "utilisateur_id"), inverseJoinColumns = @JoinColumn(name = "evenement_id"))
     private List<Evenement> evenements = new ArrayList<>();
 
+    /**
+     * Relation
+     * commentaires : liste des commentaires de l'utilisateur
+     */
     @OneToMany(mappedBy = "expediteur")
     private List<Commentaire> commentaires = new ArrayList<>();
 
+    /**
+     * Relation
+     * conversations : liste des conversations privées de l'utilisateur
+     */
     @OneToMany(mappedBy = "expediteurCP")
     private List<ConversationPri> conversationsCommeA = new ArrayList<>();
 
+    /**
+     * Relation
+     * conversations : liste des conversations privées de l'utilisateur
+     */
     @OneToMany(mappedBy = "destinataireCP")
     private List<ConversationPri> conversationsCommeB = new ArrayList<>();
 
+    /**
+     * Relation
+     * groupes : liste des groupes auxquels l'utilisateur appartient
+     */
     @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
     private List<MembreGroupe> groupes = new ArrayList<>();
 
+    /**
+     * Relation
+     * demandes d'amis : liste des demandes d'amis envoyées et reçues par l'utilisateur
+     */
     @OneToMany(mappedBy = "expediteurAmi")
     private List<DemandeAmi> demandeAmiExp = new ArrayList<>();
 
+    /**
+     * Relation
+     * demandes d'amis : liste des demandes d'amis envoyées et reçues par l'utilisateur
+     */
     @OneToMany(mappedBy = "destinataireAmi")
     private List<DemandeAmi> demandeAmiDes = new ArrayList<>();
 
+    /**
+     * Relation
+     * messages : liste des messages envoyés par l'utilisateur
+     */
     @OneToMany(mappedBy = "expedi", cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
 
