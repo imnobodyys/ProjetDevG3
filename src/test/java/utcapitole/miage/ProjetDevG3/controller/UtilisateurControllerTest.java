@@ -27,7 +27,8 @@ public class UtilisateurControllerTest {
 
     @MockBean
     private UtilisateurRepository utilisateurRepository;
-
+    
+    //test pour le controller pour rechercher un utilisateur
     @WithMockUser(username = "test", roles = { "USER" })
     @Test
     void TestSearch() throws Exception {
