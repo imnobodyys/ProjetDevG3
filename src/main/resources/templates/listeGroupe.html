@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mes groupes</title>
+</head>
+<body>
+<h2>Mes groupes créés</h2>
+
+<table>
+    <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Date de création</th>
+    </tr>
+    <tr th:each="g : ${groupes}">
+        <td th:text="${g.nom}"></td>
+        <td th:text="${g.description}"></td>
+        <td th:text="${#temporals.format(g.dtCreation, 'dd/MM/yyyy HH:mm')}"></td>
+    </tr>
+</table>
+</body>
+</html>

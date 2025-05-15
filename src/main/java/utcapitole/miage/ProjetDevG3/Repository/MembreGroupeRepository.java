@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import utcapitole.miage.projetDevG3.model.Groupe;
 import utcapitole.miage.projetDevG3.model.MembreGroupe;
+import utcapitole.miage.projetDevG3.model.StatutMembre;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 @Repository
@@ -19,5 +20,7 @@ public interface MembreGroupeRepository extends JpaRepository<MembreGroupe, Long
 
     // Méthode pour trouver tous les groupes d'un utilisateur
     List<MembreGroupe> findByMembre(Utilisateur membre);
+    
+    List<MembreGroupe> findByGroupeAndStatut(Groupe groupe, StatutMembre statut);
 
 }
