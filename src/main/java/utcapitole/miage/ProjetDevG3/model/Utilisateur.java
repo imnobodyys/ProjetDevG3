@@ -15,6 +15,11 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Représente un utilisateur du système.
+ * Contient les informations personnelles et les relations avec d'autres
+ * entités.
+ */
 @Entity
 public class Utilisateur {
 
@@ -31,6 +36,14 @@ public class Utilisateur {
     private String mdp;
 
     private LocalDateTime dtInscription;
+
+    public Utilisateur(String nom, String prenom, String email, String mdp) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.dtInscription = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "auteur")
     private List<Post> posts = new ArrayList<>();
@@ -60,10 +73,10 @@ public class Utilisateur {
     @OneToMany(mappedBy = "expedi", cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
 
+    // getters et setters
+    public Utilisateur() {
+    }
 
-
-
-    //getters et setters
     public Long getId() {
         return id;
     }
@@ -136,7 +149,7 @@ public class Utilisateur {
             evenement.addParticipant(this);
         }
     }
-    
+
     public void removeEvenement(Evenement evenement) {
         if (evenement != null) {
             evenements.remove(evenement);
@@ -255,6 +268,7 @@ public class Utilisateur {
             demande.setDestinataireAmi(null);
         }
     }
+
     public List<Message> getMessages() {
         return messages;
     }
@@ -272,5 +286,16 @@ public class Utilisateur {
             message.setExpedi(null);
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", email='" + email + '\'' +
+                ", dtInscription=" + dtInscription +
+                '}';
+    }
+
 }

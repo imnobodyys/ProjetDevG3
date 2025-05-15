@@ -2,6 +2,7 @@ package utcapitole.miage.projetDevG3.model;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 public class ConversationPri extends Conversation {
     @ManyToOne
@@ -12,7 +13,7 @@ public class ConversationPri extends Conversation {
     @JoinColumn(name = "destinataire_id", nullable = false)
     private Utilisateur destinataireCP;
 
-    //getters et setters
+    // getters et setters
     public Utilisateur getExpediteurCP() {
         return expediteurCP;
     }

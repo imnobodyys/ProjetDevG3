@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+/** Javadoc */
 @Entity
 public class MembreGroupe {
     @Id
