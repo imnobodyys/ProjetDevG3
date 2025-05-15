@@ -14,8 +14,12 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  */
 @Service
 public class UtilisateurService {
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+
+    private final UtilisateurRepository utilisateurRepository;
+
+    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
