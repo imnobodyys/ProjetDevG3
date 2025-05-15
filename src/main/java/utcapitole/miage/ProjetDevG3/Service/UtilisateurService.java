@@ -22,7 +22,7 @@ public class UtilisateurService {
 
     /**
      * US01
-     * Crée un nouvel utilisateur avec cryptage du mot de passe
+     * création de profile personnel avec cryptage du mot de passe
      * @param utilisateur Objet utilisateur à créer
      * @return Utilisateur créé
      * @throws IllegalArgumentException Si l'email existe déjà
