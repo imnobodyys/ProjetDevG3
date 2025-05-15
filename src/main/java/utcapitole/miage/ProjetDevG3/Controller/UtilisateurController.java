@@ -19,6 +19,9 @@ public class UtilisateurController {
     /**
      * US01 - Création de profil personnel
      * Affiche le formulaire d'inscription
+     * @param model Conteneur des attributs pour la vue
+     * @param token Jeton CSRF pour la protection du formulaire
+     * @return Nom de la vue Thymeleaf
      */
     @GetMapping("/creer")
     public String afficherFormulaire(Model model, CsrfToken token) {
