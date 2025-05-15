@@ -1,0 +1,40 @@
+<!-- US01 création de profile personnel -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un Utilisateur</title>
+</head>
+
+<body>
+    <h1>Inscription</h1>
+
+    <form th:action="@{/utilisateurs/creer}" th:object="${utilisateur}" method="post">
+        <table>
+            <tr>
+                <td>Nom :</td>
+                <td><input type="text" th:field="*{nom}" placeholder="Entrez votre nom" required /></td>
+            </tr>
+            <tr>
+                <td>Prénom :</td>
+                <td><input type="text" th:field="*{prenom}" placeholder="Entrez votre prénom" required /></td>
+            </tr>
+            <tr>
+                <td>Email :</td>
+                <td><input type="email" th:field="*{email}" placeholder="exemple@domaine.fr" required /></td>
+            </tr>
+            <tr>
+                <td>Mot de passe :</td>
+                <td><input type="password" th:field="*{mdp}" placeholder="Mot de passe" required /></td>
+            </tr>
+        </table>
+
+        <button type="submit">Créer</button>
+    </form>
+
+</body>
+
+</html>
