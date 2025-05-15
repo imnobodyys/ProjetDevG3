@@ -1,10 +1,9 @@
-package utcapitole.miage.projetDevG3.controllertest;
+package utcapitole.miage.projetDevG3.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
@@ -18,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.security.test.context.support.WithMockUser;
 
-@WebMvcTest
+@WebMvcTest(controllers = UtilisateurController.class)
 public class UtilisateurControllerTest {
     @Autowired
     private MockMvc mockMvc;
