@@ -7,7 +7,7 @@
 <body>
     <h1>Recherche d'utilisateurs</h1>
 
-    <form th:action="@{/search}" method="get">
+    <form th:action="@{/api/utilisateurs/search}" method="get">
         <label for="q">Mot-clé :</label>
         <input type="text" id="q" name="q" th:value="${keyword}" required>
         <button type="submit">Rechercher</button>

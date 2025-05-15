@@ -4,20 +4,26 @@ import java.util.List;
 import org.springframework.ui.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
-@RestController
+@Controller
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
     @GetMapping("/search")
     public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword, Model model) {
@@ -34,5 +40,15 @@ public class UtilisateurController {
 
         // rentrer page search
         return "search";
+    }
+
+    @GetMapping("/init")
+    @ResponseBody
+    public String initData() {
+        Utilisateur u1 = new Utilisateur("Alice", "Dupont", "alice@example.com", "password");
+        Utilisateur u2 = new Utilisateur("Bob", "Martin", "bob@example.com", "123456");
+        utilisateurRepository.save(u1);
+        utilisateurRepository.save(u2);
+        return "OK";
     }
 }
