@@ -15,6 +15,11 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Représente un utilisateur du système.
+ * Contient les informations personnelles et les relations avec d'autres
+ * entités.
+ */
 @Entity
 public class Utilisateur {
 

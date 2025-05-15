@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 public class Evenement {
     @Id
@@ -27,7 +28,6 @@ public class Evenement {
     @ManyToMany(mappedBy = "evenements")
     private List<Utilisateur> participants = new ArrayList<>();
 
-    
     // getters et setters
     public Long getId() {
         return id;
@@ -91,7 +91,7 @@ public class Evenement {
             participant.addEvenement(this);
         }
     }
-    
+
     public void removeParticipant(Utilisateur participant) {
         if (participant != null) {
             participants.remove(participant);
