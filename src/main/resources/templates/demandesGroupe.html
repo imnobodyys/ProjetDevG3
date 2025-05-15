@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Demandes d'adhésion</title></head>
+<body>
+<h2>Demandes en attente</h2>
+
+<table>
+    <tr>
+        <th>Nom du membre</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="m : ${demandes}">
+        <td th:text="${m.membre.nom}"></td>
+        <td>
+            <form th:action="@{/groupes/admin/modifierStatut}" method="post">
+                <input type="hidden" name="idMembre" th:value="${m.id}" />
+                <input type="hidden" name="idGroupe" th:value="${idGroupe}" />
+                <button name="action" value="accepter"> Accepter</button>
+                <button name="action" value="refuser"> Refuser</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
