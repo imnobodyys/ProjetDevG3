@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Créer un groupe</title>
+</head>
+<body>
+<h2>Créer un groupe d’intérêt</h2>
+
+<form th:action="@{/groupes/creer}" th:object="${groupe}" method="post">
+    <div>
+        <label>Nom :</label>
+        <input type="text" th:field="*{nom}" required/>
+    </div>
+    <div>
+        <label>Description :</label>
+        <textarea th:field="*{description}" required></textarea>
+    </div>
+    <button type="submit">Créer</button>
+</form>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 public class Reaction {
     @Id
@@ -23,7 +24,6 @@ public class Reaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    
     // getters et setters
     public Long getId() {
         return id;

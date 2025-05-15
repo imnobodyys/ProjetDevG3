@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Groupes disponibles</title></head>
+<body>
+<h2>Groupes que vous pouvez rejoindre</h2>
+
+<table>
+    <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="g : ${groupes}">
+        <td th:text="${g.nom}"></td>
+        <td th:text="${g.description}"></td>
+        <td>
+            <form th:action="@{/groupes/rejoindre}" method="post">
+                <input type="hidden" name="idGroupe" th:value="${g.id}" />
+                <button type="submit">Demander à rejoindre</button>
+            </form>
+            <form th:action="@{/groupes/rejoindre}" method="post">
+    <input type="hidden" name="idGroupe" th:value="${g.id}" />
+    <button type="submit">Rejoindre</button>
+</form>
+<form th:action="@{/groupes/annuler}" method="post">
+    <input type="hidden" name="idGroupe" th:value="${g.id}" />
+    <button type="submit">Annuler demande</button>
+</form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

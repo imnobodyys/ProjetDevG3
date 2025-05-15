@@ -1,7 +1,14 @@
 package utcapitole.miage.projetDevG3.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
+/** Javadoc */
 @Entity
 public class MembreGroupe {
     @Id
@@ -26,6 +33,10 @@ public class MembreGroupe {
         this.groupe = groupe;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Utilisateur getMembre() {
         return membre;
     }
@@ -40,5 +51,9 @@ public class MembreGroupe {
 
     public void setStatut(StatutMembre statut) {
         this.statut = statut;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

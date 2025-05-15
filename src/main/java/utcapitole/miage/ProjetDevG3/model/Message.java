@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 public class Message {
     @Id

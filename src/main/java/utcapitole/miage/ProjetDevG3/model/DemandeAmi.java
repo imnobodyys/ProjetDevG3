@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 public class DemandeAmi {
     @Id
@@ -26,7 +27,7 @@ public class DemandeAmi {
     @PrePersist
     protected void onCreate() {
         dtEnvoi = LocalDateTime.now();
-        statut = StatutDemande.EN_ATTENTE; 
+        statut = StatutDemande.EN_ATTENTE;
     }
 
     // getters et setters

@@ -1,6 +1,10 @@
 package utcapitole.miage.projetDevG3.Service;
 
+<<<<<<< HEAD
 import java.time.LocalDateTime;
+=======
+import java.util.List;
+>>>>>>> main
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,13 +14,13 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 /**
  * Service pour la gestion des utilisateurs.
- * Administre les opérations CRUD et la logique métier liée aux comptes utilisateurs.
+ * Administre les opérations CRUD et la logique métier liée aux comptes
+ * utilisateurs.
  */
 @Service
 public class UtilisateurService {
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
 
+<<<<<<< HEAD
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -40,4 +44,15 @@ public class UtilisateurService {
         
     }
 
+=======
+    private final UtilisateurRepository utilisateurRepository;
+
+    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
+    }
+
+    public List<Utilisateur> rechercher(String keyword) {
+        return utilisateurRepository.searchByKeyword(keyword);
+    }
+>>>>>>> main
 }

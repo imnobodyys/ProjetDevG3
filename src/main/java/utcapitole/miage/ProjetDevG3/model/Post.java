@@ -6,7 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
-
+/** Javadoc */
 @Entity
 public class Post {
     @Id

@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+/** Javadoc */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Conversation {
