@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.controllertest;
+package utcapitole.miage.projetDevG3.controllertest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

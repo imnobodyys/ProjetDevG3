@@ -1,4 +1,4 @@
-package utcapitole.miage.ProjetDevG3.Servicetest;
+package utcapitole.miage.projetDevG3.Servicetest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
