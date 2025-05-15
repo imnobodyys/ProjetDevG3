@@ -1,0 +1,28 @@
+<!-- US01 création de profile personnel -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation d'inscription</title>
+</head>
+
+<body>
+    <h1>Inscription réussie !</h1>
+
+    <div class="container">
+		<ul>
+		    <li><strong>Nom :</strong> <span th:text="${utilisateur.nom}"></span></li>
+		    <li><strong>Prénom :</strong> <span th:text="${utilisateur.prenom}"></span></li>
+		    <li><strong>Email :</strong> <span th:text="${utilisateur.email}"></span></li>
+		    <!-- Par sécurité不展示密码 -->
+		</ul>
+
+		<a th:href="@{/index}">Retour à l'accueil</a>
+	</div>
+    
+</body>
+
+</html>

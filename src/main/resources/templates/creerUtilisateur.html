@@ -35,6 +35,17 @@
         <button type="submit">Créer</button>
     </form>
 
+    <!-- Masquer les messages d'erreur en HTML -->
+    <div id="errorMessage" th:if="${message != null}" th:text="${message}" style="display:none;"></div>
+
+    <script>
+        const messageElement = document.getElementById("errorMessage");
+        if (messageElement) {
+            alert(messageElement.textContent);
+        }
+    </script>
+
+
 </body>
 
 </html>

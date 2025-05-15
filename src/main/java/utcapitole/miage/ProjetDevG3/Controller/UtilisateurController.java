@@ -1,14 +1,14 @@
 package utcapitole.miage.projetDevG3.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
-@RestController
+@Controller
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
@@ -16,18 +16,30 @@ public class UtilisateurController {
     private UtilisateurService utilisateurService;
 
     /**
-     * US01
-     * Création de profile personnel
-     * @param utilisateur objet JSON envoyé dans la requête
-     * @return utilisateur créé ou message d'erreur
+     * US01 - Création de profil personnel
+     * Affiche le formulaire d'inscription
+     */
+    @GetMapping("/creer")
+    public String afficherFormulaire(Model model) {
+        model.addAttribute("utilisateur", new Utilisateur());
+        return "creerUtilisateur"; 
+    }
+
+    /**
+     * US01 - Création de profil personnel
+     * @param utilisateur données du formulaire
+     * @param model pour passer l'utilisateur à la vue confirmation
+     * @return page de confirmation ou formulaire avec message d'erreur
      */
     @PostMapping("/creer")
-    public ResponseEntity<?> creerUtilisateur(@RequestBody Utilisateur utilisateur) {
+    public String creerUtilisateur(@ModelAttribute("utilisateur") Utilisateur utilisateur, Model model) {
         try {
             Utilisateur utilisateurCree = utilisateurService.creerUtilisateur(utilisateur);
-            return new ResponseEntity<>(utilisateurCree, HttpStatus.CREATED);
+            model.addAttribute("utilisateur", utilisateurCree);
+            return "confirmationUtilisateur"; // page de confirmation
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            model.addAttribute("message", "Erreur : " + e.getMessage());
+            return "creerUtilisateur"; // retourne au formulaire
         }
     }
 }
