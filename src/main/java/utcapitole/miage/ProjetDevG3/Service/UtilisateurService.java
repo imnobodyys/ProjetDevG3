@@ -1,10 +1,7 @@
 package utcapitole.miage.projetDevG3.Service;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
-=======
 import java.util.List;
->>>>>>> main
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,10 +17,16 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @Service
 public class UtilisateurService {
 
-<<<<<<< HEAD
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UtilisateurRepository utilisateurRepository;
+    private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
+        this.utilisateurRepository = utilisateurRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe
@@ -44,15 +47,9 @@ public class UtilisateurService {
         
     }
 
-=======
-    private final UtilisateurRepository utilisateurRepository;
-
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
-    }
+    
 
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
     }
->>>>>>> main
 }

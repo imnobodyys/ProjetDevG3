@@ -1,29 +1,17 @@
 package utcapitole.miage.projetDevG3.Controller;
 
-<<<<<<< HEAD
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-=======
-import java.util.List;
-import org.springframework.ui.Model;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
->>>>>>> main
 import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 
 @Controller
 @RequestMapping("/api/utilisateurs")
@@ -32,7 +20,8 @@ public class UtilisateurController {
     @Autowired
     private UtilisateurService utilisateurService;
 
-<<<<<<< HEAD
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
     /**
      * US01 - Création de profil personnel
      * Affiche le formulaire d'inscription
@@ -63,9 +52,7 @@ public class UtilisateurController {
             model.addAttribute("message", "Erreur : " + e.getMessage());
             return "creerUtilisateur"; // retourne au formulaire
         }
-=======
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
@@ -93,6 +80,5 @@ public class UtilisateurController {
         utilisateurRepository.save(u1);
         utilisateurRepository.save(u2);
         return "OK";
->>>>>>> main
     }
 }
