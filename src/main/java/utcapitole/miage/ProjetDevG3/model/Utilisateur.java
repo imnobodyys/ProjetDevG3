@@ -49,12 +49,10 @@ public class Utilisateur {
 
     private LocalDateTime dtInscription;
 
-<<<<<<< HEAD
     /**
      * Relations
      * posts : liste des posts de l'utilisateur
      */
-=======
     public Utilisateur(String nom, String prenom, String email, String mdp) {
         this.nom = nom;
         this.prenom = prenom;
@@ -63,7 +61,6 @@ public class Utilisateur {
         this.dtInscription = LocalDateTime.now();
     }
 
->>>>>>> main
     @OneToMany(mappedBy = "auteur")
     private List<Post> posts = new ArrayList<>();
 
