@@ -2,10 +2,15 @@ package utcapitole.miage.projetDevG3.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+<<<<<<< HEAD
 /** Classe AccueilController
  * Gère la page d'accueil de l'application
  * @author [Votre nom]
  */
+=======
+
+/*controller pour accueilcomtroller */
+>>>>>>> main
 @Controller
 public class AccueilController {
     /*

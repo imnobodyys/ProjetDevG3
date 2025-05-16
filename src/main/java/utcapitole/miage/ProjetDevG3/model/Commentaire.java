@@ -9,10 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+<<<<<<< HEAD
 /**
  * Classe Commentaire
  * Représente un commentaire sur un post
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class Commentaire {
 

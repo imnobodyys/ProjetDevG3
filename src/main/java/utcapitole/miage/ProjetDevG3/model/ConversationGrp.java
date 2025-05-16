@@ -4,11 +4,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
+<<<<<<< HEAD
 
 /**
  * Classe ConversationGrp
  * Représente une conversation de groupe
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class ConversationGrp extends Conversation {
     
@@ -21,7 +25,7 @@ public class ConversationGrp extends Conversation {
     @JoinColumn(name = "group_id", unique = true)
     private Groupe groupeCon;
 
-    //getters et setters
+    // getters et setters
     public Groupe getGroupeCon() {
         return groupeCon;
     }

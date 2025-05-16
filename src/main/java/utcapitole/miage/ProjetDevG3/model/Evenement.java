@@ -14,12 +14,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
+<<<<<<< HEAD
 /**
  * Classe Evenement
  * Représente un événement
  * Chaque événement a un auteur et peut avoir plusieurs participants
  * Chaque participant peut participer à plusieurs événements
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class Evenement {
     /**
@@ -63,7 +67,6 @@ public class Evenement {
     @ManyToMany(mappedBy = "evenements")
     private List<Utilisateur> participants = new ArrayList<>();
 
-    
     // getters et setters
     public Long getId() {
         return id;
@@ -127,7 +130,7 @@ public class Evenement {
             participant.addEvenement(this);
         }
     }
-    
+
     public void removeParticipant(Utilisateur participant) {
         if (participant != null) {
             participants.remove(participant);

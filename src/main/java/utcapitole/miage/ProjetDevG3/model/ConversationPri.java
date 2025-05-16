@@ -4,11 +4,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+<<<<<<< HEAD
 
 /**
  * Classe ConversationPri
  * Représente une conversation privée entre deux utilisateurs
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class ConversationPri extends Conversation {
 
@@ -29,7 +33,7 @@ public class ConversationPri extends Conversation {
     @JoinColumn(name = "destinataire_id", nullable = false)
     private Utilisateur destinataireCP;
 
-    //getters et setters
+    // getters et setters
     public Utilisateur getExpediteurCP() {
         return expediteurCP;
     }

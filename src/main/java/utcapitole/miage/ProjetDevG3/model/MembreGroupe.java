@@ -8,11 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+<<<<<<< HEAD
 /**
  * Classe MembreGroupe
  * Représente un membre d'un groupe
  * Chaque membre a un statut (EN_ATTENTE, ACCEPTE, REFUSE)
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class MembreGroupe {
 

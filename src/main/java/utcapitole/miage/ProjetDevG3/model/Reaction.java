@@ -11,10 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+<<<<<<< HEAD
 /**
  * Classe Reaction
  * Représente une réaction à un post
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class Reaction {
 
@@ -54,7 +58,6 @@ public class Reaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    
     // getters et setters
     public Long getId() {
         return id;

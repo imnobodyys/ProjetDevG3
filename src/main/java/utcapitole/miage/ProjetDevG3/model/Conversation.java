@@ -11,12 +11,16 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 
+<<<<<<< HEAD
 /**
  * Classe Conversation
  * Représente une conversation entre utilisateurs
  * Chaque conversation peut contenir plusieurs messages
  * et chaque message appartient à une conversation
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Conversation {

@@ -14,11 +14,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 
+<<<<<<< HEAD
 /**
  * Classe Groupe
  * Représente un groupe d'utilisateurs
  * Chaque groupe a un créateur et peut avoir plusieurs membres
  */
+=======
+/** Javadoc */
+>>>>>>> main
 @Entity
 public class Groupe {
     /**
