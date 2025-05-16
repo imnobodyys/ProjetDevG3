@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.StatutDemande;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
+
 @Repository
 public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
     // Méthode pour trouver toutes les demandes d'ami envoyées par un utilisateur
@@ -18,4 +19,15 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
 
     // Méthode pour trouver une demande d'ami par son statut
     List<DemandeAmi> findByStatut(StatutDemande statut);
+
+    /**
+     * Méthode pour trouver demande ami
+     * 
+     * @param expediteurAmi
+     * @param destinataireAmi
+     * @return
+     */
+    boolean existsByExpediteurAmiAndDestinataireAmiOrDestinataireAmiAndExpediteurAmi(
+            Long expediteur_id,
+            Long destinataire_id);
 }
