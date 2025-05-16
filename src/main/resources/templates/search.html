@@ -14,13 +14,28 @@
     </form>
 
     <div th:if="${resultats != null}">
-        <h2>Résultats :</h2>
         <ul th:if="${#lists.isEmpty(resultats)}">
             <li>Aucun utilisateur trouvé.</li>
-        </ul>
-        <ul th:if="${!#lists.isEmpty(resultats)}">
-            <li th:each="u : ${resultats}" th:text="${u.nom}">Nom utilisateur</li>
-        </ul>
+        </ul >
+        <h2>Résultats :</h2>
+        <table th:if="${!#lists.isEmpty(resultats)}">
+            <thead>
+                <tr>
+                    <th>Nom utilisateur</th>
+                    <th>Demande Ami</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="u : ${resultats}">
+                    <td th:text = "${u.nom}">user</td>
+                    <td th text = "${u.email}">email </td>
+                    <td>
+                        <a th:href="@{/demande/form/{id}{id=${u.id}}}">Ajouter ami</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 </body>
 </html>
