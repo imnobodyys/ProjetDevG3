@@ -64,6 +64,25 @@ public class UtilisateurController {
         }
     }
 
+
+    /**
+     * US02 - Connexion à mon compte
+     * @param error Paramètre optionnel indiquant une erreur d'authentification
+     * @param model Conteneur pour les attributs de la vue
+     * @return Nom de la vue Thymeleaf
+     */
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "error", required = false) String error, 
+                          Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Identifiants incorrects");
+        }
+        return "login";
+    }
+
+
+    
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
     public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword, Model model) {
