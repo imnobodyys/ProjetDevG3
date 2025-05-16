@@ -1,6 +1,7 @@
 package utcapitole.miage.projetDevG3.Service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ public class DemandeAmiServiceTest {
         Long expediteur = 1L;
         Long destinaire = 2L;
 
-        when(demandeAmiRepository.existsByExpediteurAmiAndDestinataireAmiOrDestinataireAmiAndExpediteurAmi(expediteur,
+        when(demandeAmiRepository.existsDemandeBetween(expediteur,
                 destinaire))
                 .thenReturn(true);
 
@@ -65,7 +66,7 @@ public class DemandeAmiServiceTest {
         Utilisateur user2 = new Utilisateur();
         user2.setId(destinaire);
 
-        when(demandeAmiRepository.existsByExpediteurAmiAndDestinataireAmiOrDestinataireAmiAndExpediteurAmi(expediteur,
+        when(demandeAmiRepository.existsDemandeBetween(expediteur,
                 destinaire))
                 .thenReturn(false);
         when(utilisateurRepository.getReferenceById(expediteur)).thenReturn(user1);

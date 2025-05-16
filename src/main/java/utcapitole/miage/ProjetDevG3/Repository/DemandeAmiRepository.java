@@ -3,6 +3,8 @@ package utcapitole.miage.projetDevG3.Repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import utcapitole.miage.projetDevG3.model.DemandeAmi;
@@ -27,7 +29,9 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
      * @param destinataireAmi
      * @return
      */
-    boolean existsByExpediteurAmiAndDestinataireAmiOrDestinataireAmiAndExpediteurAmi(
-            Long expediteur_id,
-            Long destinataire_id);
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM DemandeAmi d " +
+            "WHERE (d.expediteurAmi.id = :expediteur AND d.destinataireAmi.id = :destinataire) " +
+            "OR (d.expediteurAmi.id = :destinataire AND d.destinataireAmi.id = :expediteur)")
+    boolean existsDemandeBetween(@Param("expediteur") Long expediteur, @Param("destinataire") Long destinataire);
+
 }

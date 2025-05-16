@@ -24,7 +24,7 @@ public class DemandeAmiService {
             throw new IllegalArgumentException("ne peuvez pas ajourer vous meme");
         }
 
-        if (demandeAmiRepository.existsByExpediteurAmiAndDestinataireAmiOrDestinataireAmiAndExpediteurAmi(expediteur,
+        if (demandeAmiRepository.existsDemandeBetween(expediteur,
                 destinaire)) {
             throw new IllegalArgumentException("Deja demande");
         }
