@@ -6,5 +6,6 @@ package utcapitole.miage.projetDevG3.Controller;
  * Gère les membres d'un groupe
  */
 public class MembreGroupeController {
+    
 
 }

@@ -4,15 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-<<<<<<< HEAD
 
 /**
  * Classe ConversationPri
  * Représente une conversation privée entre deux utilisateurs
  */
-=======
-/** Javadoc */
->>>>>>> main
 @Entity
 public class ConversationPri extends Conversation {
 

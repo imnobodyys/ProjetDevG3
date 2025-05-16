@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,11 +18,6 @@ import jakarta.persistence.OneToMany;
  * Classe Post
  * Représente un post sur le réseau social
  */
-=======
-import jakarta.persistence.*;
-
-/** Javadoc */
->>>>>>> main
 @Entity
 public class Post {
     /**

@@ -12,14 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
-<<<<<<< HEAD
 /**
  * classe DemandeAmi
  * Représente une demande d'ami entre deux utilisateurs
  */
-=======
-/** Javadoc */
->>>>>>> main
 @Entity
 public class DemandeAmi {
 

@@ -14,16 +14,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
-<<<<<<< HEAD
 /**
  * Classe Evenement
  * Représente un événement
  * Chaque événement a un auteur et peut avoir plusieurs participants
  * Chaque participant peut participer à plusieurs événements
  */
-=======
-/** Javadoc */
->>>>>>> main
 @Entity
 public class Evenement {
     /**

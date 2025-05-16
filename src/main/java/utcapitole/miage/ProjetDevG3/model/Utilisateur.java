@@ -16,15 +16,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 /**
-<<<<<<< HEAD
  * Classe Utilisateur
  * Représente un utilisateur du système
  * Chaque utilisateur peut avoir plusieurs posts, événements, commentaires, conversations, groupes et demandes d'amis
-=======
- * Représente un utilisateur du système.
- * Contient les informations personnelles et les relations avec d'autres
- * entités.
->>>>>>> main
  */
 @Entity
 public class Utilisateur {

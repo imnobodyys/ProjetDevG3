@@ -9,14 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
-<<<<<<< HEAD
 /**
  * Classe Message
  * Représente un message envoyé par un utilisateur dans une conversation
  */
-=======
-/** Javadoc */
->>>>>>> main
 @Entity
 public class Message {
     /**
