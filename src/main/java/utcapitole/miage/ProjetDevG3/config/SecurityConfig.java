@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // 启用方法级安全控制
+@EnableMethodSecurity(prePostEnabled = true) 
 public class SecurityConfig {
 
     @Bean
