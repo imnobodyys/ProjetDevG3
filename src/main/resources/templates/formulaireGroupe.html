@@ -9,12 +9,23 @@
 <form th:action="@{/groupes/creer}" th:object="${groupe}" method="post">
     <div>
         <label>Nom :</label>
-        <input type="text" th:field="*{nom}" required/>
+        <input type="text" th:field="*{nom}" />
+        <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
     </div>
+
     <div>
         <label>Description :</label>
-        <textarea th:field="*{description}" required></textarea>
+        <textarea th:field="*{description}"></textarea>
+        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
     </div>
+    <div>
+    <label>Type de groupe :</label>
+    <select th:field="*{type}">
+        <option th:value="PUBLIC">Public</option>
+        <option th:value="PRIVE">Privé</option>
+    </select>
+    </div>
+
     <button type="submit">Créer</button>
 </form>
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,6 +38,17 @@ public class Groupe {
     private String description;
     private LocalDateTime dtCreation;
 
+    public enum TypeGroupe {
+    PUBLIC,
+    PRIVE
+    }
+    @Enumerated(EnumType.STRING)
+    private TypeGroupe type = TypeGroupe.PUBLIC;
+
+    public TypeGroupe getType() {
+        return type;
+    }
+
     /**
      * Relations
      * createur : utilisateur qui a créé le groupe
@@ -60,13 +73,24 @@ public class Groupe {
     private List<MembreGroupe> membres;
 
     /**
-     * Constructeur par défaut 
+     * Constructeur par défaut
      * Initialise la date de création à la date actuelle
      */
     @PrePersist
     protected void onCreate() {
         this.dtCreation = LocalDateTime.now();
     }
+    public void setConversationGrp(ConversationGrp conversationGrp) {
+        if (conversationGrp == null) {
+            if (this.conversationGrp != null) {
+                this.conversationGrp.setGroupeCon(null);
+            }
+        } else {
+            conversationGrp.setGroupeCon(this);
+        }
+        this.conversationGrp = conversationGrp;
+    }
+
 
     // getters et setters
     public Long getId() {
@@ -117,17 +141,7 @@ public class Groupe {
         return conversationGrp;
     }
 
-    public void setConversationGrp(ConversationGrp conversationGrp) {
-        if (conversationGrp == null) {
-            if (this.conversationGrp != null) {
-                this.conversationGrp.setGroupeCon(null);
-            }
-        } else {
-            conversationGrp.setGroupeCon(this);
-        }
-        this.conversationGrp = conversationGrp;
-    }
-
+    
     public List<MembreGroupe> getMembres() {
         return membres;
     }
@@ -144,6 +158,10 @@ public class Groupe {
             membres.remove(membre);
             membre.setGroupe(null);
         }
+    }
+
+    public void setType(TypeGroupe type) {
+        this.type = type;
     }
 
 }
