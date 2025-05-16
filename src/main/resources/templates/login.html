@@ -1,9 +1,37 @@
+<!-- US02 connexion à mon compte -->
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>Connexion</title></head>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+</head>
+
 <body>
-<h2>Connexion requise</h2>
-<p>Vous devez être connecté pour accéder à cette page.</p>
-<a href="/">Retour à l'accueil</a>
-</body>
+    <body>
+        <h2>Connexion</h2>
+        
+        <div th:if="${errorMessage}" style="color: red;" th:text="${errorMessage}"></div>
+        
+        <form th:action="@{/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <div>
+                <label>Email :</label>
+                <input type="email" name="username" required>
+            </div>
+            
+            <div>
+                <label>Mot de passe :</label>
+                <input type="password" name="password" required>
+            </div>
+            
+            <button type="submit">Se connecter</button>
+        </form>
+        
+        <p>Pas de compte ? <a href="/api/utilisateurs/creer">S'inscrire</a></p>
+        <a href="/index">Retour à l'accueil</a>
+    </body>
 </html>

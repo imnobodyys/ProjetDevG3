@@ -24,15 +24,15 @@ public class SecurityConfig {
             )
             // login
             .formLogin(form -> form
-                .loginPage("/login")          // Page de login personnalisée
-                .loginProcessingUrl("/login") // URL de traitement par Spring
-                .defaultSuccessUrl("/index")  // Redirection après succès
-                .failureUrl("/login?error")   // Redirection en cas d'erreur
+                .loginPage("/api/utilisateurs/login")          // Page de login personnalisée
+                .loginProcessingUrl("/api/utilisateurs/login") // URL de traitement par Spring
+                .defaultSuccessUrl("/api/utilisateurs/index")  // Redirection après succès
+                .failureUrl("/api/utilisateurs/login?error")   // Redirection en cas d'erreur
                 .permitAll()
             )
             // logout
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/api/utilisateurs/login?logout")
                 .permitAll()
             );
 

@@ -3,7 +3,7 @@ package utcapitole.miage.projetDevG3.Controller;
 /**
  * Classe MessageController
  * Gère les messages entre utilisateurs
- * @author [Votre nom]
+ * @author ProjetDevG3
  */
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class UtilisateurController {
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error, 
-                          Model model) {
+                            Model model) {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
@@ -81,7 +81,7 @@ public class UtilisateurController {
     }
 
 
-    
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
