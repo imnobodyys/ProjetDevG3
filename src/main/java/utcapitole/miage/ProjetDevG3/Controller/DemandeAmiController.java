@@ -1,8 +1,11 @@
 package utcapitole.miage.projetDevG3.Controller;
 
-
 import java.security.Principal;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +13,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
-
+import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 
-/** classe DemandeAmiController
+/**
+ * classe DemandeAmiController
  * Gère les demandes d'amis entre utilisateurs
+ * 
  * @author [Votre nom]
  */
 @Controller
@@ -68,6 +73,14 @@ public class DemandeAmiController {
 
         redirectAttributes.addFlashAttribute("success", "好友请求已发送！");
         return "redirect:/users";
+    }
+
+    @GetMapping("/recues")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<DemandeAmi>> getDemandesRecues(@AuthenticationPrincipal Utilisateur currentUser,
+            Model model) {
+        List<DemandeAmi> demandes = demandeAmiService.getDemandesRecues(currentUser);
+        return ResponseEntity.ok(demandes);
     }
 
 }

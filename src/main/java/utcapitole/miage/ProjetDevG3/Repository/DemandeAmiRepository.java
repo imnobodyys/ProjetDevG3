@@ -34,4 +34,6 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
             "OR (d.expediteurAmi.id = :destinataire AND d.destinataireAmi.id = :expediteur)")
     boolean existsDemandeBetween(@Param("expediteur") Long expediteur, @Param("destinataire") Long destinataire);
 
+    List<DemandeAmi> findByDestinataireAmiAndStatut(Utilisateur destinataire, StatutDemande statut);
+
 }
