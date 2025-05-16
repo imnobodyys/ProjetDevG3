@@ -92,7 +92,10 @@ public class Groupe {
     }
 
 
-    // getters et setters
+    /**
+     * Getters et Setters
+     * id : identifiant du groupe
+     */
     public Long getId() {
         return id;
     }

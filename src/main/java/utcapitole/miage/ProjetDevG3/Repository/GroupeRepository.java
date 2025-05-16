@@ -10,6 +10,10 @@ import utcapitole.miage.projetDevG3.model.Groupe;
 import utcapitole.miage.projetDevG3.model.StatutMembre;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
+/**
+ * GroupeRepository est une interface qui étend JpaRepository pour gérer les opérations CRUD sur les entités Groupe.
+ * Elle fournit des méthodes pour vérifier l'existence d'un groupe par son nom, trouver un groupe par son ID,
+ */
 @Repository
 public interface GroupeRepository extends JpaRepository<Groupe, Long> {
     

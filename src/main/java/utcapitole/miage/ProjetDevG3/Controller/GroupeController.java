@@ -190,23 +190,40 @@ public class GroupeController {
 
         return "groupesDisponibles"; // Vue à créer
     }
+    /**
+     * Méthode pour accepter  une demande d'adhésion
+     * @param idMembre : id du membre
+     */
     @PostMapping("/admin/accepter")
     public String accepterMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
         membreGroupeService.accepterMembre(idMembre);
         return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
     }
 
+    /**
+     * Méthode pour refuser une demande d'adhésion
+     * @param idMembre : id du membre
+     */
     @PostMapping("/admin/refuser")
     public String refuserMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
         membreGroupeService.refuserMembre(idMembre);
         return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
     }
 
+    /**
+     * Méthode pour exclure un membre d'un groupe
+     * @param idMembre : id du membre
+     */
     @PostMapping("/admin/exclure")
     public String exclureMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
         membreGroupeService.exclureMembre(idMembre);
         return "redirect:/groupes/admin/membres?idGroupe=" + idGroupe;
     }
+
+    /**
+     * Méthode pour modifier le statut d'un membre
+     * @param idMembre : id du membre
+     */
     @PostMapping("/admin/modifierStatut")
     public String modifierStatut(
             @RequestParam Long idMembre,
@@ -223,6 +240,11 @@ public class GroupeController {
 
         return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
     }
+
+    /**
+     * Méthode pour afficher les membres d'un groupe
+     * @param idGroupe : id du groupe
+     */
     @GetMapping("/admin/membres")
     public String voirMembres(@RequestParam Long idGroupe, Model model) {
         Model session = null;
@@ -236,7 +258,7 @@ public class GroupeController {
         model.addAttribute("membres", membres);
         model.addAttribute("idGroupe", idGroupe);
         return "membresGroupe"; // nom du template Thymeleaf à créer
-}
+    }
 
 
 

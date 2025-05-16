@@ -19,12 +19,25 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  */
 @Service
 public class GroupeService {
+
+    /**
+     * Référentiel pour les groupes.
+     * Utilisé pour effectuer des opérations CRUD sur les groupes.
+     */
     @Autowired
     private GroupeRepository groupeRepository;
-
+    
+    /**
+     * Référentiel pour les membres de groupe.
+     * Utilisé pour gérer les relations entre utilisateurs et groupes.
+     */
     @Autowired
     private MembreGroupeRepository MembreGroupeRepository;
     
+    /**
+     * Constructeur pour initialiser le service de groupe.
+     * @param groupeRepository Référentiel pour les groupes.
+     */
     @Autowired
     public GroupeService(GroupeRepository groupeRepository,
             utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository membreGroupeRepository) {
@@ -32,6 +45,10 @@ public class GroupeService {
         MembreGroupeRepository = membreGroupeRepository;
     }
 
+    /**
+     * Récupère un groupe par son identifiant.
+     * @param id Identifiant du groupe.
+     */
     public Groupe getGroupeById(Long id) {
     return groupeRepository.findById(id).orElseThrow();
     }
@@ -62,6 +79,10 @@ public class GroupeService {
            
     }
 
+    /**
+     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
     public List<MembreGroupe> getMembresDuGroupe(Long idGroupe) {
     Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
     return MembreGroupeRepository.findByGroupe(groupe);
@@ -73,6 +94,10 @@ public class GroupeService {
         return groupeRepository.findByCreateur(createur);
     }
 
+    /**
+     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
     public void demanderAdhesion(Long idGroupe, Utilisateur utilisateur) {
     Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
 
@@ -94,6 +119,10 @@ public class GroupeService {
     MembreGroupeRepository.save(membre);
     }
 
+    /**
+     * Récupère tous les groupes disponibles pour un utilisateur.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
     public List<Groupe> getGroupesDisponiblesPour(Utilisateur utilisateur) {
         List<MembreGroupe> dejaRejoints = MembreGroupeRepository.findByMembre(utilisateur);
         List<Long> idsGroupes = dejaRejoints.stream()

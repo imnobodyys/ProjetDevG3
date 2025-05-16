@@ -19,6 +19,10 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @RequiredArgsConstructor
 public class UtilisateurService {
 
+    /**
+     * Référentiel pour les utilisateurs.
+     * Utilisé pour interagir avec la base de données.
+     */
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -42,7 +46,7 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
 
     }
-
+    
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
     }
