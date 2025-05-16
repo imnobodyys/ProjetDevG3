@@ -1,6 +1,9 @@
 package utcapitole.miage.projetDevG3.model;
 
-/** Javadoc */
+/**
+ * vibilitePost
+ * Enumération VisibilitePost
+ */
 public enum VisibilitePost {
     PUBLIC,
     PRIVE

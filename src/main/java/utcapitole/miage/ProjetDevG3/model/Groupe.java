@@ -14,9 +14,20 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 
-/** Javadoc */
+/**
+ * Classe Groupe
+ * Représente un groupe d'utilisateurs
+ * Chaque groupe a un créateur et peut avoir plusieurs membres
+ */
 @Entity
 public class Groupe {
+    /**
+     * Attributs
+     * id : identifiant du groupe
+     * nom : nom du groupe
+     * description : description du groupe
+     * dtCreation : date de création du groupe
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +36,33 @@ public class Groupe {
     private String description;
     private LocalDateTime dtCreation;
 
+    /**
+     * Relations
+     * createur : utilisateur qui a créé le groupe
+     * conversationGrp : conversation de groupe associée au groupe
+     * membres : liste des membres du groupe
+     */
     @ManyToOne
     private Utilisateur createur;
 
+    /**
+     * Enumération représentant les différents types de groupes.
+     * TypeGroupe : PUBLIC, PRIVE
+     */
     @OneToOne(mappedBy = "groupeCon")
     private ConversationGrp conversationGrp;
 
+    /**
+     * Relation
+     * membres : liste des membres du groupe
+     */
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     private List<MembreGroupe> membres;
 
+    /**
+     * Constructeur par défaut 
+     * Initialise la date de création à la date actuelle
+     */
     @PrePersist
     protected void onCreate() {
         this.dtCreation = LocalDateTime.now();
