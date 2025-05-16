@@ -2,28 +2,63 @@ package utcapitole.miage.projetDevG3.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 
-/** Javadoc */
+/**
+ * classe DemandeAmi
+ * Représente une demande d'ami entre deux utilisateurs
+ */
 @Entity
 public class DemandeAmi {
+
+    /**
+     * Attributs
+     * id : identifiant de la demande d'ami
+     * dtEnvoi : date d'envoi de la demande
+     * statut : statut de la demande (EN_ATTENTE, ACCEPTE, REFUSE)
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime dtEnvoi;
 
+    /**
+     * Enumération représentant les différents statuts d'une demande d'ami.
+     * StatutDemande : EN_ATTENTE, ACCEPTE, REFUSE
+     */
     @Enumerated(EnumType.STRING)
     private StatutDemande statut; // EN_ATTENTE, ACCEPTE, REFUSE
 
+    /**
+     * Relations
+     * expediteurAmi : utilisateur qui envoie la demande d'ami
+     * destinataireAmi : utilisateur qui reçoit la demande d'ami
+     */
     @ManyToOne
     @JoinColumn(name = "expediteurAmi_id")
     private Utilisateur expediteurAmi;
 
+    /**
+     * Relation
+     * destinataireAmi : utilisateur qui reçoit la demande d'ami
+     */
     @ManyToOne
     @JoinColumn(name = "destinataireAmi_id")
     private Utilisateur destinataireAmi;
 
+    /**
+     * Constructeur par défaut 
+     * Initialise la date d'envoi à la date actuelle et le statut à EN_ATTENTE
+     */
     @PrePersist
     protected void onCreate() {
         dtEnvoi = LocalDateTime.now();

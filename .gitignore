@@ -32,6 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-# ignore touts les db
-db/
-*.db
+# ignore la db
+db/reseauSocial.db

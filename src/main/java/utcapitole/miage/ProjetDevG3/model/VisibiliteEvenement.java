@@ -1,6 +1,9 @@
 package utcapitole.miage.projetDevG3.model;
 
-/** Javadoc */
+/**
+ * visibiliteEvenement
+ * Enumération VisibiliteEvenement
+ */
 public enum VisibiliteEvenement {
     PUBLIC,
     PRIVE

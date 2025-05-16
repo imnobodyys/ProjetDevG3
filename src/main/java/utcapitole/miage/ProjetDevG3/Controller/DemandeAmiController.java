@@ -1,5 +1,6 @@
 package utcapitole.miage.projetDevG3.Controller;
 
+
 import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,10 @@ import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 
+/** classe DemandeAmiController
+ * Gère les demandes d'amis entre utilisateurs
+ * @author [Votre nom]
+ */
 @Controller
 @RequestMapping("/demandes")
 @RequiredArgsConstructor

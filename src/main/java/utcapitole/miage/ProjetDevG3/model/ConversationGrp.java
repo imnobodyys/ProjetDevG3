@@ -1,10 +1,22 @@
 package utcapitole.miage.projetDevG3.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
-/** Javadoc */
+
+/**
+ * Classe ConversationGrp
+ * Représente une conversation de groupe
+ */
 @Entity
 public class ConversationGrp extends Conversation {
+    
+    /**
+     * Attributs
+     * id : identifiant de la conversation
+     * groupeCon : groupe associé à la conversation
+     */
     @OneToOne
     @JoinColumn(name = "group_id", unique = true)
     private Groupe groupeCon;
