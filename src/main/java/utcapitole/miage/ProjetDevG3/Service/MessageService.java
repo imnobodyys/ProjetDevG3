@@ -10,6 +10,11 @@ import utcapitole.miage.projetDevG3.Repository.MessageRepository;
  */
 @Service
 public class MessageService {
+
+    /**
+     * Référentiel pour les messages.
+     * Utilisé pour effectuer des opérations CRUD sur les messages.
+     */
     @Autowired
     private MessageRepository messageRepository;
 

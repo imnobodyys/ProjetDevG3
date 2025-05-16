@@ -10,6 +10,11 @@ import utcapitole.miage.projetDevG3.Repository.PostRepository;
  */
 @Service
 public class PostService {
+
+    /**
+     * Référentiel pour les publications.
+     * Utilisé pour effectuer des opérations CRUD sur les publications.
+     */
     @Autowired
     private PostRepository postRepository;
 

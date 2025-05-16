@@ -9,6 +9,10 @@ import utcapitole.miage.projetDevG3.model.Conversation;
 import utcapitole.miage.projetDevG3.model.Message;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
+/**
+ * MessageRepository est une interface qui étend JpaRepository pour gérer
+ * les opérations CRUD sur les entités Message.
+ */
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 

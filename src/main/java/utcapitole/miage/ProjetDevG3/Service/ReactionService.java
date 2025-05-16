@@ -10,6 +10,11 @@ import utcapitole.miage.projetDevG3.Repository.ReactionRepository;
  */
 @Service
 public class ReactionService {
+
+    /**
+     * Référentiel pour les réactions.
+     * Utilisé pour effectuer des opérations CRUD sur les réactions.
+     */
     @Autowired
     private ReactionRepository reactionRepository;
 

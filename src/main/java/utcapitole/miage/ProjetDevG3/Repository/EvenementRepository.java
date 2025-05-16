@@ -9,6 +9,10 @@ import utcapitole.miage.projetDevG3.model.Evenement;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 import utcapitole.miage.projetDevG3.model.VisibiliteEvenement;
 
+/**
+ * EvenementRepository est une interface qui étend JpaRepository pour gérer les opérations CRUD sur les entités Evenement.
+ * Elle fournit des méthodes pour trouver des événements par auteur et par visibilité.
+ */
 @Repository
 public interface EvenementRepository extends JpaRepository<Evenement, Long> {
    

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
 import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
 import utcapitole.miage.projetDevG3.model.Groupe;
+import utcapitole.miage.projetDevG3.model.Groupe.TypeGroupe;
 import utcapitole.miage.projetDevG3.model.MembreGroupe;
 import utcapitole.miage.projetDevG3.model.StatutMembre;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
@@ -18,19 +19,46 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  */
 @Service
 public class GroupeService {
+
+    /**
+     * Référentiel pour les groupes.
+     * Utilisé pour effectuer des opérations CRUD sur les groupes.
+     */
     @Autowired
     private GroupeRepository groupeRepository;
-
+    
+    /**
+     * Référentiel pour les membres de groupe.
+     * Utilisé pour gérer les relations entre utilisateurs et groupes.
+     */
     @Autowired
     private MembreGroupeRepository MembreGroupeRepository;
-    // Constructeur pour injecter le repository
-    public GroupeService(GroupeRepository groupeRepository) {
+    
+    /**
+     * Constructeur pour initialiser le service de groupe.
+     * @param groupeRepository Référentiel pour les groupes.
+     */
+    @Autowired
+    public GroupeService(GroupeRepository groupeRepository,
+            utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository membreGroupeRepository) {
         this.groupeRepository = groupeRepository;
+        MembreGroupeRepository = membreGroupeRepository;
+    }
+
+    /**
+     * Récupère un groupe par son identifiant.
+     * @param id Identifiant du groupe.
+     */
+    public Groupe getGroupeById(Long id) {
+    return groupeRepository.findById(id).orElseThrow();
     }
     /**
      * US17 - Crée un nouveau groupe et ajoute automatiquement le créateur comme membre accepté.
      */
     public Groupe creerGroupe(String nom, String description,Utilisateur createur) {
+        if (groupeRepository.existsByNomIgnoreCase(nom)) {
+        throw new IllegalArgumentException("Ce nom de groupe est déjà utilisé.");
+    }
           // Création du groupe
         Groupe groupe = new Groupe();
         groupe.setNom(nom);
@@ -52,12 +80,24 @@ public class GroupeService {
     }
 
     /**
+     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
+    public List<MembreGroupe> getMembresDuGroupe(Long idGroupe) {
+    Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
+    return MembreGroupeRepository.findByGroupe(groupe);
+    }
+    /**
      * Récupère tous les groupes créés par un utilisateur.
      */
     public List<Groupe> getGroupesByCreateur(Utilisateur createur) {
         return groupeRepository.findByCreateur(createur);
     }
 
+    /**
+     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
     public void demanderAdhesion(Long idGroupe, Utilisateur utilisateur) {
     Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
 
@@ -67,13 +107,22 @@ public class GroupeService {
             return; // Ne fait rien si déjà membre ou en attente
         }
 
+        StatutMembre statut = (groupe.getType() == TypeGroupe.PUBLIC)
+        ? StatutMembre.ACCEPTE
+        : StatutMembre.EN_ATTENTE;
+
     MembreGroupe membre = new MembreGroupe();
     membre.setGroupe(groupe);
     membre.setMembre(utilisateur);
-    membre.setStatut(StatutMembre.EN_ATTENTE);
+    membre.setStatut(statut);
+    
     MembreGroupeRepository.save(membre);
     }
 
+    /**
+     * Récupère tous les groupes disponibles pour un utilisateur.
+     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     */
     public List<Groupe> getGroupesDisponiblesPour(Utilisateur utilisateur) {
         List<MembreGroupe> dejaRejoints = MembreGroupeRepository.findByMembre(utilisateur);
         List<Long> idsGroupes = dejaRejoints.stream()
@@ -111,6 +160,26 @@ public class GroupeService {
     }
      public List<Groupe> getTousLesGroupes() {
         return groupeRepository.findAll();
+    }
+     public MembreGroupeRepository getMembreGroupeRepository() {
+         return MembreGroupeRepository;
+     }
+     public GroupeRepository getGroupeRepository() {
+         return groupeRepository;
+     }
+     public void setGroupeRepository(GroupeRepository groupeRepository) {
+         this.groupeRepository = groupeRepository;
+     }
+     public void setMembreGroupeRepository(MembreGroupeRepository membreGroupeRepository) {
+         MembreGroupeRepository = membreGroupeRepository;
+     }
+
+    public StatutMembre getStatutPourUtilisateur(Groupe groupe, Utilisateur utilisateur) {
+    return MembreGroupeRepository.findByMembre(utilisateur).stream()
+            .filter(m -> m.getGroupe().getId().equals(groupe.getId()))
+            .map(MembreGroupe::getStatut)
+            .findFirst()
+            .orElse(null);
     }
 
 }

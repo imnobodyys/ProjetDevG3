@@ -47,7 +47,10 @@ public class Commentaire {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    // getters et setters
+    /**
+     * getters et setters
+     * getId : retourne l'identifiant du commentaire
+     */
     public Long getId() {
         return id;
     }

@@ -10,6 +10,11 @@ import utcapitole.miage.projetDevG3.Repository.CommentaireRepository;
  */
 @Service
 public class CommentaireService {
+
+    /**
+     * Référentiel pour les commentaires.
+     * Utilisé pour effectuer des opérations CRUD sur les commentaires.
+     */
     @Autowired
     private CommentaireRepository commentaireRepository;
 
