@@ -3,7 +3,7 @@ package utcapitole.miage.projetDevG3.Controller;
 /**
  * Classe MessageController
  * Gère les messages entre utilisateurs
- * @author [Votre nom]
+ * @author ProjetDevG3
  */
 import java.util.List;
 
@@ -63,6 +63,25 @@ public class UtilisateurController {
             return "creerUtilisateur"; // retourne au formulaire
         }
     }
+
+
+    /**
+     * US02 - Connexion à mon compte
+     * @param error Paramètre optionnel indiquant une erreur d'authentification
+     * @param model Conteneur pour les attributs de la vue
+     * @return Nom de la vue Thymeleaf
+     */
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "error", required = false) String error, 
+                            Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Identifiants incorrects");
+        }
+        return "login";
+    }
+
+
+
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
