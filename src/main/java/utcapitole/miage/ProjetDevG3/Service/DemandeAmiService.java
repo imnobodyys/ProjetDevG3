@@ -16,9 +16,17 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @Service
 @RequiredArgsConstructor
 public class DemandeAmiService {
+    /**
+     * Référentiel pour les utilisateurs.
+     * Utilisé pour interagir avec la base de données des utilisateurs.
+     */
     private UtilisateurRepository utilisateurRepository;
     private DemandeAmiRepository demandeAmiRepository;
 
+    /**
+     * Envoie une demande d'amitié d'un utilisateur à un autre.
+     * Vérifie si l'expéditeur et le destinataire sont différents.
+     */
     public void envoyerdemandeami(Long expediteur, Long destinaire) {
         if (expediteur.equals(destinaire)) {
             throw new IllegalArgumentException("ne peuvez pas ajourer vous meme");

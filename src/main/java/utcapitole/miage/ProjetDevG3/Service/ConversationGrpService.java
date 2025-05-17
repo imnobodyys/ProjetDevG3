@@ -11,6 +11,10 @@ import utcapitole.miage.projetDevG3.Repository.ConversationGrpRepository;
  */
 @Service
 public class ConversationGrpService {
+    /**
+     * Référentiel pour les conversations de groupe.
+     * Utilisé pour interagir avec la base de données.
+     */
     @Autowired
     private ConversationGrpRepository conversationGrpRepository;
 

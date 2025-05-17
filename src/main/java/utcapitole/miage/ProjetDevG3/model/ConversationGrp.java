@@ -21,7 +21,10 @@ public class ConversationGrp extends Conversation {
     @JoinColumn(name = "group_id", unique = true)
     private Groupe groupeCon;
 
-    // getters et setters
+    /**
+     * getters et setters
+     * getId : retourne l'identifiant de la conversationGrp
+     */
     public Groupe getGroupeCon() {
         return groupeCon;
     }

@@ -10,6 +10,10 @@ import utcapitole.miage.projetDevG3.Repository.ConversationPriRepository;
  */
 @Service
 public class ConversationPriService {
+    /**
+     * Référentiel pour les conversations privées.
+     * Utilisé pour interagir avec la base de données.
+     */
     @Autowired
     private ConversationPriRepository conversationPriRepository;
 
