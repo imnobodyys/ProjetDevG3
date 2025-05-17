@@ -1,0 +1,45 @@
+<!-- US03 Modification de profil -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Profil</title>
+</head>
+
+<body>
+    <h2>Modifier votre profil</h2>
+    <form th:action="@{/api/utilisateurs/modifier/{id}(id=${utilisateur.id})}" 
+          th:object="${utilisateur}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        
+        <div>
+            <label>Nom:</label>
+            <input type="text" th:field="*{nom}" required>
+        </div>
+        
+        <div>
+            <label>Prénom:</label>
+            <input type="text" th:field="*{prenom}" required>
+        </div>
+        
+        <div>
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required>
+        </div>
+        
+        <div>
+            <label>Nouveau mot de passe (laisser vide si inchangé):</label>
+            <input type="password" th:field="*{mdp}">
+        </div>
+        
+        <button type="submit">Sauvegarder</button>
+    </form>
+    
+    <div th:if="${errorMessage}" style="color:red">
+        <span th:text="${errorMessage}"></span>
+    </div>
+</body>
+</html>
