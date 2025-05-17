@@ -84,7 +84,7 @@ public class UtilisateurController {
 
 
     /**
-     * US03 - Modification de profil (Vue)
+     * US03 - Modification de profil
      * Affiche le formulaire de modification du profil pour l'utilisateur connecté.
      * 
      * @param authentication Objet contenant les informations d'authentification de l'utilisateur courant
@@ -118,7 +118,7 @@ public class UtilisateurController {
             Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
             Utilisateur updatedUser = utilisateurService.modifierUtilisateur(currentUser.getId(), utilisateur);
             model.addAttribute("utilisateur", updatedUser);
-            return "confirmationModification";
+            return "confirmationUtilisateur";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "modifierProfil";
