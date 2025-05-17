@@ -46,7 +46,6 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
 
     }
-<<<<<<< HEAD
 
 
     /**
@@ -95,9 +94,6 @@ public class UtilisateurService {
     }
     
 
-=======
-    
->>>>>>> main
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
     }
