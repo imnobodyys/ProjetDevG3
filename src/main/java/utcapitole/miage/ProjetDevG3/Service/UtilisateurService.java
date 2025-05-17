@@ -94,6 +94,20 @@ public class UtilisateurService {
     }
     
 
+    /**
+     * US04 - Suppression de profil
+     * Supprime un utilisateur de la base de données
+     * 
+     * @param id Identifiant de l'utilisateur à supprimer
+     * @throws IllegalArgumentException Si l'utilisateur n'existe pas
+     */
+    public void supprimerUtilisateur(Long id) {
+        if (!utilisateurRepository.existsById(id)) {
+            throw new IllegalArgumentException("Utilisateur non trouvé");
+        }
+        utilisateurRepository.deleteById(id);
+    }
+
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
     }

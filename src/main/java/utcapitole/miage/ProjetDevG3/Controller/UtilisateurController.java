@@ -126,6 +126,23 @@ public class UtilisateurController {
     }
 
 
+    /**
+     * US04 - Suppression de profil
+     * Supprime le compte de l'utilisateur connecté, puis redirige vers la page de connexion.
+     * 
+     * @param authentication Objet contenant les informations d'authentification de l'utilisateur courant
+     * @param model Conteneur des attributs pour la vue
+     * @return Redirection vers la page de connexion avec le paramètre ?logout
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/supprimer")
+    public String supprimerProfil(Authentication authentication, Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
+        utilisateurService.supprimerUtilisateur(utilisateur.getId());
+        model.addAttribute("message", "Votre profil a été supprimé avec succès");
+        return "redirect:/api/utilisateurs/login?logout";
+    }
+
 
 
     @PreAuthorize("isAuthenticated()")
