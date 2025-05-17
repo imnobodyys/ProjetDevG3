@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,6 +82,28 @@ public class UtilisateurController {
     }
 
 
+    /**
+     * US03 - Modification de profil
+     * Traite la soumission du formulaire
+     *@param id Identifiant de l'utilisateur à modifier
+    * @param utilisateur Objet Utilisateur contenant les nouvelles informations
+    * @param model Conteneur des attributs pour la vue
+    * @return Nom de la vue Thymeleaf à afficher (confirmation ou formulaire avec erreur)
+    */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifier/{id}")
+    public String soumettreModification(@PathVariable Long id, 
+                                    @ModelAttribute("utilisateur") Utilisateur utilisateur,
+                                    Model model) {
+        try {
+            Utilisateur updatedUser = utilisateurService.modifierUtilisateur(id, utilisateur);
+            model.addAttribute("utilisateur", updatedUser);
+            return "confirmationModification";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "modifierProfil";
+        }
+   }
 
 
     @PreAuthorize("isAuthenticated()")
