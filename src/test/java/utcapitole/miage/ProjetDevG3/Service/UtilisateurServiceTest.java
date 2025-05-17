@@ -118,6 +118,65 @@ class UtilisateurServiceTest {
         );
     }
 
+    
+    /**
+     * US03 Test1 - Modification du profil 
+     * Modifier son profil avec des données valides
+     */
+    @Test
+    void modifierUtilisateur_QuandDonneesValides_DoitMettreAJourUtilisateur() {
+        // Arrange
+        Long userId = 1L;
+        Utilisateur existingUser = new Utilisateur("Old", "User", "old@example.com", "oldPassword");
+        existingUser.setId(userId);
+        
+        Utilisateur newDetails = new Utilisateur("New", "Name", "new@example.com", "newPassword");
+        
+        when(utilisateurRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(utilisateurRepository.findByEmail("new@example.com")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("newPassword")).thenReturn("encodedNewPassword");
+        when(utilisateurRepository.save(any())).thenReturn(existingUser);
+
+        // Act
+        Utilisateur updated = utilisateurService.modifierUtilisateur(userId, newDetails);
+
+        // Assert
+        assertEquals("New", updated.getNom());
+        assertEquals("Name", updated.getPrenom());
+        assertEquals("new@example.com", updated.getEmail());
+        assertEquals("encodedNewPassword", updated.getMdp());
+        verify(utilisateurRepository).save(existingUser);
+    }
+
+    /**
+     * US03 Test2 - Modification du profil 
+     * Tentative de modification avec un email déjà utilisé
+     */
+    @Test
+    void modifierUtilisateur_QuandEmailExistant_DoitLeverException() {
+        // Arrange
+        Long userId = 1L;
+        String existingEmail = "existing@example.com";
+        
+        Utilisateur currentUser = new Utilisateur("Current", "User", "current@example.com", "pass");
+        currentUser.setId(userId);
+        
+        Utilisateur invalidUpdate = new Utilisateur("New", "Name", existingEmail, "pass");
+        
+        when(utilisateurRepository.findById(userId)).thenReturn(Optional.of(currentUser));
+        when(utilisateurRepository.findByEmail(existingEmail)).thenReturn(Optional.of(new Utilisateur()));
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> utilisateurService.modifierUtilisateur(userId, invalidUpdate)
+        );
+        
+        assertEquals("Cet email est déjà utilisé", exception.getMessage());
+        verify(utilisateurRepository, never()).save(any());
+    }
+
+    
     @Test
     void testRechercheKeywordFound() {
         Utilisateur u = new Utilisateur("Alice", "Dupont", "alice@test.com", "1234");

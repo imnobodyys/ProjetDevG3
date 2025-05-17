@@ -46,7 +46,54 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
 
     }
+
+
+    /**
+     * US03 - Récupérer un utilisateur par email
+     * @param email Email de l'utilisateur
+     * @return Utilisateur correspondant
+     * @throws IllegalArgumentException Si l'utilisateur n'existe pas
+     */
+    public Utilisateur getUtilisateurByEmail(String email) {
+        return utilisateurRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+    }
+
     
+    /**
+     * US03 - Modification de profil utilisateur
+     * Met à jour les informations d'un utilisateur existant
+     * 
+     * @param id Identifiant de l'utilisateur à modifier
+     * @param utilisateurDetails Nouveaux détails de l'utilisateur
+     * @return Utilisateur mis à jour
+     * @throws IllegalArgumentException Si l'utilisateur n'existe pas ou email déjà utilisé
+     */
+    public Utilisateur modifierUtilisateur(Long id, Utilisateur utilisateurDetails) {
+        Utilisateur existingUser = utilisateurRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+        
+        // Vérification email unique
+        if(!existingUser.getEmail().equals(utilisateurDetails.getEmail())) {
+            if(utilisateurRepository.findByEmail(utilisateurDetails.getEmail()).isPresent()) {
+                throw new IllegalArgumentException("Cet email est déjà utilisé");
+            }
+        }
+        
+        // Mise à jour des champs modifiables
+        existingUser.setNom(utilisateurDetails.getNom());
+        existingUser.setPrenom(utilisateurDetails.getPrenom());
+        existingUser.setEmail(utilisateurDetails.getEmail());
+        
+        // Mise à jour mot de passe si fourni
+        if(utilisateurDetails.getMdp() != null && !utilisateurDetails.getMdp().isEmpty()) {
+            existingUser.setMdp(passwordEncoder.encode(utilisateurDetails.getMdp()));
+        }
+        
+        return utilisateurRepository.save(existingUser);
+    }
+    
+
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
     }
