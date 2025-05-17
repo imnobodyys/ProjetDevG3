@@ -176,6 +176,35 @@ class UtilisateurServiceTest {
         verify(utilisateurRepository, never()).save(any());
     }
 
+
+    /**
+     * US04 Test1 - Suppression de profil
+     * Suppression d'un utilisateur existant
+     */
+    @Test
+    void supprimerUtilisateur_QuandIdValide_DoitAppelerDelete() {
+        Long userId = 1L;
+        when(utilisateurRepository.existsById(userId)).thenReturn(true);
+        
+        utilisateurService.supprimerUtilisateur(userId);
+        
+        verify(utilisateurRepository).deleteById(userId);
+    }
+
+    /**
+     * US04 Test2 - Suppression de profil
+     * Tentative de suppression d'un utilisateur inexistant
+     */
+    @Test
+    void supprimerUtilisateur_QuandIdInvalide_DoitLeverException() {
+        Long invalidId = 999L;
+        when(utilisateurRepository.existsById(invalidId)).thenReturn(false);
+        
+        assertThrows(IllegalArgumentException.class,
+                () -> utilisateurService.supprimerUtilisateur(invalidId));
+    }
+
+
     
     @Test
     void testRechercheKeywordFound() {

@@ -18,6 +18,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -304,7 +305,25 @@ public class UtilisateurControllerTest {
 
 
 
-
+    /**
+     * US04 Test1 - Suppression de profil
+     * Suppression réussie du profil
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void supprimerProfil_QuandUtilisateurAuthentifie_DoitSupprimerEtRediriger() throws Exception {
+        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+        mockUser.setId(1L);
+        
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(mockUser);
+        
+        mockMvc.perform(post("/api/utilisateurs/supprimer")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/api/utilisateurs/login?logout"));
+        
+        verify(utilisateurService).supprimerUtilisateur(1L);
+    }
 
 
 
