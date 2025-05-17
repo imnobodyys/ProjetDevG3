@@ -43,6 +43,19 @@ public class UtilisateurService {
 
     }
 
+
+    /**
+     * US03 - Récupérer un utilisateur par email
+     * @param email Email de l'utilisateur
+     * @return Utilisateur correspondant
+     * @throws IllegalArgumentException Si l'utilisateur n'existe pas
+     */
+    public Utilisateur getUtilisateurByEmail(String email) {
+        return utilisateurRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+    }
+
+    
     /**
      * US03 - Modification de profil utilisateur
      * Met à jour les informations d'un utilisateur existant

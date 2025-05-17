@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -83,27 +84,48 @@ public class UtilisateurController {
 
 
     /**
-     * US03 - Modification de profil
-     * Traite la soumission du formulaire
-     *@param id Identifiant de l'utilisateur à modifier
-    * @param utilisateur Objet Utilisateur contenant les nouvelles informations
-    * @param model Conteneur des attributs pour la vue
-    * @return Nom de la vue Thymeleaf à afficher (confirmation ou formulaire avec erreur)
-    */
+     * US03 - Modification de profil (Vue)
+     * Affiche le formulaire de modification du profil pour l'utilisateur connecté.
+     * 
+     * @param authentication Objet contenant les informations d'authentification de l'utilisateur courant
+     * @param model Conteneur des attributs pour la vue
+     * @return Nom de la vue Thymeleaf affichant le formulaire de modification
+     */
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modifier/{id}")
-    public String soumettreModification(@PathVariable Long id, 
-                                    @ModelAttribute("utilisateur") Utilisateur utilisateur,
+    @GetMapping("/modifier")
+    public String afficherFormulaireModification(Authentication authentication, Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
+        model.addAttribute("utilisateur", utilisateur);
+        return "modifierProfil";
+    }
+
+    /**
+     * US03 - Modification de profil
+     * Soumet les modifications apportées au profil de l'utilisateur connecté.
+     *
+     * @param utilisateur Objet contenant les nouvelles informations du profil
+     * @param authentication Informations d'authentification de l'utilisateur connecté
+     * @param model Conteneur des attributs pour la vue
+     * @return Nom de la vue Thymeleaf à afficher (confirmation ou formulaire avec erreur)
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifier")
+    public String soumettreModification(@ModelAttribute("utilisateur") Utilisateur utilisateur,
+                                    Authentication authentication,
                                     Model model) {
+        
         try {
-            Utilisateur updatedUser = utilisateurService.modifierUtilisateur(id, utilisateur);
+            Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            Utilisateur updatedUser = utilisateurService.modifierUtilisateur(currentUser.getId(), utilisateur);
             model.addAttribute("utilisateur", updatedUser);
             return "confirmationModification";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "modifierProfil";
         }
-   }
+    }
+
+
 
 
     @PreAuthorize("isAuthenticated()")
