@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
 import utcapitole.miage.projetDevG3.model.Evenement;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 /**
  * Service pour la gestion des événements.
@@ -36,5 +37,42 @@ public class EvenementService {
             throw new IllegalArgumentException("Date invalide");
         }
         return evenementRepository.save(evenement);
+    }
+
+    
+
+    /**
+     * US44 Modifier un événement  
+     * Modification d'un événement existant avec validation des droits
+     * @param id Identifiant de l'événement à modifier
+     * @param nouvelEvenement Nouvelles données de l'événement
+     * @param currentUser Utilisateur actuellement authentifié
+     * @return Événement mis à jour
+     * @throws IllegalArgumentException Si l'événement n'existe pas ou l'utilisateur n'est pas l'auteur
+     */
+    public Evenement modifierEvenement(Long id, Evenement nouvelEvenement, Utilisateur currentUser) {
+        Evenement existingEvent = evenementRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+        
+        // Vérification des droits
+        if(!existingEvent.getAuteur().getId().equals(currentUser.getId())) {
+            throw new IllegalArgumentException("Seul l'auteur peut modifier l'événement");
+        }
+        
+        // Mise à jour des champs modifiables
+        existingEvent.setTitre(nouvelEvenement.getTitre());
+        existingEvent.setDescription(nouvelEvenement.getDescription());
+        existingEvent.setContenu(nouvelEvenement.getContenu());
+        existingEvent.setVisibilite(nouvelEvenement.getVisibilite());
+        
+        // Validation des champs obligatoires
+        if(existingEvent.getTitre() == null || existingEvent.getTitre().isBlank()) {
+            throw new IllegalArgumentException("Le titre est obligatoire");
+        }
+        if(existingEvent.getDescription() == null || existingEvent.getDescription().isBlank()) {
+            throw new IllegalArgumentException("La description est obligatoire");
+        }
+        
+        return evenementRepository.save(existingEvent);
     }
 }
