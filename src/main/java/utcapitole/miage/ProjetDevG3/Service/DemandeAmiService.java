@@ -28,15 +28,12 @@ public class DemandeAmiService {
     private DemandeAmiRepository demandeAmiRepository;
 
     /**
-<<<<<<< HEAD
      * method pour envoyer demande ami
      * 
      * @param expediteur
      * @param destinaire
-=======
-     * Envoie une demande d'amitié d'un utilisateur à un autre.
-     * Vérifie si l'expéditeur et le destinataire sont différents.
->>>>>>> main
+     *                   Envoie une demande d'amitié d'un utilisateur à un autre.
+     *                   Vérifie si l'expéditeur et le destinataire sont différents.
      */
     public void envoyerdemandeami(Long expediteur, Long destinaire) {
         if (expediteur.equals(destinaire)) {
