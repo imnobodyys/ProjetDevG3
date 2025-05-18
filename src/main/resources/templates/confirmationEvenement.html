@@ -1,0 +1,16 @@
+<!-- US43 création d'événement -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation evenement</title>
+</head>
+<body>
+    <h1>Événement créé avec succès !</h1>
+    <p th:text="'Titre: ' + ${evenement.titre}"></p>
+    <p th:text="'Description: ' + ${evenement.description}"></p>
+</body>
+</html>
