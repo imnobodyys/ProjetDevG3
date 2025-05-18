@@ -9,23 +9,32 @@
         <th>Nom</th>
         <th>Description</th>
         <th>Action</th>
+        <th>Statut</th>
+        <th>Type</th>
     </tr>
     <tr th:each="g : ${groupes}">
         <td th:text="${g.nom}"></td>
         <td th:text="${g.description}"></td>
+        <td th:text="${g.type}"></td>
+        <td>
+    <span th:if="${statuts[g.id]} == null">
+            <form th:action="@{/groupes/rejoindre}" method="post">
+                <input type="hidden" name="idGroupe" th:value="${g.id}" />
+                <button type="submit">Demander à rejoindre</button>
+            </form>
+    </span>
+    <span th:if="${statuts[g.id]?.name() == 'EN_ATTENTE'}">Demande en attente</span>
+    <span th:if="${statuts[g.id]?.name() == 'ACCEPTE'}">Déjà membre</span>
+        </td> <!-- AJOUT -->
         <td>
             <form th:action="@{/groupes/rejoindre}" method="post">
                 <input type="hidden" name="idGroupe" th:value="${g.id}" />
                 <button type="submit">Demander à rejoindre</button>
             </form>
-            <form th:action="@{/groupes/rejoindre}" method="post">
-    <input type="hidden" name="idGroupe" th:value="${g.id}" />
-    <button type="submit">Rejoindre</button>
-</form>
-<form th:action="@{/groupes/annuler}" method="post">
-    <input type="hidden" name="idGroupe" th:value="${g.id}" />
-    <button type="submit">Annuler demande</button>
-</form>
+            <form th:action="@{/groupes/annuler}" method="post">
+        <input type="hidden" name="idGroupe" th:value="${g.id}" />
+        <button type="submit">Annuler demande</button>
+            </form>
         </td>
     </tr>
 </table>

@@ -20,14 +20,23 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @Service
 @RequiredArgsConstructor
 public class DemandeAmiService {
+    /**
+     * Référentiel pour les utilisateurs.
+     * Utilisé pour interagir avec la base de données des utilisateurs.
+     */
     private UtilisateurRepository utilisateurRepository;
     private DemandeAmiRepository demandeAmiRepository;
 
     /**
+<<<<<<< HEAD
      * method pour envoyer demande ami
      * 
      * @param expediteur
      * @param destinaire
+=======
+     * Envoie une demande d'amitié d'un utilisateur à un autre.
+     * Vérifie si l'expéditeur et le destinataire sont différents.
+>>>>>>> main
      */
     public void envoyerdemandeami(Long expediteur, Long destinaire) {
         if (expediteur.equals(destinaire)) {

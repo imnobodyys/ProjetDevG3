@@ -11,6 +11,10 @@ import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.StatutDemande;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
+/**
+ * DemandeAmiRepository est une interface qui étend JpaRepository pour gérer les opérations CRUD sur les entités DemandeAmi.
+ * Elle fournit des méthodes pour trouver des demandes d'ami par expéditeur, destinataire et statut.
+ */
 @Repository
 public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
     // Méthode pour trouver toutes les demandes d'ami envoyées par un utilisateur

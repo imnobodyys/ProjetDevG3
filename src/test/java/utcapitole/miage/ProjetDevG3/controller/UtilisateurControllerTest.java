@@ -17,6 +17,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -227,6 +229,103 @@ public class UtilisateurControllerTest {
             .andExpect(model().attributeExists("errorMessage"))
             .andExpect(model().attribute("errorMessage", "Identifiants incorrects"));
     }
+
+
+    /**
+     * US03 Test1 - Modification du profil 
+     * Modifier son profil avec des données valides
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void soumettreModification_QuandValide_DoitConfirmer() throws Exception {
+    // Arrange
+    Utilisateur existingUser = new Utilisateur("Old", "Name", "user@test.com", "oldPass");
+        existingUser.setId(1L);
+    Utilisateur updatedUser = new Utilisateur("New", "Name", "new@test.com", "newPass");
+        
+    when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(existingUser);
+    when(utilisateurService.modifierUtilisateur(eq(1L), any())).thenReturn(updatedUser);
+
+    // Act & Assert
+    mockMvc.perform(post("/api/utilisateurs/modifier")
+        .with(SecurityMockMvcRequestPostProcessors.csrf())
+        .param("nom", "New")
+        .param("prenom", "Name")
+        .param("email", "new@test.com")
+        .param("mdp", "newPass"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("confirmationUtilisateur"))
+        .andExpect(model().attribute("utilisateur", updatedUser));
+        }
+
+    /**
+     * US03 Test2 - Modification du profil 
+     * Tentative de modification avec un email déjà utilisé
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void soumettreModification_QuandEmailExistant_DoitRetournerErreur() throws Exception {
+        // Arrange
+        String errorMessage = "Cet email est déjà utilisé";
+        Utilisateur existingUser = new Utilisateur("User", "Test", "user@test.com", "pass");
+        existingUser.setId(1L);
+    
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(existingUser);
+        when(utilisateurService.modifierUtilisateur(eq(1L), any()))
+                .thenThrow(new IllegalArgumentException(errorMessage));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/utilisateurs/modifier")
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+            .param("email", "existing@example.com"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("modifierProfil"))
+            .andExpect(model().attribute("errorMessage", errorMessage));
+    }
+
+
+    /**
+     * US03 Test3 - Modification du profil 
+     * Affichage formulaire modification
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void afficherFormulaireModification_DoitRemplirAvecDonneesUtilisateur() throws Exception {
+        // Arrange
+        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "password");
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(mockUser);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/utilisateurs/modifier"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("modifierProfil"))
+            .andExpect(model().attributeExists("utilisateur"))
+            .andExpect(model().attribute("utilisateur", mockUser));
+    }
+
+
+
+    /**
+     * US04 Test1 - Suppression de profil
+     * Suppression réussie du profil
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void supprimerProfil_QuandUtilisateurAuthentifie_DoitSupprimerEtRediriger() throws Exception {
+        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+        mockUser.setId(1L);
+        
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(mockUser);
+        
+        mockMvc.perform(post("/api/utilisateurs/supprimer")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/api/utilisateurs/login?logout"));
+        
+        verify(utilisateurService).supprimerUtilisateur(1L);
+    }
+
+
 
 
     //test pour le controller pour rechercher un utilisateur

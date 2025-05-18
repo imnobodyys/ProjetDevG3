@@ -10,6 +10,11 @@ import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
  */
 @Service
 public class EvenementService {
+
+    /**
+     * Référentiel pour les événements.
+     * Utilisé pour effectuer des opérations CRUD sur les événements.
+     */
     @Autowired
     private EvenementRepository evenementRepository;
 

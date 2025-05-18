@@ -37,7 +37,10 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    // getters et setters
+    /**
+     * getter and setter
+     * id : identifiant de la conversation
+      */ 
     public long getId() {
         return id;
     }
