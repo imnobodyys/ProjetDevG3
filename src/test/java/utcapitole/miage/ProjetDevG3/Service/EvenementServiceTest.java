@@ -25,9 +25,6 @@ class EvenementServiceTest {
      * US43 Test1 - Création d'un événement
      * Création réussie avec tous les champs
      */
-
-    
-    
     @Test
     void creerEvenement_QuandDonneesValides_DoitSauvegarder() {
         // Arrange
