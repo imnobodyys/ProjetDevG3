@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
@@ -51,6 +52,50 @@ public class DemandeAmiService {
      */
     public List<DemandeAmi> getDemandesRecues(Utilisateur destinataire) {
         return demandeAmiRepository.findByDestinataireAmiAndStatut(destinataire, StatutDemande.EN_ATTENTE);
+    }
+
+    @Transactional
+    public void accepterDemande(Long demandeId, Utilisateur currentUser) {
+        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
+                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
+
+        // 验证当前用户是请求的接收方
+        if (!demande.getDestinataireAmi().equals(currentUser)) {
+            throw new IllegalStateException("vous n'avez pas drois");
+        }
+
+        // 验证状态是EN_ATTENTE
+        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
+            throw new IllegalStateException("Demande est fini");
+        }
+
+        // 更新状态
+        demande.setStatut(StatutDemande.ACCEPTE);
+        demandeAmiRepository.save(demande);
+
+    }
+
+    @Transactional
+    public void refuserDemande(Long demandeId, Utilisateur currentUser) {
+        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
+                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
+
+        if (!demande.getDestinataireAmi().equals(currentUser)) {
+            throw new IllegalStateException("vous n'avez pas drois");
+        }
+
+        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
+            throw new IllegalStateException("Demande est fini");
+        }
+
+        demande.setStatut(StatutDemande.REFUSE);
+        demandeAmiRepository.save(demande);
+    }
+
+    public List<DemandeAmi> getDemandesRecuesEnAttente(Utilisateur destinataire) {
+        return demandeAmiRepository.findByDestinataireAndStatut(
+                destinataire,
+                StatutDemande.EN_ATTENTE);
     }
 
 }

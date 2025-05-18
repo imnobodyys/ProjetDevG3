@@ -36,4 +36,7 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
 
     List<DemandeAmi> findByDestinataireAmiAndStatut(Utilisateur destinataire, StatutDemande statut);
 
+    List<DemandeAmi> findByDestinataireAndStatut(
+            @Param("destinataire") Utilisateur destinataire,
+            @Param("statut") StatutDemande statut);
 }

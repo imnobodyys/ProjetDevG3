@@ -1,11 +1,15 @@
 package utcapitole.miage.projetDevG3.Controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -76,11 +80,47 @@ public class DemandeAmiController {
     }
 
     @GetMapping("/recues")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<DemandeAmi>> getDemandesRecues(@AuthenticationPrincipal Utilisateur currentUser,
-            Model model) {
-        List<DemandeAmi> demandes = demandeAmiService.getDemandesRecues(currentUser);
-        return ResponseEntity.ok(demandes);
+    public String getDemandesRecues(Principal principal, Model model) {
+        Utilisateur currentUser = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+        List<DemandeAmi> demandes = demandeAmiService.getDemandesRecuesEnAttente(currentUser);
+
+        List<Map<String, Object>> demandeList = demandes.stream()
+                .map(d -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", d.getId());
+                    map.put("expediteur", d.getExpediteurAmi().getNom());
+                    map.put("date", d.getDtEnvoi());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        model.addAttribute("demandes", demandeList);
+
+        return "demandes-recues"; // templates/demandes-recues.html
     }
 
+    @PostMapping("/accepter/{id}")
+    public String accepterDemande(
+            @PathVariable Long id,
+            Principal principal) {
+
+        Utilisateur currentUser = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+        demandeAmiService.accepterDemande(id, currentUser);
+        return "redirect:/demandes/recues";
+    }
+
+    @PostMapping("/refuser/{id}")
+    public String refuserDemande(
+            @PathVariable Long id,
+            Principal principal) {
+
+        Utilisateur currentUser = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+        demandeAmiService.refuserDemande(id, currentUser);
+        return "redirect:/demandes/recues";
+    }
 }
