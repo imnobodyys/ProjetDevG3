@@ -21,6 +21,19 @@ public class EvenementService {
     private EvenementRepository evenementRepository;
 
     /**
+     * Récupère un événement par son ID
+     * 
+     * @param id Identifiant de l'événement
+     * @return Événement correspondant
+     * @throws IllegalArgumentException Si l'événement n'existe pas
+     */
+    public Evenement getEvenementById(Long id) {
+        return evenementRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+    }
+
+
+    /**
      * US43 - Création d'un nouvel événement avec validation
      * @param evenement Événement à créer
      * @return Événement créé
@@ -42,8 +55,9 @@ public class EvenementService {
     
 
     /**
-     * US44 Modifier un événement  
+     * US44 Modifier un événement 
      * Modification d'un événement existant avec validation des droits
+     * 
      * @param id Identifiant de l'événement à modifier
      * @param nouvelEvenement Nouvelles données de l'événement
      * @param currentUser Utilisateur actuellement authentifié
@@ -75,4 +89,8 @@ public class EvenementService {
         
         return evenementRepository.save(existingEvent);
     }
+
+    
+
+
 }

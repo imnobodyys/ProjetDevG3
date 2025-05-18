@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -70,6 +71,63 @@ public class EvenementController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("message", "Erreur : " + e.getMessage());
             return "creerEvenement";
+        }
+    }
+
+
+    /**
+     * US44 Modifier un événement 
+     * Affiche le formulaire de modification
+     * Vérifie que l'utilisateur est l'auteur de l'événement avant d'autoriser l'accès
+     * 
+     * @param id ID de l'événement à modifier
+     * @param model Conteneur des attributs
+     * @param authentication Informations d'authentification
+     * @return Vue de modification ou redirection en cas d'erreur
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modifier/{id}")
+    public String afficherFormulaireModification(
+        @PathVariable Long id, 
+        Model model, 
+        Authentication authentication
+    ) {
+        Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
+        
+        Evenement evenement = evenementService.getEvenementById(id);
+        
+        if (!evenement.getAuteur().getId().equals(currentUser.getId())) {
+            model.addAttribute("errorMessage", "Accès refusé : Vous n'êtes pas l'auteur de cet événement");
+            return "errorPage"; 
+        }
+        
+        model.addAttribute("evenement", evenement);
+        return "modifierEvenement";
+    }
+
+    /**
+     * US44 Modifier un événement 
+     * Traite la soumission du formulaire
+     * @param id ID de l'événement
+     * @param evenement Données mises à jour
+     * @param authentication Informations d'authentification
+     * @param model Conteneur des attributs
+     * @return Page de confirmation ou formulaire avec erreur
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifier/{id}")
+    public String soumettreModification(@PathVariable Long id, 
+                                    @ModelAttribute("evenement") Evenement evenement,
+                                    Authentication authentication,
+                                    Model model) {
+        try {
+            Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            Evenement updatedEvent = evenementService.modifierEvenement(id, evenement, currentUser);
+            model.addAttribute("evenement", updatedEvent);
+            return "confirmationModificationEvenement";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "modifierEvenement";
         }
     }
 }
