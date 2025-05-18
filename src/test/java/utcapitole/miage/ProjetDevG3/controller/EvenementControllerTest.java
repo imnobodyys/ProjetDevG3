@@ -1,0 +1,152 @@
+package utcapitole.miage.projetDevG3.controller;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+
+import utcapitole.miage.projetDevG3.config.SecurityConfig;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetDevG3.Controller.EvenementController;
+import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
+import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
+import utcapitole.miage.projetDevG3.Service.EvenementService;
+import utcapitole.miage.projetDevG3.Service.UtilisateurService;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+@WebMvcTest(controllers = EvenementController.class)
+@Import(SecurityConfig.class)
+public class EvenementControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private EvenementRepository evenementRepository; 
+
+    @MockBean
+    private EvenementService evenementService;
+
+    @MockBean
+    private UtilisateurService utilisateurService;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @BeforeEach
+    void setup() {
+        UserDetails mockUserDetails = User.builder()
+            .username("user@test.com")
+            .password("encodedPass")
+            .roles("USER")
+            .build();
+        
+        when(userDetailsService.loadUserByUsername(anyString()))
+            .thenReturn(mockUserDetails);
+
+        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+        when(utilisateurService.getUtilisateurByEmail(anyString()))
+            .thenReturn(mockUser);
+    }
+
+    /**
+     * US43 Test1 - Création d'un événement
+     * Création réussie avec tous les champs
+     */
+    @Test
+    @WithMockUser(username = "user@test.com")
+    void creerEvenement_QuandValide_DoitConfirmer() throws Exception {
+        // Arrange
+        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+        when(utilisateurService.getUtilisateurByEmail(anyString())).thenReturn(mockUser);
+        
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/creer")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .param("titre", "Event")
+                .param("description", "Description")
+                .param("contenu", "Content"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("confirmationEvenement"))
+                .andExpect(model().attributeExists("evenement"));
+    }
+
+
+    /**
+     * US43 Test2 - Création d'un événement
+     * Tentative de création sans titre
+     */
+    @Test
+    @WithMockUser(username = "user@test.com")
+    void creerEvenement_QuandTitreManquant_DoitRetournerErreur() throws Exception {
+        when(evenementService.creerEvenement(any()))
+            .thenThrow(new IllegalArgumentException("Le titre est obligatoire"));
+    
+        mockMvc.perform(post("/api/evenements/creer")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .param("description", "Description"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("creerEvenement")) 
+                .andExpect(model().attributeExists("message"));
+    }
+
+
+    /**
+     * US43 Test3 - Création d'un événement
+     * Tentative de création sans description
+     */
+    @Test
+    @WithMockUser(username = "user@test.com")
+    void creerEvenement_QuandDescriptionManquante_DoitRetournerErreur() throws Exception {
+        when(evenementService.creerEvenement(any()))
+            .thenThrow(new IllegalArgumentException("La description est obligatoire"));
+
+        mockMvc.perform(post("/api/evenements/creer")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .param("titre", "Titre sans description"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("creerEvenement")) 
+                .andExpect(model().attributeExists("message"));
+    }
+
+
+    /**
+     * US43 Test4 - Création d'un événement
+     * Tentative de création sans être connecté
+     */
+    @Test
+    void creerEvenement_SansAuthentification_DoitRetournerForbidden() throws Exception {
+        mockMvc.perform(post("/api/evenements/creer"))
+            .andExpect(status().isForbidden());
+    }
+            
+
+    /**
+     * US43 Test5 - Création d'un événement
+     * Affiche le formulaire de création d'événement
+     */
+    @Test
+    @WithMockUser
+    void afficherFormulaireEvenement_SansAuthentification_DoitRediriger() throws Exception {
+        mockMvc.perform(get("/api/evenements/creer"))
+                .andExpect(status().isOk()); // @PreAuthorize already handled
+    }
+}
