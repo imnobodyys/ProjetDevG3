@@ -63,6 +63,7 @@ public class DemandeAmiController {
      * @param redirectAttributes
      * @return page user
      */
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/envoyer")
     public String envoyerDemande(
             @RequestParam Long destinataireId,
@@ -79,6 +80,7 @@ public class DemandeAmiController {
         return "redirect:/users";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/recues")
     public String getDemandesRecues(Principal principal, Model model) {
         Utilisateur currentUser = utilisateurRepository.findByEmail(principal.getName())
@@ -100,6 +102,7 @@ public class DemandeAmiController {
         return "demandes-recues"; // templates/demandes-recues.html
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/accepter/{id}")
     public String accepterDemande(
             @PathVariable Long id,
@@ -112,6 +115,7 @@ public class DemandeAmiController {
         return "redirect:/demandes/recues";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/refuser/{id}")
     public String refuserDemande(
             @PathVariable Long id,
