@@ -67,6 +67,10 @@ public class EvenementControllerTest {
             .thenReturn(mockUser);
     }
 
+    /**
+     * US43 Test1 - Création d'un événement
+     * Création réussie avec tous les champs
+     */
     @Test
     @WithMockUser(username = "user@test.com")
     void creerEvenement_QuandValide_DoitConfirmer() throws Exception {
@@ -85,6 +89,11 @@ public class EvenementControllerTest {
                 .andExpect(model().attributeExists("evenement"));
     }
 
+
+    /**
+     * US43 Test2 - Création d'un événement
+     * Tentative de création sans titre
+     */
     @Test
     @WithMockUser(username = "user@test.com")
     void creerEvenement_QuandTitreManquant_DoitRetournerErreur() throws Exception {
@@ -99,10 +108,14 @@ public class EvenementControllerTest {
                 .andExpect(model().attributeExists("message"));
     }
 
+
+    /**
+     * US43 Test3 - Création d'un événement
+     * Tentative de création sans description
+     */
     @Test
     @WithMockUser(username = "user@test.com")
     void creerEvenement_QuandDescriptionManquante_DoitRetournerErreur() throws Exception {
-        // 新增：模拟服务层抛出异常
         when(evenementService.creerEvenement(any()))
             .thenThrow(new IllegalArgumentException("La description est obligatoire"));
 
@@ -114,6 +127,11 @@ public class EvenementControllerTest {
                 .andExpect(model().attributeExists("message"));
     }
 
+
+    /**
+     * US43 Test4 - Création d'un événement
+     * Tentative de création sans être connecté
+     */
     @Test
     void creerEvenement_SansAuthentification_DoitRetournerForbidden() throws Exception {
         mockMvc.perform(post("/api/evenements/creer"))
@@ -121,6 +139,10 @@ public class EvenementControllerTest {
     }
             
 
+    /**
+     * US43 Test5 - Création d'un événement
+     * Affiche le formulaire de création d'événement
+     */
     @Test
     @WithMockUser
     void afficherFormulaireEvenement_SansAuthentification_DoitRediriger() throws Exception {
