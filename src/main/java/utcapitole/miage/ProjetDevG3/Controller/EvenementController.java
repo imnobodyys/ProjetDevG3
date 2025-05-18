@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.Service.EvenementService;
 import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Evenement;
@@ -29,6 +27,9 @@ public class EvenementController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
+    @Autowired
+    private EvenementService evenementService;
 
     /**
      * US43 - Création d'événement
