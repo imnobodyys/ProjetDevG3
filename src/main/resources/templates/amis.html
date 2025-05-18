@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Mes amis</title></head>
+<body>
+    <h1>Mes amis</h1>
+
+    <div th:if="${#lists.isEmpty(amis)}">
+        <p>Vous n’avez pas encore d’amis.</p>
+    </div>
+
+    <ul th:if="${not #lists.isEmpty(amis)}">
+        <li th:each="ami : ${amis}">
+            <span th:text="${ami.nom + ' ' + ami.prenom}"></span>
+        </li>
+    </ul>
+</body>
+</html>
