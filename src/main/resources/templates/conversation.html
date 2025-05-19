@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Mes Conversations</title></head>
+<body>
+<h1>Mes Conversations</h1>
+
+<ul>
+    <li th:each="conv : ${conversations}">
+        <a th:href="@{'/conversations/' + ${conv.id}}">
+            <span th:text="${conv.expediteurCP.nom + ' ' + conv.destinataireCP.nom}">Nom</span>
+        </a>
+    </li>
+</ul>
+</body>
+</html>
