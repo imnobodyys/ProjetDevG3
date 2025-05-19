@@ -26,6 +26,11 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public UtilisateurService() {
+        this.utilisateurRepository = null;
+        this.passwordEncoder = null;
+    }
+
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe
@@ -110,5 +115,9 @@ public class UtilisateurService {
 
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
+    }
+
+    public Utilisateur findByEmail(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

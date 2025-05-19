@@ -31,8 +31,9 @@ import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 @RequestMapping("/demandes")
 @RequiredArgsConstructor
 public class DemandeAmiController {
-    private final DemandeAmiService demandeAmiService;
-    private final UtilisateurRepository utilisateurRepository;
+    
+    private final DemandeAmiService demandeAmiService = null;
+    private final UtilisateurRepository utilisateurRepository = null;
 
     /**
      * 

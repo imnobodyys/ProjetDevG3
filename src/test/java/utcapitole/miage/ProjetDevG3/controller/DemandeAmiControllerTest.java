@@ -133,7 +133,7 @@ public class DemandeAmiControllerTest {
         Principal principal = () -> "notfound@example.com";
         when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
 
-        DemandeAmiController controller = new DemandeAmiController(demandeAmiService, utilisateurRepository);
+        DemandeAmiController controller = new DemandeAmiController();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             controller.envoyerDemande(2L, principal, redirectAttributes);
