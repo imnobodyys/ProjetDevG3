@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
@@ -18,6 +20,7 @@ import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.StatutDemande;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
+@ExtendWith(MockitoExtension.class)
 class DemandeAmiServiceTest {
 
     @Mock
@@ -126,6 +129,19 @@ class DemandeAmiServiceTest {
         assertAll(
                 () -> assertEquals(StatutDemande.ACCEPTE, pendingDemande.getStatut()),
                 () -> verify(demandeAmiRepository).save(pendingDemande));
+    }
+
+    /**
+     * test pour refuser demande
+     */
+    @Test
+    void refuserDemande_valideDemande_devraitChangerStatut() {
+        when(demandeAmiRepository.findById(100L)).thenReturn(Optional.of(pendingDemande));
+
+        demandeAmiService.refuserDemande(100L, currentUser);
+
+        assertEquals(StatutDemande.REFUSE, pendingDemande.getStatut());
+        verify(demandeAmiRepository).save(pendingDemande);
     }
 
     /**
