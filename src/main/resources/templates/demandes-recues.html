@@ -22,10 +22,12 @@
                         <td th:text="${d.expediteur}">utilisateur</td>
                         <td th:text="${#temporals.format(d.date, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                         <td>
-                            <form action="/demandes/accepter/{id}(id=${d.id})" method="post" style="display: inline;">
+                            <form action="/demandes/accepter/{id}(id=${d.id})" method="post" >
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button type="submit">accepter</button>
                             </form>
-                            <form action="/demandes/refuser/{id}(id=${d.id})" method="post" style="display: inline;">
+                            <form action="/demandes/refuser/{id}(id=${d.id})" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button type="submit">refuser</button>
                             </form>
                         </td>
