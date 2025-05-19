@@ -4,6 +4,7 @@ package utcapitole.miage.projetDevG3.controller;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -121,6 +124,9 @@ public class DemandeAmiControllerTest {
         verify(demandeAmiService).refuserDemande(1L, mockUser);
     }
 
+    /**
+     * test pour voir envoyer une demande mais il y a pas de id
+     */
     @Test
     @WithMockUser(username = "test@example.com")
     void testEnvoyerDemande_userNotFound() {
@@ -135,4 +141,40 @@ public class DemandeAmiControllerTest {
 
         assertEquals("Utilisateur non trouvé", exception.getMessage());
     }
+
+    /**
+     * test pour voir mes amis
+     * 
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser(username = "test@example.com")
+    void voirMesAmis_ShouldReturnAmisViewWithFriendsList() throws Exception {
+        // Arrange
+        Utilisateur currentUser = new Utilisateur();
+        currentUser.setEmail("test@example.com");
+
+        Utilisateur ami1 = new Utilisateur();
+        ami1.setEmail("ami1@example.com");
+
+        Utilisateur ami2 = new Utilisateur();
+        ami2.setEmail("ami2@example.com");
+
+        when(utilisateurRepository.findByEmail("test@example.com"))
+                .thenReturn(Optional.of(currentUser));
+
+        when(demandeAmiService.getAmis(currentUser))
+                .thenReturn(Arrays.asList(ami1, ami2));
+
+        // Act & Assert
+        mockMvc.perform(get("/demandes/amis"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("amis"))
+                .andExpect(model().attributeExists("amis"))
+                .andExpect(model().attribute("amis", hasSize(2)));
+
+        verify(utilisateurRepository, times(1)).findByEmail("test@example.com");
+        verify(demandeAmiService, times(1)).getAmis(currentUser);
+    }
+
 }

@@ -57,6 +57,7 @@ public class DemandeAmiController {
     }
 
     /**
+     * envoyer demande
      * 
      * @param destinataireId
      * @param principal
@@ -80,6 +81,13 @@ public class DemandeAmiController {
         return "redirect:/users";
     }
 
+    /**
+     * controller pour avoir lisr de demande par autre utilisateur
+     * 
+     * @param principal
+     * @param model
+     * @return
+     */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recues")
     public String getDemandesRecues(Principal principal, Model model) {
@@ -102,6 +110,13 @@ public class DemandeAmiController {
         return "demandes-recues"; // templates/demandes-recues.html
     }
 
+    /**
+     * pour accepter une demande
+     * 
+     * @param id
+     * @param principal
+     * @return page recues
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/accepter/{id}")
     public String accepterDemande(
@@ -115,6 +130,13 @@ public class DemandeAmiController {
         return "redirect:/demandes/recues";
     }
 
+    /**
+     * pour refuser une demande
+     * 
+     * @param id
+     * @param principal
+     * @return
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refuser/{id}")
     public String refuserDemande(
@@ -127,4 +149,24 @@ public class DemandeAmiController {
         demandeAmiService.refuserDemande(id, currentUser);
         return "redirect:/demandes/recues";
     }
+
+    /**
+     * pour voir list des amis
+     * 
+     * @param model
+     * @param principal
+     * @return page list des amis
+     */
+    @GetMapping("/amis")
+    @PreAuthorize("isAuthenticated()")
+    public String voirMesAmis(Model model, Principal principal) {
+        Utilisateur currentUser = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+        List<Utilisateur> amis = demandeAmiService.getAmis(currentUser);
+
+        model.addAttribute("amis", amis);
+        return "amis";
+    }
+
 }

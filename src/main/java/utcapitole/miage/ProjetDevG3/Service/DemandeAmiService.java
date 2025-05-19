@@ -1,6 +1,7 @@
 package utcapitole.miage.projetDevG3.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,27 +61,36 @@ public class DemandeAmiService {
         return demandeAmiRepository.findByDestinataireAmiAndStatut(destinataire, StatutDemande.EN_ATTENTE);
     }
 
+    /**
+     * Accepter demande amis
+     * 
+     * @param demandeId
+     * @param currentUser
+     */
     @Transactional
     public void accepterDemande(Long demandeId, Utilisateur currentUser) {
         DemandeAmi demande = demandeAmiRepository.findById(demandeId)
                 .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
 
-        // 验证当前用户是请求的接收方
         if (!demande.getDestinataireAmi().equals(currentUser)) {
             throw new IllegalStateException("vous n'avez pas drois");
         }
 
-        // 验证状态是EN_ATTENTE
         if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
             throw new IllegalStateException("Demande est fini");
         }
 
-        // 更新状态
         demande.setStatut(StatutDemande.ACCEPTE);
         demandeAmiRepository.save(demande);
 
     }
 
+    /**
+     * refuser demand ami
+     * 
+     * @param demandeId
+     * @param currentUser
+     */
     @Transactional
     public void refuserDemande(Long demandeId, Utilisateur currentUser) {
         DemandeAmi demande = demandeAmiRepository.findById(demandeId)
@@ -98,10 +108,33 @@ public class DemandeAmiService {
         demandeAmiRepository.save(demande);
     }
 
+    /**
+     * 
+     * @param destinataire
+     * @return List de demande ami en attente
+     */
     public List<DemandeAmi> getDemandesRecuesEnAttente(Utilisateur destinataire) {
         return demandeAmiRepository.findByDestinataireAmiAndStatut(
                 destinataire,
                 StatutDemande.EN_ATTENTE);
+    }
+
+    /**
+     * 
+     * @param utilisateur
+     * @return list des amis
+     */
+    public List<Utilisateur> getAmis(Utilisateur utilisateur) {
+        List<DemandeAmi> demandes = demandeAmiRepository
+                .findByStatutAndDestinataireAmiOrStatutAndExpediteurAmi(
+                        StatutDemande.ACCEPTE, utilisateur,
+                        StatutDemande.ACCEPTE, utilisateur);
+
+        return demandes.stream()
+                .map(d -> d.getExpediteurAmi().equals(utilisateur)
+                        ? d.getDestinataireAmi()
+                        : d.getExpediteurAmi())
+                .collect(Collectors.toList());
     }
 
 }
