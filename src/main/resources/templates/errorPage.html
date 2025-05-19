@@ -1,0 +1,16 @@
+<!-- US44 Modification d'événement -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur</title>
+</head>
+<body>
+    <h1>Erreur</h1>
+    <p th:text="${errorMessage}">Message d'erreur par défault</p>
+    <a th:href="@{/api/evenements}">Retour à la liste des événements</a>
+</body>
+</html>
