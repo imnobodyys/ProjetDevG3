@@ -99,7 +99,7 @@ public class DemandeAmiService {
     }
 
     public List<DemandeAmi> getDemandesRecuesEnAttente(Utilisateur destinataire) {
-        return demandeAmiRepository.findByDestinataireAndStatut(
+        return demandeAmiRepository.findByDestinataireAmiAndStatut(
                 destinataire,
                 StatutDemande.EN_ATTENTE);
     }
