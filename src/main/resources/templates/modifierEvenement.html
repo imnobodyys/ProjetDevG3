@@ -1,0 +1,37 @@
+<!-- US44 Modification d'événement -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Événement</title>
+</head>
+<body>
+    <h1>Modifier l'événement</h1>
+    
+    <form th:action="@{/api/evenements/modifier/{id}(id=${evenement.id})}" th:object="${evenement}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        
+        <div>
+            <label>Titre:</label>
+            <input type="text" th:field="*{titre}" required/>
+        </div>
+        
+        <div>
+            <label>Description:</label>
+            <textarea th:field="*{description}" required></textarea>
+        </div>
+        
+        <div>
+            <label>Contenu:</label>
+            <textarea th:field="*{contenu}"></textarea>
+        </div>
+        
+        <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+        
+        <button type="submit">Enregistrer</button>
+    </form>
+</body>
+</html>
