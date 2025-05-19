@@ -18,7 +18,8 @@ import jakarta.persistence.OneToMany;
 /**
  * Classe Utilisateur
  * Représente un utilisateur du système
- * Chaque utilisateur peut avoir plusieurs posts, événements, commentaires, conversations, groupes et demandes d'amis
+ * Chaque utilisateur peut avoir plusieurs posts, événements, commentaires,
+ * conversations, groupes et demandes d'amis
  */
 @Entity
 public class Utilisateur {
@@ -102,14 +103,16 @@ public class Utilisateur {
 
     /**
      * Relation
-     * demandes d'amis : liste des demandes d'amis envoyées et reçues par l'utilisateur
+     * demandes d'amis : liste des demandes d'amis envoyées et reçues par
+     * l'utilisateur
      */
     @OneToMany(mappedBy = "expediteurAmi")
     private List<DemandeAmi> demandeAmiExp = new ArrayList<>();
 
     /**
      * Relation
-     * demandes d'amis : liste des demandes d'amis envoyées et reçues par l'utilisateur
+     * demandes d'amis : liste des demandes d'amis envoyées et reçues par
+     * l'utilisateur
      */
     @OneToMany(mappedBy = "destinataireAmi")
     private List<DemandeAmi> demandeAmiDes = new ArrayList<>();
@@ -344,6 +347,11 @@ public class Utilisateur {
                 ", email='" + email + '\'' +
                 ", dtInscription=" + dtInscription +
                 '}';
+    }
+
+    public String getMotDePasse() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMotDePasse'");
     }
 
 }

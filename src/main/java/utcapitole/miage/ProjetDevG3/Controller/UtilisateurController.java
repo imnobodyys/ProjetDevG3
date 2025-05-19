@@ -34,9 +34,11 @@ public class UtilisateurController {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+
     /**
      * US01 - Création de profil personnel
      * Affiche le formulaire d'inscription
+     * 
      * @param model Conteneur des attributs pour la vue
      * @param token Jeton CSRF pour la protection du formulaire
      * @return Nom de la vue Thymeleaf
@@ -45,13 +47,14 @@ public class UtilisateurController {
     public String afficherFormulaire(Model model, CsrfToken token) {
         model.addAttribute("utilisateur", new Utilisateur());
         model.addAttribute("_csrf", token);
-        return "creerUtilisateur"; 
+        return "creerUtilisateur";
     }
 
     /**
      * US01 - Création de profil personnel
+     * 
      * @param utilisateur données du formulaire
-     * @param model pour passer l'utilisateur à la vue confirmation
+     * @param model       pour passer l'utilisateur à la vue confirmation
      * @return page de confirmation ou formulaire avec message d'erreur
      */
     @PostMapping("/creer")
@@ -66,29 +69,29 @@ public class UtilisateurController {
         }
     }
 
-
     /**
      * US02 - Connexion à mon compte
+     * 
      * @param error Paramètre optionnel indiquant une erreur d'authentification
      * @param model Conteneur pour les attributs de la vue
      * @return Nom de la vue Thymeleaf
      */
     @GetMapping("/login")
-    public String loginPage(@RequestParam(value = "error", required = false) String error, 
-                            Model model) {
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+            Model model) {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
         return "login";
     }
 
-
     /**
      * US03 - Modification de profil
      * Affiche le formulaire de modification du profil pour l'utilisateur connecté.
      * 
-     * @param authentication Objet contenant les informations d'authentification de l'utilisateur courant
-     * @param model Conteneur des attributs pour la vue
+     * @param authentication Objet contenant les informations d'authentification de
+     *                       l'utilisateur courant
+     * @param model          Conteneur des attributs pour la vue
      * @return Nom de la vue Thymeleaf affichant le formulaire de modification
      */
     @PreAuthorize("isAuthenticated()")
@@ -103,17 +106,19 @@ public class UtilisateurController {
      * US03 - Modification de profil
      * Soumet les modifications apportées au profil de l'utilisateur connecté.
      *
-     * @param utilisateur Objet contenant les nouvelles informations du profil
-     * @param authentication Informations d'authentification de l'utilisateur connecté
-     * @param model Conteneur des attributs pour la vue
-     * @return Nom de la vue Thymeleaf à afficher (confirmation ou formulaire avec erreur)
+     * @param utilisateur    Objet contenant les nouvelles informations du profil
+     * @param authentication Informations d'authentification de l'utilisateur
+     *                       connecté
+     * @param model          Conteneur des attributs pour la vue
+     * @return Nom de la vue Thymeleaf à afficher (confirmation ou formulaire avec
+     *         erreur)
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modifier")
     public String soumettreModification(@ModelAttribute("utilisateur") Utilisateur utilisateur,
-                                    Authentication authentication,
-                                    Model model) {
-        
+            Authentication authentication,
+            Model model) {
+
         try {
             Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
             Utilisateur updatedUser = utilisateurService.modifierUtilisateur(currentUser.getId(), utilisateur);
@@ -125,13 +130,14 @@ public class UtilisateurController {
         }
     }
 
-
     /**
      * US04 - Suppression de profil
-     * Supprime le compte de l'utilisateur connecté, puis redirige vers la page de connexion.
+     * Supprime le compte de l'utilisateur connecté, puis redirige vers la page de
+     * connexion.
      * 
-     * @param authentication Objet contenant les informations d'authentification de l'utilisateur courant
-     * @param model Conteneur des attributs pour la vue
+     * @param authentication Objet contenant les informations d'authentification de
+     *                       l'utilisateur courant
+     * @param model          Conteneur des attributs pour la vue
      * @return Redirection vers la page de connexion avec le paramètre ?logout
      */
     @PreAuthorize("isAuthenticated()")
@@ -142,8 +148,6 @@ public class UtilisateurController {
         model.addAttribute("message", "Votre profil a été supprimé avec succès");
         return "redirect:/api/utilisateurs/login?logout";
     }
-
-
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
