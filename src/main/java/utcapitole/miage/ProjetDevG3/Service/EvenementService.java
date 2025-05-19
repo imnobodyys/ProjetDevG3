@@ -1,5 +1,7 @@
 package utcapitole.miage.projetDevG3.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
@@ -88,6 +90,23 @@ public class EvenementService {
         }
         
         return evenementRepository.save(existingEvent);
+    }
+
+    
+/**
+ * US45 - Suppression d'un événement
+ * @param id ID de l'événement
+ * @param currentUser Utilisateur actuel
+ * @throws IllegalArgumentException Si l'événement n'existe pas ou droits insuffisants
+ */
+    public void supprimerEvenement(Long id, Utilisateur currentUser) {
+        Evenement event = evenementRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+            
+        if (!event.getAuteur().getId().equals(currentUser.getId())) {
+            throw new IllegalArgumentException("Seul l'auteur peut supprimer l'événement");
+        }
+        evenementRepository.deleteById(id);
     }
 
     

@@ -1,5 +1,6 @@
 package utcapitole.miage.projetDevG3.Service;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -14,11 +15,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
 import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.StatutDemande;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
+
 
 @ExtendWith(MockitoExtension.class)
 class DemandeAmiServiceTest {
@@ -31,6 +34,7 @@ class DemandeAmiServiceTest {
 
     @InjectMocks
     private DemandeAmiService demandeAmiService;
+
 
     private Utilisateur currentUser;
     private Utilisateur otherUser;
@@ -64,6 +68,7 @@ class DemandeAmiServiceTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> demandeAmiService.envoyerdemandeami(1L, 1L));
+
         assertEquals("ne peuvez pas ajourer vous meme", exception.getMessage());
     }
 
@@ -78,7 +83,9 @@ class DemandeAmiServiceTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> demandeAmiService.envoyerdemandeami(1L, 2L));
+
         assertEquals("Deja demande", exception.getMessage());
+        verify(demandeAmiRepository).existsDemandeBetween(1L, 2L);
     }
 
     /**
@@ -179,3 +186,4 @@ class DemandeAmiServiceTest {
         assertEquals(otherUser, amis.get(0));
     }
 }
+
