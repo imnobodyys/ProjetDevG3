@@ -17,6 +17,7 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * utilisateurs.
  */
 @Service
+@RequiredArgsConstructor
 public class UtilisateurService {
 
     /**
@@ -26,11 +27,7 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
-        this.utilisateurRepository = utilisateurRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe
