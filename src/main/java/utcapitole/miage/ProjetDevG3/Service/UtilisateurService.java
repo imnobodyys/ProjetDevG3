@@ -120,4 +120,8 @@ public class UtilisateurService {
     public Utilisateur findByEmail(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public Utilisateur trouverParEmail(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

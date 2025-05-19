@@ -34,6 +34,7 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    
     private String nom;
     private String description;
     private LocalDateTime dtCreation;
@@ -47,6 +48,15 @@ public class Groupe {
 
     public TypeGroupe getType() {
         return type;
+    }
+
+    private boolean actif = true; 
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
+    }
+    public boolean isActif() {
+        return actif;
     }
 
     /**

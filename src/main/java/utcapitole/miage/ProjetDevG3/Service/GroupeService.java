@@ -158,6 +158,18 @@ public class GroupeService {
         membre.setStatut(statut);
         MembreGroupeRepository.save(membre);
     }
+
+   public void supprimerGroupeSiCreateur(Long idGroupe, Utilisateur utilisateur) {
+    Groupe groupe = groupeRepository.findById(idGroupe)
+        .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
+
+    if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
+        throw new SecurityException("Seul le créateur peut supprimer ce groupe");
+    }
+
+    groupeRepository.deleteById(idGroupe);
+    
+    }
      public List<Groupe> getTousLesGroupes() {
         return groupeRepository.findAll();
     }
@@ -182,4 +194,6 @@ public class GroupeService {
             .orElse(null);
     }
 
+    
 }
+

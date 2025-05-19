@@ -31,11 +31,15 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Controller
 @RequestMapping("/demandes")
-@RequiredArgsConstructor
 public class DemandeAmiController {
+
+    public DemandeAmiController(utcapitole.miage.projetDevG3.Service.DemandeAmiService demandeAmiService, utcapitole.miage.projetDevG3.Repository.UtilisateurRepository utilisateurRepository) {
+        this.demandeAmiService = demandeAmiService;
+        this.utilisateurRepository = utilisateurRepository;
+    }
     
-    private final DemandeAmiService demandeAmiService = null;
-    private final UtilisateurRepository utilisateurRepository = null;
+    private final DemandeAmiService demandeAmiService;
+    private final UtilisateurRepository utilisateurRepository ;
 
     /**
      * 
@@ -189,4 +193,5 @@ public class DemandeAmiController {
         return "redirect:/demandes/amis";
     }
 
+    
 }

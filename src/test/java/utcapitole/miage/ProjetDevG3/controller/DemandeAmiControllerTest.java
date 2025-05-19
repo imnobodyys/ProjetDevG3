@@ -30,6 +30,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import utcapitole.miage.projetDevG3.Controller.DemandeAmiController;
 import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
@@ -46,10 +47,10 @@ public class DemandeAmiControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private DemandeAmiService demandeAmiService;
 
-    @MockBean
+    @MockitoBean
     private UtilisateurRepository utilisateurRepository;
 
     @Mock
@@ -109,7 +110,7 @@ public class DemandeAmiControllerTest {
         Principal principal = () -> "notfound@example.com";
         when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
 
-        DemandeAmiController controller = new DemandeAmiController(demandeAmiService, utilisateurRepository);
+        DemandeAmiController controller = new DemandeAmiController(null, null);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             controller.envoyerDemande(2L, principal, redirectAttributes);
@@ -170,27 +171,6 @@ public class DemandeAmiControllerTest {
     }
 
     /**
-<<<<<<< HEAD
-     * test pour voir envoyer une demande mais il y a pas de id
-     */
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void testEnvoyerDemande_userNotFound() {
-        Principal principal = () -> "notfound@example.com";
-        when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
-
-        DemandeAmiController controller = new DemandeAmiController();
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            controller.envoyerDemande(2L, principal, redirectAttributes);
-        });
-
-        assertEquals("Utilisateur non trouvé", exception.getMessage());
-    }
-
-    /**
-=======
->>>>>>> main
      * test pour voir mes amis
      * 
      * @throws Exception
