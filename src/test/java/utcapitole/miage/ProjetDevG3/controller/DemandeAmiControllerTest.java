@@ -74,6 +74,51 @@ public class DemandeAmiControllerTest {
     }
 
     /**
+     * test pour envoyer une demande
+     * 
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser(username = "test@example.com")
+    void envoyerDemande_Success() throws Exception {
+
+        Long destinataireId = 2L;
+        Utilisateur utilisateur1 = new Utilisateur();
+        utilisateur1.setId(1L);
+        utilisateur1.setEmail("test@example.com");
+
+        when(utilisateurRepository.findByEmail("test@example.com"))
+                .thenReturn(Optional.of(utilisateur1));
+
+        mockMvc.perform(post("/demandes/envoyer")
+                .param("destinataireId", destinataireId.toString())
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users"))
+                .andExpect(flash().attribute("success", "sucess! "));
+
+        verify(demandeAmiService).envoyerdemandeami(1L, destinataireId);
+    }
+
+    /**
+     * test pour voir envoyer une demande mais il y a pas de id
+     */
+    @Test
+    @WithMockUser(username = "test@example.com")
+    void testEnvoyerDemande_userNotFound() {
+        Principal principal = () -> "notfound@example.com";
+        when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+
+        DemandeAmiController controller = new DemandeAmiController(demandeAmiService, utilisateurRepository);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            controller.envoyerDemande(2L, principal, redirectAttributes);
+        });
+
+        assertEquals("Utilisateur non trouvé", exception.getMessage());
+    }
+
+    /**
      * test pour voir list de recues
      * 
      * @throws Exception
@@ -125,6 +170,7 @@ public class DemandeAmiControllerTest {
     }
 
     /**
+<<<<<<< HEAD
      * test pour voir envoyer une demande mais il y a pas de id
      */
     @Test
@@ -143,6 +189,8 @@ public class DemandeAmiControllerTest {
     }
 
     /**
+=======
+>>>>>>> main
      * test pour voir mes amis
      * 
      * @throws Exception
@@ -175,6 +223,33 @@ public class DemandeAmiControllerTest {
 
         verify(utilisateurRepository, times(1)).findByEmail("test@example.com");
         verify(demandeAmiService, times(1)).getAmis(currentUser);
+    }
+
+    /**
+     * test pour supprimer un ami
+     * 
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser(username = "test@example.com")
+    void supprimerAmi_ShouldRedirect() throws Exception {
+        // Arrange
+        Long amiId = 2L;
+        Utilisateur currentUser = new Utilisateur();
+        currentUser.setId(1L);
+        currentUser.setEmail("test@example.com");
+
+        when(utilisateurRepository.findByEmail("test@example.com"))
+                .thenReturn(Optional.of(currentUser));
+
+        // Act & Assert
+        mockMvc.perform(post("/demandes/supprier/{id}", amiId)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/demandes/amis"));
+
+        // Verify service method called correctly
+        verify(demandeAmiService, times(1)).supprimeramis(currentUser, amiId);
     }
 
 }

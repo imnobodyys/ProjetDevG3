@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Mes amis</title></head>
+<head>
+    <title>Mes amis</title>
+</head>
 <body>
     <h1>Mes amis</h1>
 
@@ -8,10 +10,26 @@
         <p>Vous n’avez pas encore d’amis.</p>
     </div>
 
-    <ul th:if="${not #lists.isEmpty(amis)}">
-        <li th:each="ami : ${amis}">
-            <span th:text="${ami.nom + ' ' + ami.prenom}"></span>
-        </li>
-    </ul>
+    <div th:if="${not #lists.isEmpty(amis)}">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Nom des amis</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ami : ${amis}">
+                    <td th:text="${ami.nom + ' ' + ami.prenom}">Nom</td>
+                    <td>
+                        <form th:action="@{'/demandes/supprimer/' + ${ami.id}}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit"> Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
