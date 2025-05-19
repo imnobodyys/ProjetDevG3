@@ -20,6 +20,8 @@ import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
 import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * classe DemandeAmiController
@@ -77,7 +79,7 @@ public class DemandeAmiController {
 
         demandeAmiService.envoyerdemandeami(currentUser.getId(), destinataireId);
 
-        redirectAttributes.addFlashAttribute("success", "好友请求已发送！");
+        redirectAttributes.addFlashAttribute("success", "sucess! ");
         return "redirect:/users";
     }
 
@@ -167,6 +169,23 @@ public class DemandeAmiController {
 
         model.addAttribute("amis", amis);
         return "amis";
+    }
+
+    /**
+     * suprimer un ami
+     * 
+     * @param id
+     * @param principal
+     * @return
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/supprier/{id}")
+    public String supprierami(@PathVariable Long id, Principal principal) {
+        Utilisateur currenUtilisateur = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        demandeAmiService.supprimeramis(currenUtilisateur, id);
+        return "redirect:/demandes/amis";
     }
 
 }

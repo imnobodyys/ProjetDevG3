@@ -3,6 +3,7 @@ package utcapitole.miage.projetDevG3.Repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -60,4 +61,15 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
                         StatutDemande statut1, Utilisateur destinataire,
                         StatutDemande statut2, Utilisateur expediteur);
 
+        /**
+         * pour supprimer ami
+         * 
+         * @param user1
+         * @param user2
+         */
+        @Query("DELETE FROM DemandeAmi d WHERE " +
+                        "(d.expediteurAmi = :user1 AND d.destinataireAmi = :user2) OR " +
+                        "(d.expediteurAmi = :user2 AND d.destinataireAmi = :user1)")
+        @Modifying
+        void deleteAmitie(@Param("user1") Utilisateur user1, @Param("user2") Utilisateur user2);
 }

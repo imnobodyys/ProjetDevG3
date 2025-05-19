@@ -1,5 +1,6 @@
 package utcapitole.miage.projetDevG3.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,8 @@ public class DemandeAmiService {
         DemandeAmi demande = new DemandeAmi();
         demande.setExpediteurAmi(utilisateurRepository.getReferenceById(expediteur));
         demande.setDestinataireAmi(utilisateurRepository.getReferenceById(destinaire));
+        demande.setStatut(StatutDemande.EN_ATTENTE);
+        demande.setDtEnvoi(LocalDateTime.now());
         demandeAmiRepository.save(demande);
     }
 
@@ -135,6 +138,20 @@ public class DemandeAmiService {
                         ? d.getDestinataireAmi()
                         : d.getExpediteurAmi())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * pour supprier un ami
+     * 
+     * @param utilisateur
+     * @param id
+     */
+    public void supprimeramis(Utilisateur utilisateur, Long id) {
+        Utilisateur ami = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Ami na pas trouve"));
+
+        demandeAmiRepository.deleteAmitie(utilisateur, ami);
+
     }
 
 }

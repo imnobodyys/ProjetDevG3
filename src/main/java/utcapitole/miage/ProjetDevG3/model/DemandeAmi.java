@@ -55,16 +55,6 @@ public class DemandeAmi {
     @JoinColumn(name = "destinataireAmi_id")
     private Utilisateur destinataireAmi;
 
-    /**
-     * Constructeur par défaut
-     * Initialise la date d'envoi à la date actuelle et le statut à EN_ATTENTE
-     */
-    @PrePersist
-    protected void onCreate() {
-        dtEnvoi = LocalDateTime.now();
-        statut = StatutDemande.EN_ATTENTE;
-    }
-
     // getters et setters
     public void setId(Long id) {
         this.id = id;
