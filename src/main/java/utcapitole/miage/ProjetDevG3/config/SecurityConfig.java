@@ -2,6 +2,8 @@ package utcapitole.miage.projetDevG3.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,9 +30,11 @@ public class SecurityConfig {
                 // login
                 .formLogin(form -> form
                         .loginPage("/api/utilisateurs/login") // Page de login personnalisée
-                        .loginProcessingUrl("/api/utilisateurs/login") // URL de traitement par Spring
+                        .loginProcessingUrl("/api/utilisateurs/verifierlogin") // URL de traitement par Spring
                         .defaultSuccessUrl("/accueil") // Redirection après succès
                         .failureUrl("/api/utilisateurs/login?error") // Redirection en cas d'erreur
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .permitAll())
                 // logout
                 .logout(logout -> logout

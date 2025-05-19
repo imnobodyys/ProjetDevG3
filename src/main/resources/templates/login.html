@@ -15,7 +15,7 @@
         
         <div th:if="${errorMessage}" style="color: red;" th:text="${errorMessage}"></div>
         
-        <form th:action="@{/api/utilisateurs/login}" method="post">
+        <form th:action="@{/api/utilisateurs/verifierlogin}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             
             <div>

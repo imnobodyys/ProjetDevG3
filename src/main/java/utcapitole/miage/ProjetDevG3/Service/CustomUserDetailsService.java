@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
-@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UtilisateurRepository utilisateurRepository;
@@ -27,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                user.getMotDePasse(),
+                user.getMdp(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER")));
     }
 }
