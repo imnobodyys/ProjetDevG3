@@ -204,4 +204,71 @@ public class EvenementControllerTest {
                 "Accès refusé : Vous n'êtes pas l'auteur de cet événement"));
     }
 
+
+    /**
+     * US44 Test3 - Modifier événement  
+     * Soumission de la modification par l'auteur
+     */
+    @Test
+    @WithMockUser(username = "organisateur@test.com")
+    void soumettreModification_QuandOrganisateurValide_Succes() throws Exception {
+        // Arrange
+        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
+        ReflectionTestUtils.setField(organisateur, "id", 1L);
+
+        Evenement evenementOriginal = new Evenement();
+        ReflectionTestUtils.setField(evenementOriginal, "id", 1L);
+        evenementOriginal.setAuteur(organisateur);
+
+        Evenement evenementModifie = new Evenement();
+        ReflectionTestUtils.setField(evenementModifie, "id", 1L);
+        evenementModifie.setAuteur(organisateur);
+        evenementModifie.setTitre("Titre modifié");
+
+        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+        when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
+            .thenReturn(evenementModifie);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/modifier/1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .flashAttr("evenement", evenementModifie))
+            .andExpect(status().isOk())
+            .andExpect(view().name("confirmationEvenement"))
+            .andExpect(model().attributeExists("evenement"))
+            .andExpect(model().attribute("evenement", hasProperty("titre", equalTo("Titre modifié"))));
+    }
+
+
+    /**
+     * US44 Test4 - Modifier événement  
+     * Soumission de la modification provoque une erreur
+     */
+    @Test
+    @WithMockUser(username = "organisateur@test.com")
+    void soumettreModification_QuandErreur_AlorsRetourneFormulaireAvecErreur() throws Exception {
+        // Arrange
+        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
+        ReflectionTestUtils.setField(organisateur, "id", 1L);
+
+        Evenement evenement = new Evenement();
+        ReflectionTestUtils.setField(evenement, "id", 1L);
+        evenement.setAuteur(organisateur);
+
+        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+        when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
+            .thenThrow(new IllegalArgumentException("Erreur lors de la modification"));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/modifier/1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .flashAttr("evenement", evenement))
+            .andExpect(status().isOk())
+            .andExpect(view().name("modifierEvenement"))
+            .andExpect(model().attributeExists("errorMessage"))
+            .andExpect(model().attribute("errorMessage", equalTo("Erreur lors de la modification")));
+    }
+
+
+
 }

@@ -124,7 +124,7 @@ public class EvenementController {
             Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
             Evenement updatedEvent = evenementService.modifierEvenement(id, evenement, currentUser);
             model.addAttribute("evenement", updatedEvent);
-            return "confirmationModificationEvenement";
+            return "confirmationEvenement";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "modifierEvenement";
