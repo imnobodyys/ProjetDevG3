@@ -270,5 +270,55 @@ public class EvenementControllerTest {
     }
 
 
+    /**
+     * US45 Test1 - Suppression d'un événement
+     * Suppression réussie
+     */
+    @Test
+    @WithMockUser(username = "auteur@test.com")
+    void supprimerEvenement_QuandAuteurValide_DoitConfirmer() throws Exception {
+        // Arrange
+        Utilisateur auteur = new Utilisateur();
+        ReflectionTestUtils.setField(auteur, "id", 1L);
+        when(utilisateurService.getUtilisateurByEmail("auteur@test.com")).thenReturn(auteur);
+        
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/supprimer/1")
+            .with(SecurityMockMvcRequestPostProcessors.csrf()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("confirmationSuppression"));
+    }
+
+
+    /**
+     * US45 Test2 - Suppression d'un événement
+     * Tentative de suppression par un non-auteur
+     */
+    @Test
+    @WithMockUser(username = "intrus@test.com")
+    void supprimerEvenement_QuandNonAuteur_DoitAfficherErreur() throws Exception {
+        // Arrange
+        Utilisateur auteurLegitime = new Utilisateur("Auteur", "Legitime", "auteur@test.com", "pass");
+        ReflectionTestUtils.setField(auteurLegitime, "id", 1L);
+        
+        Utilisateur intrus = new Utilisateur("Intrus", "Test", "intrus@test.com", "pass");
+        ReflectionTestUtils.setField(intrus, "id", 2L);
+        
+        // Simuler que l'utilisateur connecté est "intrus"
+        when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
+        
+        // Configurer le service pour lever une exception
+        doThrow(new IllegalArgumentException("Seul l'auteur peut supprimer l'événement"))
+            .when(evenementService).supprimerEvenement(eq(1L), eq(intrus));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/supprimer/1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())) 
+            .andExpect(status().isOk()) 
+            .andExpect(view().name("errorPage"))
+            .andExpect(model().attributeExists("errorMessage"))
+            .andExpect(model().attribute("errorMessage", "Seul l'auteur peut supprimer l'événement"));
+    }
+
 
 }
