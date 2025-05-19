@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import utcapitole.miage.projetDevG3.config.SecurityConfig;
+import utcapitole.miage.projetDevG3.model.Evenement;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 import utcapitole.miage.projetDevG3.Controller.EvenementController;
 import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
@@ -149,4 +152,53 @@ public class EvenementControllerTest {
         mockMvc.perform(get("/api/evenements/creer"))
                 .andExpect(status().isOk()); // @PreAuthorize already handled
     }
+
+
+    /**
+     * US44 Test1 - Modifier événement  
+     * Tentative de modification par l'auteur
+     */
+    @Test
+    @WithMockUser(username = "organisateur@test.com")
+    void afficherFormulaireModification_QuandOrganisateurValide_RetourneFormulaire() throws Exception {
+        // Arrange
+        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
+        Evenement evenementMock = new Evenement();
+        evenementMock.setAuteur(organisateur); // Pas besoin de setter l'ID
+        
+        when(evenementService.getEvenementById(anyLong())).thenReturn(evenementMock);
+        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
+            .andExpect(status().isOk())
+            .andExpect(view().name("modifierEvenement"))
+            .andExpect(model().attributeExists("evenement"))
+            .andExpect(model().attribute("evenement", hasProperty("auteur", equalTo(organisateur))));
+    }
+
+    /**
+     * US44 Test2 - Modifier événement   
+     * Tentative de modification par un non-auteur
+     */
+    @Test
+    @WithMockUser(username = "intrus@test.com")
+    void afficherFormulaireModification_QuandUtilisateurNonAutorise_RetourneErreur() throws Exception {
+        // Arrange
+        Utilisateur organisateurLegitime = new Utilisateur("Organisateur", "Legitime", "organisateur@test.com", "pass");
+        Utilisateur intrus = new Utilisateur("Intrus", "Malveillant", "intrus@test.com", "hack");
+        Evenement evenementProtege = new Evenement();
+        evenementProtege.setAuteur(organisateurLegitime);
+        
+        when(evenementService.getEvenementById(anyLong())).thenReturn(evenementProtege);
+        when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
+            .andExpect(status().isOk())
+            .andExpect(view().name("pageErreur"))
+            .andExpect(model().attribute("messageErreur", 
+                "Accès refusé : Seul l'organisateur peut modifier cet événement"));
+    }
+
 }
