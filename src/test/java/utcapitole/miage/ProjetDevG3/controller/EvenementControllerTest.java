@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -163,6 +163,7 @@ public class EvenementControllerTest {
     void afficherFormulaireModification_QuandOrganisateurValide_RetourneFormulaire() throws Exception {
         // Arrange
         Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
+        ReflectionTestUtils.setField(organisateur, "id", 1L); 
         Evenement evenementMock = new Evenement();
         evenementMock.setAuteur(organisateur); // Pas besoin de setter l'ID
         
@@ -186,7 +187,9 @@ public class EvenementControllerTest {
     void afficherFormulaireModification_QuandUtilisateurNonAutorise_RetourneErreur() throws Exception {
         // Arrange
         Utilisateur organisateurLegitime = new Utilisateur("Organisateur", "Legitime", "organisateur@test.com", "pass");
+        ReflectionTestUtils.setField(organisateurLegitime, "id", 1L); 
         Utilisateur intrus = new Utilisateur("Intrus", "Malveillant", "intrus@test.com", "hack");
+        ReflectionTestUtils.setField(intrus, "id", 2L);
         Evenement evenementProtege = new Evenement();
         evenementProtege.setAuteur(organisateurLegitime);
         
@@ -196,9 +199,9 @@ public class EvenementControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
             .andExpect(status().isOk())
-            .andExpect(view().name("pageErreur"))
-            .andExpect(model().attribute("messageErreur", 
-                "Accès refusé : Seul l'organisateur peut modifier cet événement"));
+            .andExpect(view().name("errorPage"))
+            .andExpect(model().attribute("errorMessage", 
+                "Accès refusé : Vous n'êtes pas l'auteur de cet événement"));
     }
 
 }
