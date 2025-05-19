@@ -27,10 +27,6 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-<<<<<<< HEAD
-=======
-    
->>>>>>> main
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe
