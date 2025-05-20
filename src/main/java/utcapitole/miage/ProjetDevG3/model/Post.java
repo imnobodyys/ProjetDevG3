@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,7 +35,19 @@ public class Post {
     private Long id;
 
     private String contenu;
-    private LocalDateTime dtPublication;
+    
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
 
     /**
      * Enumération représentant les différentes visibilités d'un post.
@@ -51,6 +66,22 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "auteur_id")
     private Utilisateur auteur;
+
+    /**
+     * Relation
+     * groupe : groupe auquel appartient le post
+     */
+    @ManyToOne
+    @JoinColumn(name = "groupe_id")
+    private Groupe groupe;
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
 
     /**
      * Relation
@@ -87,13 +118,6 @@ public class Post {
         this.contenu = contenu;
     }
 
-    public LocalDateTime getDtPublication() {
-        return dtPublication;
-    }
-
-    public void setDtPublication(LocalDateTime dtPublication) {
-        this.dtPublication = dtPublication;
-    }
 
     public VisibilitePost getVisibilite() {
         return visibilite;
@@ -145,6 +169,18 @@ public class Post {
     public void removeCommentaire(Commentaire commentaire) {
         this.commentaires.remove(commentaire);
         commentaire.setPost(null);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setReposts(List<Post> reposts) {
+        this.reposts = reposts;
+    }
+
+    public void setCommentaires(List<Commentaire> commentaires) {
+        this.commentaires = commentaires;
     }
 
 }

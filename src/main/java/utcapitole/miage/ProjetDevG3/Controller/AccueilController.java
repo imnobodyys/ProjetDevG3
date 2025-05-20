@@ -16,5 +16,9 @@ public class AccueilController {
     public String accueil() {
         return "accueil"; // Renvoie la vue d'accueil
     }
+     @GetMapping("/index")
+    public String index() {
+        return "accueil"; // Renvoie la vue d'accueil
+    }
 
 }

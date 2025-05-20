@@ -10,12 +10,11 @@
 </head>
 
 <body>
-    <body>
         <h2>Connexion</h2>
         
         <div th:if="${errorMessage}" style="color: red;" th:text="${errorMessage}"></div>
         
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{/api/utilisateurs/login}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             
             <div>

@@ -17,6 +17,12 @@
         <td th:text="${g.description}"></td>
         <td th:text="${#temporals.format(g.dtCreation, 'dd/MM/yyyy HH:mm')}"></td>
     </tr>
+
+    <form th:action="@{/groupes/{id}/supprimer(id=${groupe.id})}" method="post"
+      th:if="${groupe.createur.email == #authentication.name}">
+    <button type="submit">Supprimer</button>
+    <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')">Supprimer</button>
+</form>
 </table>
 </body>
 </html>

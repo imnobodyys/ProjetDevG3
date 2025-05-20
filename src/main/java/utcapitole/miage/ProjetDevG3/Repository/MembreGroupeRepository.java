@@ -17,8 +17,8 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  */
 @Repository
 public interface MembreGroupeRepository extends JpaRepository<MembreGroupe, Long> {
-    // Méthode pour trouver un membre de groupe par son ID
-    Optional<MembreGroupe> findById(Long id);
+    
+    boolean existsByGroupeIdAndMembreId(Long groupeId, Long membreId);
 
     // Méthode pour trouver tous les membres d'un groupe
     List<MembreGroupe> findByGroupe(Groupe groupe);

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Publier dans le groupe</title>
+</head>
+<body>
+    <h1>Créer un post dans le groupe : [[${groupe.nom}]]</h1>
+
+    <form th:action="@{'/groupes/' + ${groupe.id} + '/posts'}" th:object="${post}" method="post">
+        <div>
+            <label for="contenu">Contenu :</label><br>
+            <textarea th:field="*{contenu}" rows="4" cols="50"></textarea>
+        </div>
+
+        <div>
+            <label for="visibilite">Visibilité :</label>
+            <select th:field="*{visibilite}">
+                <option value="PUBLIQUE">Publique</option>
+                <option value="PRIVE">Privée</option>
+            </select>
+        </div>
+
+        <input type="submit" value="Publier">
+    </form>
+
+    <a th:href="@{'/groupes/' + ${groupe.id} + '/posts'}">← Voir les posts du groupe</a>
+</body>
+</html>

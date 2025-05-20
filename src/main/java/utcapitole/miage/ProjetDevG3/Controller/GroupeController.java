@@ -1,5 +1,6 @@
 package utcapitole.miage.projetDevG3.Controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import utcapitole.miage.projetDevG3.Service.GroupeService;
 import utcapitole.miage.projetDevG3.Service.MembreGroupeService;
+import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Groupe;
 import utcapitole.miage.projetDevG3.model.MembreGroupe;
 import utcapitole.miage.projetDevG3.model.StatutMembre;
@@ -38,6 +41,10 @@ public class GroupeController {
     /** membreGroupeService : service pour gérer les membres de groupe */
     @Autowired
     private MembreGroupeService membreGroupeService;
+
+    @Autowired
+private UtilisateurService utilisateurService;
+
 
     /** Constructeur
      * @param groupeService : service pour gérer les groupes
@@ -153,8 +160,8 @@ public class GroupeController {
      * @return la vue des demandes d'adhésion
      */
     @GetMapping("/admin/demandes")  
-    public String voirDemandes(@RequestParam Long idGroupe, Model model) {
-        Model session = null;
+    public String voirDemandes(@RequestParam Long idGroupe, Model model,HttpSession session) {
+       
         Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
         Groupe groupe = groupeService.getGroupeById(idGroupe); // ★ AJOUT
         if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
@@ -246,8 +253,8 @@ public class GroupeController {
      * @param idGroupe : id du groupe
      */
     @GetMapping("/admin/membres")
-    public String voirMembres(@RequestParam Long idGroupe, Model model) {
-        Model session = null;
+    public String voirMembres(@RequestParam Long idGroupe, Model model,HttpSession session) {
+       
         Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte"); // ✅
         Groupe groupe = groupeService.getGroupeById(idGroupe);
         if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
@@ -260,8 +267,22 @@ public class GroupeController {
         return "membresGroupe"; // nom du template Thymeleaf à créer
     }
 
+   @PostMapping("/{id}/supprimer")
+public String supprimerGroupe(@PathVariable Long id, Principal principal) {
+    Utilisateur utilisateur = utilisateurService.trouverParEmail(principal.getName());
+
+    try {
+        groupeService.supprimerGroupeSiCreateur(id, utilisateur);
+    } catch (SecurityException e) {
+        return "redirect:/groupes/liste?erreur=acces";
+    }
+
+    return "redirect:/groupes/liste";
+    }
+}
+
 
 
     
 
-}
+
