@@ -1,9 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Accueil</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-<h1>Bienvenue !</h1>
-<p><a href="/groupes/creer">Créer un groupe</a></p>
-<p><a href="/groupes/liste">Voir mes groupes</a></p>
+    <header>
+        <h1 th:text="${isAuthenticated} ? 'Bienvenue sur la plateforme !' : 'Bienvenue !'"></h1>
+    </header>
+
+    <main>
+        <!-- Section état de connexion -->
+        <div th:if="${isAuthenticated}">
+            <p>Bonjour, <strong th:text="${userEmail}">utilisateur</strong> ! Vous êtes connecté.</p>
+        </div>
+        <div th:unless="${isAuthenticated}">
+            <p>Bonjour, invité. Veuillez vous <a href="/api/utilisateurs/login">connecter</a>.</p>
+        </div>
+
+        <hr/>
+
+        <!-- Contenu commun -->
+        <p>Accédez à vos fonctionnalités depuis le menu ci-dessus.</p>
+
+        <!-- Contenu différencié -->
+        <div th:if="${isAuthenticated}">
+            <h2>Espace membre</h2>
+            <ul>
+                <li><a href="/groupes/creer">Créer un groupe</a></li>
+                <li><a href="/groupes/liste">Voir mes groupes</a></li>
+                <li><a href="/profil">Mon profil</a></li>
+            </ul>
+        </div>
+        <div th:unless="${isAuthenticated}">
+            <h2>Découvrez nos services</h2>
+            <p>Pour accéder à toutes les fonctionnalités, <a href="/register">créez un compte</a> ou <a href="/login">connectez-vous</a>.</p>
+        </div>
+    </main>
+
+    <footer>
+        <hr/>
+        <p>© 2023 Plateforme de groupes - UTC</p>
+    </footer>
 </body>
 </html>

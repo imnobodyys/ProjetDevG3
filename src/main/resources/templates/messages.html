@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Messages</title></head>
+<body>
+<h1 th:text="'Conversation avec ' + ${autreUtilisateur.nom}">Conversation</h1>
+
+<div th:each="msg : ${messages}">
+    <p>
+        <b th:text="${msg.expedi.nom}">Nom</b> : 
+        <span th:text="${msg.contenu}">contenu</span>
+        <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+    </p>
+</div>
+
+<a th:href="@{'/messages/envoyer/' + ${autreUtilisateur.id}}">Répondre</a>
+
+</body>
+</html>

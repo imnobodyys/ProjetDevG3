@@ -90,4 +90,8 @@ public class Message {
         this.conversation = conversation;
     }
 
+    public void setId(long l) {
+        this.id = l;
+    }
+
 }
