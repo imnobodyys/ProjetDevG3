@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 
