@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
+import utcapitole.miage.projetdevg3.controller.UtilisateurController;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 import java.util.List;

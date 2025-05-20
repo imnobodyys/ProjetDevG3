@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.controller;
+package utcapitole.miage.projetDevG3.controller;
 
 import java.security.Principal;
 import org.springframework.stereotype.Controller;

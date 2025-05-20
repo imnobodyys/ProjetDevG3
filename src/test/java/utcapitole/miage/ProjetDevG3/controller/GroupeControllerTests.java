@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.projetdevg3.service.GroupeService;
 import utcapitole.miage.projetdevg3.service.MembreGroupeService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
-
+import utcapitole.miage.projetdevg3.controller.GroupeController;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 @WebMvcTest(GroupeController.class)

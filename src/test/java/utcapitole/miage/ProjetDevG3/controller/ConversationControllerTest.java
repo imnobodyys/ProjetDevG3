@@ -20,11 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import utcapitole.miage.projetdevg3.service.ConversationService;
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
-import utcapitole.miage.projetdevg3.controller.ConversationController;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
-import utcapitole.miage.projetdevg3.service.ConversationPriService;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @WebMvcTest(controllers = ConversationController.class)

@@ -40,6 +40,7 @@ public class GroupeController {
      */
     @Autowired
     private GroupeService groupeService;
+    
     /** membreGroupeService : service pour gérer les membres de groupe */
     @Autowired
     private MembreGroupeService membreGroupeService;

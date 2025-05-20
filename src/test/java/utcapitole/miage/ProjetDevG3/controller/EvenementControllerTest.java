@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
-import lombok.With;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,7 +22,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
-
 import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 

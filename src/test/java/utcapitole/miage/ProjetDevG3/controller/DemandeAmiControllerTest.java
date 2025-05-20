@@ -31,7 +31,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import utcapitole.miage.projetdevg3.service.DemandeAmiService;
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
-
+import utcapitole.miage.projetdevg3.controller.DemandeAmiController;
 import utcapitole.miage.projetdevg3.model.DemandeAmi;
 import utcapitole.miage.projetdevg3.model.StatutDemande;
 import utcapitole.miage.projetdevg3.model.Utilisateur;

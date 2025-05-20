@@ -19,8 +19,6 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.ConversationService;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
-import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
-
 /**
  * Classe ConversationController
  * Gère les conversations entre utilisateurs
