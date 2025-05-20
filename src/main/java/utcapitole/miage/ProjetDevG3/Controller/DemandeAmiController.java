@@ -19,7 +19,7 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  * classe DemandeAmiController
  * Gère les demandes d'amis entre utilisateurs
  * 
- * @author [Votre nom]
+ *
  */
 @Controller
 @RequestMapping("/demandes")

@@ -21,11 +21,11 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
-/* 
-
-*
-
-@author [Votre nom]
+/**
+ * Classe ConversationController
+ * Gère les conversations entre utilisateurs
+ * 
+ * 
  */
 @Controller
 @RequiredArgsConstructor
