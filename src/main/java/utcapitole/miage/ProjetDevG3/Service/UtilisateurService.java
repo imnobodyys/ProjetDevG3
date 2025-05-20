@@ -17,7 +17,6 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * utilisateurs.
  */
 @Service
-@RequiredArgsConstructor
 public class UtilisateurService {
 
     /**
@@ -27,7 +26,15 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-    
+
+    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.utilisateurRepository = utilisateurRepository;
+    }
+
+
+
+
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe
@@ -112,5 +119,21 @@ public class UtilisateurService {
 
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
+    }
+
+    public Utilisateur findByEmail(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Utilisateur trouverParEmail(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public UtilisateurRepository getUtilisateurRepository() {
+        return utilisateurRepository;
     }
 }

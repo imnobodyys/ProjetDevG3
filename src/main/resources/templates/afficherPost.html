@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Posts du groupe</title>
+</head>
+<body>
+    <h1>Posts du groupe : [[${groupe.nom}]]</h1>
+
+    <a th:href="@{'/groupes/' + ${groupe.id} + '/posts/nouveau'}">+ Nouveau post</a>
+
+    <div th:if="${#lists.isEmpty(posts)}">
+        <p>Aucun post pour le moment.</p>
+    </div>
+
+    <div th:each="post : ${posts}">
+        <div>
+            <p><strong th:text="${post.auteur.nom}">Auteur</strong> - 
+             Créé le : <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Date création</span>
+</p>
+            <p th:text="${post.contenu}">Contenu</p>
+            <p><em th:text="${post.visibilite}">Visibilité</em></p>
+        </div>
+        <hr>
+    </div>
+</body>
+</html>
