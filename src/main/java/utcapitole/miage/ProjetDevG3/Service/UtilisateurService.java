@@ -3,6 +3,7 @@ package utcapitole.miage.projetDevG3.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,6 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * utilisateurs.
  */
 @Service
-@RequiredArgsConstructor
 public class UtilisateurService {
 
     /**
@@ -26,16 +26,13 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-<<<<<<< HEAD
-    public UtilisateurService() {
-        this.utilisateurRepository = null;
-        this.passwordEncoder = null;
-=======
     public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
         this.passwordEncoder = passwordEncoder;
         this.utilisateurRepository = utilisateurRepository;
->>>>>>> main
     }
+
+
+
 
     /**
      * US01
@@ -129,5 +126,13 @@ public class UtilisateurService {
 
     public Utilisateur trouverParEmail(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public UtilisateurRepository getUtilisateurRepository() {
+        return utilisateurRepository;
     }
 }

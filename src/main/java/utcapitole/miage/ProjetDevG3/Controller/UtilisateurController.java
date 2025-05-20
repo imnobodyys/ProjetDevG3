@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,10 +30,15 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
+    
     @Autowired
-    private UtilisateurService utilisateurService;
 
+    private PasswordEncoder passwordEncoder;
     @Autowired
+
+    private UtilisateurService utilisateurService;
+    @Autowired
+    
     private UtilisateurRepository utilisateurRepository;
     /**
      * US01 - Création de profil personnel
@@ -75,9 +81,13 @@ public class UtilisateurController {
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error, 
-                            Model model) {
+                           @RequestParam(value = "logout", required = false) String logout,
+                        Model model) {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
+        }
+        if (logout != null) {
+        model.addAttribute("logoutMessage", "Vous êtes déconnecté.");
         }
         return "login";
     }
