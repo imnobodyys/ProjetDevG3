@@ -19,6 +19,7 @@
     <description>Projet Dev Group3</description>
 
     <properties>
+    <sonar.projectKey>imnobodyys_ProjetDevG3</sonar.projectKey>
     <sonar.organization>imnobodyys</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
