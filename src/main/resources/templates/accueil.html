@@ -31,7 +31,7 @@
             <ul>
                 <li><a href="/groupes/creer">Créer un groupe</a></li>
                 <li><a href="/groupes/liste">Voir mes groupes</a></li>
-                <li><a href="/profil">Mon profil</a></li>
+                <li><a th:href="@{/profil/{id}(id=${utilisateur.id})}">Mon profil</a></li>
             </ul>
         </div>
         <div th:unless="${isAuthenticated}">
