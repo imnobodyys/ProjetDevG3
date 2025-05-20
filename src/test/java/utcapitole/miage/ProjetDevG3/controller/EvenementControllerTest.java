@@ -8,6 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+
+import lombok.With;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -319,4 +322,50 @@ public class EvenementControllerTest {
                                                 "Seul l'auteur peut supprimer l'événement"));
         }
 
+    /**
+     * US47 Test1 - Participer à un événement
+     * Participation réussie à un événement
+     */
+    @Test
+    @WithMockUser(username = "user@test.com")
+    void participerEvenement_QuandValide_DoitConfirmer() throws Exception{
+        // Arrange
+        Utilisateur mockUser = new Utilisateur();
+        ReflectionTestUtils.setField(mockUser, "id", 100L);
+        when(utilisateurService.getUtilisateurByEmail(anyString())).thenReturn(mockUser);
+
+        Evenement mockEvent = new Evenement();
+        ReflectionTestUtils.setField(mockEvent, "id", 1L);
+        when(evenementService.participerEvenement(anyLong(), any())).thenReturn(mockEvent);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/participer/1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("confirmationParticipation"))
+                .andExpect(model().attributeExists("evenement"));
+    }
+
+     /**
+     * US47 Test2 - Participer à un événement
+     * Tentative de participation déjà existante
+     */
+    @Test
+    @WithMockUser(username = "user@test.com")
+    void participerEvenement_QuandDejaInscrit_DoitAfficherErreur() throws Exception {
+        // Arrange
+        Utilisateur mockUser = new Utilisateur();
+        ReflectionTestUtils.setField(mockUser, "id", 100L);
+        when(utilisateurService.getUtilisateurByEmail(anyString())).thenReturn(mockUser);
+        
+        doThrow(new IllegalArgumentException("Vous êtes déjà inscrit à cet événement"))
+            .when(evenementService).participerEvenement(anyLong(), any());
+
+        // Act & Assert
+        mockMvc.perform(post("/api/evenements/participer/1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorMessage", "Vous êtes déjà inscrit à cet événement"));
+    }
 }
