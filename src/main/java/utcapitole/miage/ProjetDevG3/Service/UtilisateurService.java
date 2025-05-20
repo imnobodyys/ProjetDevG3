@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * utilisateurs.
  */
 @Service
-@RequiredArgsConstructor
+
 public class UtilisateurService {
 
     /**
@@ -26,6 +27,11 @@ public class UtilisateurService {
      */
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     /**
      * US01
@@ -93,6 +99,12 @@ public class UtilisateurService {
 
         return utilisateurRepository.save(existingUser);
     }
+    
+    public Utilisateur authentifier(String email, String motDePasse) {
+    return utilisateurRepository.findByEmail(email)
+            .filter(utilisateur -> passwordEncoder.matches(motDePasse, utilisateur.getMdp()))
+            .orElse(null);
+    }
 
     /**
      * US04 - Suppression de profil
@@ -112,12 +124,13 @@ public class UtilisateurService {
         return utilisateurRepository.searchByKeyword(keyword);
     }
 
-    public Utilisateur findByEmail(String email) {
-    return getUtilisateurByEmail(email);
+  public Utilisateur findByEmail(String email) {
+    return utilisateurRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
     }
 
-    public Utilisateur trouverParEmail(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Utilisateur trouverParEmail(String email) {
+    return findByEmail(email);
     }
 
     public PasswordEncoder getPasswordEncoder() {
@@ -127,4 +140,5 @@ public class UtilisateurService {
     public UtilisateurRepository getUtilisateurRepository() {
         return utilisateurRepository;
     }
+    
 }

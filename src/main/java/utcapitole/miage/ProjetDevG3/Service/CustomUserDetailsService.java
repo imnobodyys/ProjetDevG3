@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UtilisateurRepository utilisateurRepository;

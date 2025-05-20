@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Créer un groupe</title>
 </head>
 <body>
 <h2>Créer un groupe d’intérêt</h2>
 
-<form th:action="@{/groupes/creer}" th:object="${groupe}" method="post">
-    <div>
-        <label>Nom :</label>
-        <input type="text" th:field="*{nom}" />
-        <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
-    </div>
 
-    <div>
-        <label>Description :</label>
-        <textarea th:field="*{description}"></textarea>
-        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
-    </div>
-    <div>
-    <label>Type de groupe :</label>
-    <select th:field="*{type}">
-        <option th:value="PUBLIC">Public</option>
-        <option th:value="PRIVE">Privé</option>
-    </select>
-    </div>
+<div sec:authorize="isAuthenticated()">
+    <form th:action="@{/groupes/creer}" th:object="${groupe}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-    <button type="submit">Créer</button>
-</form>
+        <div>
+            <label>Nom :</label>
+            <input type="text" th:field="*{nom}" />
+            <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+        </div>
+
+        <div>
+            <label>Description :</label>
+            <textarea th:field="*{description}"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </div>
+
+        <div>
+            <label>Type de groupe :</label>
+            <select th:field="*{type}">
+                <option th:value="PUBLIC">Public</option>
+                <option th:value="PRIVE">Privé</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Créer le groupe</button>
+        </div>
+
+        <div>
+            <a th:href="@{/accueil}">Retour à l'accueil</a>
+        </div>
+    </form>
+</div>
+
 
 </body>
 </html>

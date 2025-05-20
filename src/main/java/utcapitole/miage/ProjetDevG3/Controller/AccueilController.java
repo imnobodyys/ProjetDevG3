@@ -8,25 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AccueilController {
 
-    /**
-     * Affiche la page d'accueil avec des contenus différenciés selon l'état
-     * d'authentification
-     * 
-     * @param model     Pour transmettre des attributs à la vue
-     * @param principal Objet Spring Security contenant les infos de l'utilisateur
-     *                  connecté
-     * @return Le nom du template Thymeleaf
-     */
+     @GetMapping("/login-accueil")
+    public String loginAccueil() {
+        return "login"; // affiche login.html, page de connexion
+    }
     @GetMapping("/accueil")
-    public String accueil(Model model, Principal principal) {
-        boolean isAuthenticated = (principal != null);
-        model.addAttribute("isAuthenticated", isAuthenticated);
-
-        if (isAuthenticated) {
-            model.addAttribute("userEmail", principal.getName());
-            // Ajoutez ici d'autres attributs nécessaires pour les utilisateurs connectés
-        }
-
-        return "accueil";
+    public String accueil() {
+        return "redirect:/api/utilisateurs/login";  // Nom de la vue Thymeleaf accueil.html
     }
 }
