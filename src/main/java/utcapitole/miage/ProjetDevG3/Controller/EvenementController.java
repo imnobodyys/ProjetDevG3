@@ -155,4 +155,32 @@ public class EvenementController {
             return "errorPage";
         }
     }
+
+    
+
+    /**
+     * US47 - Participer à un événement
+     * Permet à un utilisateur authentifié de s'inscrire à un événement
+     * 
+     * @param id ID de l'événement
+     * @param authentication Informations d'authentification
+     * @param model Conteneur des attributs
+     * @return Redirection vers la page de confirmation ou d'erreur
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/participer/{id}")
+    public String participerEvenement(@PathVariable Long id,
+                                    Authentication authentication,
+                                    Model model){
+        try{
+            Utilisateur participant = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            Evenement evenement = evenementService.participerEvenement(id, participant);
+
+            model.addAttribute("evenement", evenement);
+            return "confirmationParticipation";
+        } catch (IllegalArgumentException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "errorPage";
+        }
+    }
 }
