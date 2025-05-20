@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetDevG3.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +79,7 @@ class GroupeServiceTest { private GroupeService groupeService;
     Groupe groupe = new Groupe();
     groupe.setId(10L);
     
-    MembreGroupe membreExistant = new MembreGroupe();
+    MembreGroupe membreExistant = new MembreGroupe(utilisateur, groupe);
     membreExistant.setGroupe(groupe);
     membreExistant.setMembre(utilisateur);
 
@@ -93,7 +93,7 @@ class GroupeServiceTest { private GroupeService groupeService;
 
    @Test
     void testChangerStatutMembre() {
-    MembreGroupe membre = new MembreGroupe();
+    MembreGroupe membre = new MembreGroupe(null, null);
     membre.setId(5L);
     membre.setStatut(StatutMembre.EN_ATTENTE);
 

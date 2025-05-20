@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
  */
 @Entity
 public class MembreGroupe {
+    public MembreGroupe() {}
 
     /**
      * Attributs
@@ -46,6 +47,12 @@ public class MembreGroupe {
      */
     @ManyToOne
     private Utilisateur membre;
+
+    public MembreGroupe(Utilisateur membre, Groupe groupe) {
+    this.membre = membre;
+    this.groupe = groupe;
+    this.statut = StatutMembre.EN_ATTENTE;  
+}
 
     // getters et setters
     public Groupe getGroupe() {

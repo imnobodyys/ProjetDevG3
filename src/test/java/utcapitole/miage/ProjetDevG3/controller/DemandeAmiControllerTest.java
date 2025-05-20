@@ -29,6 +29,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import utcapitole.miage.projetDevG3.Controller.DemandeAmiController;
 import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
@@ -45,10 +46,10 @@ class DemandeAmiControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private DemandeAmiService demandeAmiService;
 
-    @MockBean
+    @MockitoBean
     private UtilisateurRepository utilisateurRepository;
 
     @Mock
@@ -96,7 +97,7 @@ class DemandeAmiControllerTest {
         Principal principal = () -> "notfound@example.com";
         when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
 
-        DemandeAmiController controller = new DemandeAmiController(demandeAmiService, utilisateurRepository);
+        DemandeAmiController controller = new DemandeAmiController(null, null);
 
         Exception exception = assertThrows(UsernameNotFoundException.class,
                 () -> controller.envoyerDemande(2L, principal, redirectAttributes));

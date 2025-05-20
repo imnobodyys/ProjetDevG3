@@ -7,6 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class AccueilController {
+<<<<<<< HEAD
+=======
+    /*
+     * Méthode d'accueil
+     * @return la vue d'accueil
+     */
+    @GetMapping("/")
+    public String accueil() {
+        return "accueil"; // Renvoie la vue d'accueil
+    }
+     @GetMapping("/index")
+    public String index() {
+        return "accueil"; // Renvoie la vue d'accueil
+    }
+>>>>>>> main
 
     /**
      * Affiche la page d'accueil avec des contenus différenciés selon l'état
