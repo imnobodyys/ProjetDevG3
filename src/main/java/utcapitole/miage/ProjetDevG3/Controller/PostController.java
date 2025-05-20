@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.Service.GroupeService;
@@ -95,6 +94,13 @@ public class PostController {
         model.addAttribute("groupe", groupe);
         model.addAttribute("posts", posts);
         return "groupe-posts";
+    }
+     @GetMapping("/mes-posts")
+    public String voirMesPosts(Model model, Principal principal) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
+        List<Post> mesPosts = postService.getPostsByAuteur(utilisateur);
+        model.addAttribute("mesPosts", mesPosts);
+        return "posts/mes-posts";
     }
 
     @GetMapping("/groupes/{groupeId}/posts/nouveau")

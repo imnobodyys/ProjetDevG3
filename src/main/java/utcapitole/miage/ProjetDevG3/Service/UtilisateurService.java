@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
@@ -121,8 +121,8 @@ public class UtilisateurService {
         return utilisateurRepository.searchByKeyword(keyword);
     }
 
-    public Utilisateur findByEmail(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Utilisateur findByEmail(String email) {
+    return getUtilisateurByEmail(email);
     }
 
     public Utilisateur trouverParEmail(String name) {

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import utcapitole.miage.projetDevG3.model.Post;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 /**
  * PostRepository est une interface qui étend JpaRepository pour gérer les opérations CRUD sur les entités Post.
@@ -15,4 +16,5 @@ import utcapitole.miage.projetDevG3.model.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
       List<Post> findByGroupeIdOrderByCreatedAtDesc(Long groupeId);
+      List<Post> findByAuteurOrderByCreatedAtDesc(Utilisateur auteur);
 }

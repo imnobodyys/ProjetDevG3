@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
 import utcapitole.miage.projetDevG3.Repository.PostRepository;
 import utcapitole.miage.projetDevG3.model.Post;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 /**
  * Service pour la gestion des publications.
@@ -23,6 +24,10 @@ public class PostService {
      */
    @Autowired
     private PostRepository postRepository;
+    
+    public List<Post> getPostsByAuteur(Utilisateur utilisateur) {
+        return postRepository.findByAuteurOrderByCreatedAtDesc(utilisateur);
+    }
 
     @Autowired
     private MembreGroupeRepository membreGroupeRepository;
