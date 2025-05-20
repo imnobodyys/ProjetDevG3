@@ -1,5 +1,7 @@
 package utcapitole.miage.projetDevG3.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
@@ -127,6 +129,21 @@ public class EvenementService {
 
             evenement.addParticipant(participant);
             return evenementRepository.save(evenement);
+    }
+
+
+    /**
+     * US48 - Récupère la liste des participants d'un événement
+     * @param id ID de l'événement
+     * @return Liste des participants
+     * @throws IllegalArgumentException Si l'événement n'existe pas
+     */
+    public List<Utilisateur> getParticipantsEvenement(Long id){
+        Evenement evenement = evenementRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+
+            return evenement.getParticipants();
+
     }
 
 }
