@@ -1,0 +1,43 @@
+name: Java CI + SonarCloud
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'  # 或 'temurin'
+          cache: maven
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build with Maven
+        run: mvn -B clean package
+
+      - name: Run tests and generate coverage
+        run: mvn verify
+
+      - name: SonarCloud Scan
+        run: mvn sonar:sonar -Dsonar.projectKey=imnobodyys_ProjetDevG3

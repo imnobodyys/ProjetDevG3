@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,11 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.DemandeAmi;
-import utcapitole.miage.projetDevG3.model.StatutDemande;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.DemandeAmi;
+import utcapitole.miage.projetdevg3.model.StatutDemande;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.DemandeAmiRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @ExtendWith(MockitoExtension.class)
 class DemandeAmiServiceTest {

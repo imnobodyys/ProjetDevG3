@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,7 +15,8 @@ import jakarta.persistence.ManyToOne;
  */
 @Entity
 public class MembreGroupe {
-    public MembreGroupe() {}
+    public MembreGroupe() {
+    }
 
     /**
      * Attributs
@@ -49,10 +50,10 @@ public class MembreGroupe {
     private Utilisateur membre;
 
     public MembreGroupe(Utilisateur membre, Groupe groupe) {
-    this.membre = membre;
-    this.groupe = groupe;
-    this.statut = StatutMembre.EN_ATTENTE;  
-}
+        this.membre = membre;
+        this.groupe = groupe;
+        this.statut = StatutMembre.EN_ATTENTE;
+    }
 
     // getters et setters
     public Groupe getGroupe() {

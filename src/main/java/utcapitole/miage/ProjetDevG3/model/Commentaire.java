@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class Commentaire {
 
     /**
      * Attributs
-     * id : identifiant du commentaire 
+     * id : identifiant du commentaire
      * contenu : contenu du commentaire
      * dtEnvoi : date d'envoi du commentaire
      * expediteur : utilisateur qui a envoyé le commentaire
@@ -34,7 +34,7 @@ public class Commentaire {
      * Relations
      * expediteur : utilisateur qui a envoyé le commentaire
      * post : post sur lequel le commentaire a été fait
-     */ 
+     */
     @ManyToOne
     @JoinColumn(name = "expedient_id")
     private Utilisateur expediteur;

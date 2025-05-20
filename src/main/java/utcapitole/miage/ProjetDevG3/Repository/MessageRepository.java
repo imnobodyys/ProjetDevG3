@@ -1,15 +1,14 @@
-package utcapitole.miage.projetDevG3.Repository;
+package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import utcapitole.miage.projetDevG3.model.Conversation;
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-import utcapitole.miage.projetDevG3.model.Message;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.Conversation;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 /**
  * MessageRepository est une interface qui étend JpaRepository pour gérer

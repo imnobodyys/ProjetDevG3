@@ -1,5 +1,5 @@
 
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,15 +34,15 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    
     private String nom;
     private String description;
     private LocalDateTime dtCreation;
 
     public enum TypeGroupe {
-    PUBLIC,
-    PRIVE
+        PUBLIC,
+        PRIVE
     }
+
     @Enumerated(EnumType.STRING)
     private TypeGroupe type = TypeGroupe.PUBLIC;
 
@@ -50,11 +50,12 @@ public class Groupe {
         return type;
     }
 
-    private boolean actif = true; 
+    private boolean actif = true;
 
     public void setActif(boolean actif) {
         this.actif = actif;
     }
+
     public boolean isActif() {
         return actif;
     }
@@ -90,6 +91,7 @@ public class Groupe {
     protected void onCreate() {
         this.dtCreation = LocalDateTime.now();
     }
+
     public void setConversationGrp(ConversationGrp conversationGrp) {
         if (conversationGrp == null) {
             if (this.conversationGrp != null) {
@@ -100,7 +102,6 @@ public class Groupe {
         }
         this.conversationGrp = conversationGrp;
     }
-
 
     /**
      * Getters et Setters
@@ -154,7 +155,6 @@ public class Groupe {
         return conversationGrp;
     }
 
-    
     public List<MembreGroupe> getMembres() {
         return membres;
     }

@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,25 +14,25 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
-import utcapitole.miage.projetDevG3.Service.GroupeService;
-import utcapitole.miage.projetDevG3.model.Groupe;
-import utcapitole.miage.projetDevG3.model.MembreGroupe;
-import utcapitole.miage.projetDevG3.model.StatutMembre;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.Groupe;
+import utcapitole.miage.projetdevg3.model.MembreGroupe;
+import utcapitole.miage.projetdevg3.model.StatutMembre;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.GroupeRepository;
+import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
 
-class GroupeServiceTest { private GroupeService groupeService;
+class GroupeServiceTest {
+    private GroupeService groupeService;
     private GroupeRepository groupeRepository;
     private MembreGroupeRepository membreGroupeRepository;
 
     @BeforeEach
     void setup() {
-    groupeRepository = mock(GroupeRepository.class);
-    membreGroupeRepository = mock(MembreGroupeRepository.class);
+        groupeRepository = mock(GroupeRepository.class);
+        membreGroupeRepository = mock(MembreGroupeRepository.class);
 
-    groupeService = new GroupeService(groupeRepository, membreGroupeRepository);
-}
+        groupeService = new GroupeService(groupeRepository, membreGroupeRepository);
+    }
 
     @Test
     void testCreerGroupe() {
@@ -54,56 +54,56 @@ class GroupeServiceTest { private GroupeService groupeService;
         verify(groupeRepository).save(any(Groupe.class));
         verify(membreGroupeRepository).save(any(MembreGroupe.class));
     }
-    /**US18 */
+
+    /** US18 */
     @Test
     void testDemanderAdhesion_nouvelleDemande() {
-    Utilisateur utilisateur = new Utilisateur();
-    utilisateur.setId(1L);
-    
-    Groupe groupe = new Groupe();
-    groupe.setId(10L);
-    
-    when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
-    when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of());
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setId(1L);
 
-    groupeService.demanderAdhesion(10L, utilisateur);
+        Groupe groupe = new Groupe();
+        groupe.setId(10L);
 
-    verify(membreGroupeRepository, times(1)).save(any(MembreGroupe.class));
-}
+        when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
+        when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of());
+
+        groupeService.demanderAdhesion(10L, utilisateur);
+
+        verify(membreGroupeRepository, times(1)).save(any(MembreGroupe.class));
+    }
 
     @Test
     void testDemanderAdhesion_dejaMembreOuEnAttente() {
-    Utilisateur utilisateur = new Utilisateur();
-    utilisateur.setId(1L);
-    
-    Groupe groupe = new Groupe();
-    groupe.setId(10L);
-    
-    MembreGroupe membreExistant = new MembreGroupe(utilisateur, groupe);
-    membreExistant.setGroupe(groupe);
-    membreExistant.setMembre(utilisateur);
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setId(1L);
 
-    when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
-    when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of(membreExistant));
+        Groupe groupe = new Groupe();
+        groupe.setId(10L);
 
-    groupeService.demanderAdhesion(10L, utilisateur);
+        MembreGroupe membreExistant = new MembreGroupe(utilisateur, groupe);
+        membreExistant.setGroupe(groupe);
+        membreExistant.setMembre(utilisateur);
 
-    verify(membreGroupeRepository, never()).save(any());
+        when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
+        when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of(membreExistant));
+
+        groupeService.demanderAdhesion(10L, utilisateur);
+
+        verify(membreGroupeRepository, never()).save(any());
     }
 
-   @Test
+    @Test
     void testChangerStatutMembre() {
-    MembreGroupe membre = new MembreGroupe(null, null);
-    membre.setId(5L);
-    membre.setStatut(StatutMembre.EN_ATTENTE);
+        MembreGroupe membre = new MembreGroupe(null, null);
+        membre.setId(5L);
+        membre.setStatut(StatutMembre.EN_ATTENTE);
 
-    when(membreGroupeRepository.findById(5L)).thenReturn(Optional.of(membre));
+        when(membreGroupeRepository.findById(5L)).thenReturn(Optional.of(membre));
 
-    groupeService.changerStatutMembre(5L, StatutMembre.ACCEPTE);
+        groupeService.changerStatutMembre(5L, StatutMembre.ACCEPTE);
 
-    assertEquals(StatutMembre.ACCEPTE, membre.getStatut());
-    verify(membreGroupeRepository).save(membre);
+        assertEquals(StatutMembre.ACCEPTE, membre.getStatut());
+        verify(membreGroupeRepository).save(membre);
     }
-
 
 }
