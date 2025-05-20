@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -11,25 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.transaction.Transactional;
-import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.PostRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.Groupe;
-import utcapitole.miage.projetDevG3.model.MembreGroupe;
-import utcapitole.miage.projetDevG3.model.Post;
-import utcapitole.miage.projetDevG3.model.StatutMembre;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.model.VisibilitePost;
+import utcapitole.miage.projetdevg3.model.Groupe;
+import utcapitole.miage.projetdevg3.model.MembreGroupe;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.StatutMembre;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.VisibilitePost;
+import utcapitole.miage.projetdevg3.repository.GroupeRepository;
+import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
+
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @SpringBootTest
 @Transactional
-public class PostServiceTest {
-     @Autowired
-    private PostService postService;
-
+class PostServiceTest {
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
     @Autowired
     private MembreGroupeRepository membreGroupeRepository;
@@ -58,7 +55,7 @@ public class PostServiceTest {
 
         // Ajout utilisateur comme membre accepté dans le groupe
         MembreGroupe membreGroupe = new MembreGroupe(utilisateur, groupe);
-        membreGroupe.setStatut(StatutMembre.ACCEPTE);  // statut explicite
+        membreGroupe.setStatut(StatutMembre.ACCEPTE); // statut explicite
         membreGroupeRepository.save(membreGroupe);
     }
 

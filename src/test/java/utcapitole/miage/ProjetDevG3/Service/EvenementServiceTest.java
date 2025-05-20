@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
-import utcapitole.miage.projetDevG3.model.*;
+import utcapitole.miage.projetdevg3.model.*;
+import utcapitole.miage.projetdevg3.repository.EvenementRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -22,7 +22,7 @@ class EvenementServiceTest {
 
     @Mock
     private EvenementRepository evenementRepository;
-    
+
     @InjectMocks
     private EvenementService evenementService;
 
@@ -36,7 +36,7 @@ class EvenementServiceTest {
         Evenement evenement = new Evenement();
         ReflectionTestUtils.setField(evenement, "id", evenementId);
         evenement.setTitre("Titre test");
-        
+
         when(evenementRepository.findById(evenementId)).thenReturn(Optional.of(evenement));
 
         Evenement result = evenementService.getEvenementById(evenementId);
@@ -62,7 +62,6 @@ class EvenementServiceTest {
         assertEquals("Événement non trouvé", exception.getMessage());
     }
 
-
     /**
      * US43 Test1 - Création d'un événement
      * Création réussie avec tous les champs
@@ -74,17 +73,16 @@ class EvenementServiceTest {
         event.setTitre("Meetup");
         event.setDescription("Dev meeting");
         event.setDatePublication(LocalDateTime.now());
-        
+
         when(evenementRepository.save(any())).thenReturn(event);
-        
+
         // Act
         Evenement result = evenementService.creerEvenement(event);
-        
+
         // Assert
         assertNotNull(result);
         verify(evenementRepository).save(event);
     }
-
 
     /**
      * US43 Test2 - Création d'un événement
@@ -96,12 +94,11 @@ class EvenementServiceTest {
         Evenement event = new Evenement();
         event.setDescription("Desc");
         event.setDatePublication(LocalDateTime.now());
-        
+
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> evenementService.creerEvenement(event)
-        );
+                IllegalArgumentException.class,
+                () -> evenementService.creerEvenement(event));
         assertEquals("Le titre est obligatoire", exception.getMessage());
         verifyNoInteractions(evenementRepository);
     }
@@ -116,12 +113,11 @@ class EvenementServiceTest {
         Evenement event = new Evenement();
         event.setTitre("Titre valide");
         event.setDatePublication(LocalDateTime.now());
-        
+
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> evenementService.creerEvenement(event)
-        );
+                IllegalArgumentException.class,
+                () -> evenementService.creerEvenement(event));
         assertEquals("La description est obligatoire", exception.getMessage());
         verifyNoInteractions(evenementRepository);
     }
@@ -136,18 +132,17 @@ class EvenementServiceTest {
         Evenement event = new Evenement();
         event.setTitre("Titre");
         event.setDescription("Description");
-        
+
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> evenementService.creerEvenement(event)
-        );
+                IllegalArgumentException.class,
+                () -> evenementService.creerEvenement(event));
         assertEquals("Date invalide", exception.getMessage());
         verifyNoInteractions(evenementRepository);
     }
 
     /**
-     * US44 Test1 - Modifier événement  
+     * US44 Test1 - Modifier événement
      * Tentative de modification par l'auteur
      */
     @Test
@@ -181,11 +176,10 @@ class EvenementServiceTest {
         assertEquals(VisibiliteEvenement.PUBLIC, resultat.getVisibilite());
     }
 
-
     /**
-     * US44 Test2 - Modifier événement   
+     * US44 Test2 - Modifier événement
      * Tentative de modification par un non-auteur
-     */    
+     */
     @Test
     void testModifierEvenement_NonAuteur_Exception() {
         Long evenementId = 1L;
@@ -219,7 +213,7 @@ class EvenementServiceTest {
     }
 
     /**
-     * US44 Test3 - Modifier événement   
+     * US44 Test3 - Modifier événement
      * Tentative de création sans titre
      */
     @Test
@@ -251,9 +245,8 @@ class EvenementServiceTest {
         assertEquals("Le titre est obligatoire", exception.getMessage());
     }
 
-
     /**
-     * US44 Test4 - Modifier événement   
+     * US44 Test4 - Modifier événement
      * Tentative de création sans description
      */
     @Test
@@ -285,7 +278,6 @@ class EvenementServiceTest {
         assertEquals("La description est obligatoire", exception.getMessage());
     }
 
-
     /**
      * US45 Test1 - Suppression d'un événement
      * Suppression par l'auteur
@@ -296,14 +288,14 @@ class EvenementServiceTest {
         Long eventId = 1L;
         Utilisateur auteur = new Utilisateur();
         ReflectionTestUtils.setField(auteur, "id", 100L);
-        
+
         Evenement event = new Evenement();
         event.setAuteur(auteur);
         when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
-        
+
         // Act
         evenementService.supprimerEvenement(eventId, auteur);
-        
+
         // Assert
         verify(evenementRepository).deleteById(eventId);
     }
@@ -318,17 +310,64 @@ class EvenementServiceTest {
         Long eventId = 1L;
         Utilisateur auteur = new Utilisateur();
         ReflectionTestUtils.setField(auteur, "id", 100L);
-        
+
         Utilisateur intrus = new Utilisateur();
         ReflectionTestUtils.setField(intrus, "id", 200L);
-        
+
         Evenement event = new Evenement();
         event.setAuteur(auteur);
         when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
-        
+
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
-            evenementService.supprimerEvenement(eventId, intrus)
-        );
+        assertThrows(IllegalArgumentException.class, () -> evenementService.supprimerEvenement(eventId, intrus));
+    }
+
+    /**
+     * US47 Test1 - Participer à un événement
+     * Participation réussie à un événement
+     */
+    @Test
+    void participerEvenement_QuandNouveauParticipant_DoitAjouter() {
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur participant = new Utilisateur();
+        ReflectionTestUtils.setField(participant, "id", 100L);
+
+        Evenement event = new Evenement();
+        ReflectionTestUtils.setField(event, "id", eventId);
+
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+        when(evenementRepository.save(any())).thenAnswer(invocatiom -> invocatiom.getArgument(0));
+
+        // Act
+        Evenement result = evenementService.participerEvenement(eventId, participant);
+
+        // Assert
+        assertTrue(result.getParticipants().contains(participant));
+        verify(evenementRepository).save(event);
+    }
+
+    /**
+     * US47 Test2 - Participer à un événement
+     * Tentative de participation déjà existante
+     */
+    @Test
+    void participerEvenement_QuandDejaInscrit_DoitLeverException() {
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur participant = new Utilisateur();
+        ReflectionTestUtils.setField(participant, "id", 100L);
+
+        Evenement event = new Evenement();
+        ReflectionTestUtils.setField(event, "id", eventId);
+        event.addParticipant(participant);
+
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> evenementService.participerEvenement(eventId, participant));
+        assertEquals("Vous êtes déjà inscrit à cet événement", exception.getMessage());
     }
 }

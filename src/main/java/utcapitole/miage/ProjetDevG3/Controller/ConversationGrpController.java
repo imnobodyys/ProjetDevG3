@@ -1,6 +1,7 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
-/** Classe ConversationGrpController
+/**
+ * Classe ConversationGrpController
  * Gère les conversations de groupe entre utilisateurs
  */
 public class ConversationGrpController {

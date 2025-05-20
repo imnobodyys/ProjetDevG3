@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Post {
     private Long id;
 
     private String contenu;
-    
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -47,7 +47,6 @@ public class Post {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    
 
     /**
      * Enumération représentant les différentes visibilités d'un post.
@@ -117,7 +116,6 @@ public class Post {
     public void setContenu(String contenu) {
         this.contenu = contenu;
     }
-
 
     public VisibilitePost getVisibilite() {
         return visibilite;

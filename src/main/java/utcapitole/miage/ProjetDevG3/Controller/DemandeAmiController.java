@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 
@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
-import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
-
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import org.springframework.web.bind.annotation.PostMapping;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.DemandeAmiService;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
  * classe DemandeAmiController
@@ -27,8 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/demandes")
 public class DemandeAmiController {
 
-    public DemandeAmiController(utcapitole.miage.projetDevG3.Service.DemandeAmiService demandeAmiService,
-            utcapitole.miage.projetDevG3.Repository.UtilisateurRepository utilisateurRepository) {
+    public DemandeAmiController(utcapitole.miage.projetdevg3.service.DemandeAmiService demandeAmiService,
+            utcapitole.miage.projetdevg3.repository.UtilisateurRepository utilisateurRepository) {
         this.demandeAmiService = demandeAmiService;
         this.utilisateurRepository = utilisateurRepository;
     }

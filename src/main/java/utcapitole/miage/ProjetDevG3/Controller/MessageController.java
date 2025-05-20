@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.Service.MessageService;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.MessageService;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
  * Classe MessageController

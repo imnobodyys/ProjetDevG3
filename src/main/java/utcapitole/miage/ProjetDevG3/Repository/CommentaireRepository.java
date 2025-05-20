@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Repository;
+package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import utcapitole.miage.projetDevG3.model.Commentaire;
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-import utcapitole.miage.projetDevG3.model.Post;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.Commentaire;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 /**
  * CommentaireRepository est une interface qui étend JpaRepository pour gérer

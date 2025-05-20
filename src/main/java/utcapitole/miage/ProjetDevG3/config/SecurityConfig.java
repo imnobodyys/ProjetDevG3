@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.config;
+package utcapitole.miage.projetdevg3.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.Service.CustomUserDetailsService;
+import utcapitole.miage.projetdevg3.service.CustomUserDetailsService;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @Configuration
 @EnableWebSecurity

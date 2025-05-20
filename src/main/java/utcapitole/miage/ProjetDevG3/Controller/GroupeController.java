@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
-import utcapitole.miage.projetDevG3.Service.GroupeService;
-import utcapitole.miage.projetDevG3.Service.MembreGroupeService;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
-import utcapitole.miage.projetDevG3.model.Groupe;
-import utcapitole.miage.projetDevG3.model.MembreGroupe;
-import utcapitole.miage.projetDevG3.model.StatutMembre;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.Groupe;
+import utcapitole.miage.projetdevg3.model.MembreGroupe;
+import utcapitole.miage.projetdevg3.model.StatutMembre;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.GroupeService;
+import utcapitole.miage.projetdevg3.service.MembreGroupeService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 /**
  * Classe GroupeController
