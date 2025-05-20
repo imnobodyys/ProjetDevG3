@@ -168,7 +168,7 @@ public class EvenementController {
      * @return Redirection vers la page de confirmation ou d'erreur
      */
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/paticiper/{id}")
+    @PostMapping("/participer/{id}")
     public String participerEvenement(@PathVariable Long id,
                                     Authentication authentication,
                                     Model model){
