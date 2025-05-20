@@ -30,7 +30,6 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
-    
     @Autowired
 
     private PasswordEncoder passwordEncoder;
@@ -38,7 +37,7 @@ public class UtilisateurController {
 
     private UtilisateurService utilisateurService;
     @Autowired
-    
+
     private UtilisateurRepository utilisateurRepository;
 
     /**
@@ -83,19 +82,13 @@ public class UtilisateurController {
      * @return Nom de la vue Thymeleaf
      */
     @GetMapping("/login")
-<<<<<<< HEAD
     public String loginPage(@RequestParam(value = "error", required = false) String error,
             Model model) {
-=======
-    public String loginPage(@RequestParam(value = "error", required = false) String error, 
-                           @RequestParam(value = "logout", required = false) String logout,
-                        Model model) {
->>>>>>> main
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
         if (logout != null) {
-        model.addAttribute("logoutMessage", "Vous êtes déconnecté.");
+            model.addAttribute("logoutMessage", "Vous êtes déconnecté.");
         }
         return "login";
     }

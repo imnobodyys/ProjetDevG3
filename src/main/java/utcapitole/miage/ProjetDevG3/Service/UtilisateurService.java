@@ -26,18 +26,6 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-<<<<<<< HEAD
-=======
-
-    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.utilisateurRepository = utilisateurRepository;
-    }
-
-
-
-
->>>>>>> main
     /**
      * US01
      * création de profile personnel avec cryptage du mot de passe

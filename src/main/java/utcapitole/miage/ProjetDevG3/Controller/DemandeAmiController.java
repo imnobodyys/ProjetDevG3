@@ -27,13 +27,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/demandes")
 public class DemandeAmiController {
 
-    public DemandeAmiController(utcapitole.miage.projetDevG3.Service.DemandeAmiService demandeAmiService, utcapitole.miage.projetDevG3.Repository.UtilisateurRepository utilisateurRepository) {
+    public DemandeAmiController(utcapitole.miage.projetDevG3.Service.DemandeAmiService demandeAmiService,
+            utcapitole.miage.projetDevG3.Repository.UtilisateurRepository utilisateurRepository) {
         this.demandeAmiService = demandeAmiService;
         this.utilisateurRepository = utilisateurRepository;
     }
-    
+
     private final DemandeAmiService demandeAmiService;
-    private final UtilisateurRepository utilisateurRepository ;
+    private final UtilisateurRepository utilisateurRepository;
 
     /**
      * Récupère l'utilisateur courant depuis Principal
@@ -162,9 +163,5 @@ public class DemandeAmiController {
         demandeAmiService.supprimerAmi(currentUser, id);
         return "redirect:/demandes/amis";
     }
-<<<<<<< HEAD
-=======
 
-    
->>>>>>> main
 }
