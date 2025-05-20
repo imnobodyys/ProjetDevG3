@@ -1,9 +1,9 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 /**
  * Classe MessageController
  * Gère les messages entre utilisateurs
- * @author ProjetDevG3
+ * @author projetdevg3
  */
 import java.util.List;
 
@@ -16,28 +16,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @Controller
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
     @Autowired
-
     private PasswordEncoder passwordEncoder;
-    @Autowired
 
+    @Autowired
     private UtilisateurService utilisateurService;
+    
     @Autowired
-
     private UtilisateurRepository utilisateurRepository;
 
     /**
@@ -180,5 +179,15 @@ public class UtilisateurController {
         utilisateurRepository.save(u1);
         utilisateurRepository.save(u2);
         return "OK";
+    }
+
+    @GetMapping("/profil/{id}")
+    public String afficherProfil(@PathVariable Long id, Model model) {
+        Utilisateur utilisateur = utilisateurService.trouverParId(id);
+        if (utilisateur == null) {
+            return "redirect:/"; // 或返回404页面
+        }
+        model.addAttribute("utilisateur", utilisateur);
+        return "profil";
     }
 }

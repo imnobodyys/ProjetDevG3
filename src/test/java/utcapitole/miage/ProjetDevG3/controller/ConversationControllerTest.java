@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
@@ -18,13 +18,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import utcapitole.miage.projetDevG3.Controller.ConversationController;
-import utcapitole.miage.projetDevG3.Service.ConversationService;
-import utcapitole.miage.projetDevG3.config.SecurityConfig;
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-import utcapitole.miage.projetDevG3.model.Message;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.service.ConversationService;
+import utcapitole.miage.projetdevg3.config.SecurityConfig;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @WebMvcTest(controllers = ConversationController.class)
 @Import(SecurityConfig.class)

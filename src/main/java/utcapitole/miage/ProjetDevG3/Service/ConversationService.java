@@ -1,19 +1,18 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
-import utcapitole.miage.projetDevG3.Repository.ConversationPriRepository;
-import utcapitole.miage.projetDevG3.Repository.ConversationRepository;
-import utcapitole.miage.projetDevG3.Repository.MessageRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-import utcapitole.miage.projetDevG3.model.Message;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
+import utcapitole.miage.projetdevg3.repository.ConversationRepository;
+import utcapitole.miage.projetdevg3.repository.MessageRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
+
+import utcapitole.miage.projetdevg3.model.ConversationPri;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 /**
  * Service générique pour la gestion des conversations.

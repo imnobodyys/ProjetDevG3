@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Repository;
+package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 /**
  * Interface Repository pour l'entité Utilisateur.
@@ -27,9 +27,11 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     Optional<Utilisateur> findByEmail(String email);
 
     @Query("SELECT u FROM Utilisateur u WHERE " +
-    "LOWER(u.nom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-    "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-    "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "LOWER(u.nom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
 
     List<Utilisateur> searchByKeyword(@Param("keyword") String keyword);
+
+    Optional<Utilisateur> findById(Long id);
 }

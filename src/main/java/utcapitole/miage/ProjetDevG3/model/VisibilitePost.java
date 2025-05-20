@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 /**
  * vibilitePost

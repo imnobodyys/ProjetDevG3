@@ -1,48 +1,30 @@
 
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetdevg3.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-import utcapitole.miage.projetDevG3.Controller.DemandeAmiController;
-import utcapitole.miage.projetDevG3.Controller.MessageController;
-import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
-import utcapitole.miage.projetDevG3.Service.MessageService;
-import utcapitole.miage.projetDevG3.config.SecurityConfig;
-import utcapitole.miage.projetDevG3.model.DemandeAmi;
-import utcapitole.miage.projetDevG3.model.StatutDemande;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.config.SecurityConfig;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.MessageService;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @WebMvcTest(MessageController.class)
-@Import(SecurityConfig.class) // 导入您的安全配置
+@Import(SecurityConfig.class)
 @AutoConfigureMockMvc(addFilters = true)
 class MessageControllerWebTest {
 

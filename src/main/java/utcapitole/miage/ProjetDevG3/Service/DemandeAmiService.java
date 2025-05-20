@@ -1,19 +1,18 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.DemandeAmi;
-import utcapitole.miage.projetDevG3.model.StatutDemande;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.DemandeAmi;
+import utcapitole.miage.projetdevg3.model.StatutDemande;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.DemandeAmiRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
  * Service pour la gestion des demandes d'amitié.

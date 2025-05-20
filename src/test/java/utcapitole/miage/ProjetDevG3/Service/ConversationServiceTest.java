@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -11,108 +11,108 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import utcapitole.miage.projetDevG3.Repository.ConversationPriRepository;
-import utcapitole.miage.projetDevG3.Repository.MessageRepository;
-import utcapitole.miage.projetDevG3.model.*;
+import utcapitole.miage.projetdevg3.model.*;
+import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
+import utcapitole.miage.projetdevg3.repository.MessageRepository;
 
 import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 class ConversationServiceTest {
 
-    @Mock
-    private ConversationPriRepository conversationPriRepository;
+        @Mock
+        private ConversationPriRepository conversationPriRepository;
 
-    @Mock
-    private MessageRepository messageRepository;
+        @Mock
+        private MessageRepository messageRepository;
 
-    @InjectMocks
-    private ConversationService conversationService;
+        @InjectMocks
+        private ConversationService conversationService;
 
-    private Utilisateur user;
-    private Utilisateur otherUser;
-    private ConversationPri conversation;
+        private Utilisateur user;
+        private Utilisateur otherUser;
+        private ConversationPri conversation;
 
-    @BeforeEach
-    void setUp() {
-        user = new Utilisateur();
-        user.setId(1L);
-        user.setEmail("user@test.com");
+        @BeforeEach
+        void setUp() {
+                user = new Utilisateur();
+                user.setId(1L);
+                user.setEmail("user@test.com");
 
-        otherUser = new Utilisateur();
-        otherUser.setId(2L);
-        otherUser.setEmail("other@test.com");
+                otherUser = new Utilisateur();
+                otherUser.setId(2L);
+                otherUser.setEmail("other@test.com");
 
-        conversation = new ConversationPri();
-        conversation.setId(100L);
-        conversation.setExpediteurCP(user);
-        conversation.setDestinataireCP(otherUser);
-    }
+                conversation = new ConversationPri();
+                conversation.setId(100L);
+                conversation.setExpediteurCP(user);
+                conversation.setDestinataireCP(otherUser);
+        }
 
-    @Test
-    void getConversationsOfUser_shouldReturnList() {
-        List<ConversationPri> mockList = List.of(conversation);
-        when(conversationPriRepository.findByExpediteurCPOrDestinataireCP(user, user))
-                .thenReturn(mockList);
+        @Test
+        void getConversationsOfUser_shouldReturnList() {
+                List<ConversationPri> mockList = List.of(conversation);
+                when(conversationPriRepository.findByExpediteurCPOrDestinataireCP(user, user))
+                                .thenReturn(mockList);
 
-        List<ConversationPri> result = conversationService.getConversationsOfUser(user);
+                List<ConversationPri> result = conversationService.getConversationsOfUser(user);
 
-        assertEquals(1, result.size());
-        assertEquals(conversation, result.get(0));
-    }
+                assertEquals(1, result.size());
+                assertEquals(conversation, result.get(0));
+        }
 
-    @Test
-    void getMessagesForConversation_shouldReturnMessages() {
-        Message message1 = new Message();
-        message1.setDtEnvoi(LocalDateTime.now());
+        @Test
+        void getMessagesForConversation_shouldReturnMessages() {
+                Message message1 = new Message();
+                message1.setDtEnvoi(LocalDateTime.now());
 
-        when(conversationPriRepository.findById(100L))
-                .thenReturn(Optional.of(conversation));
-        when(messageRepository.findByConversationOrderByDtEnvoiAsc(conversation))
-                .thenReturn(List.of(message1));
+                when(conversationPriRepository.findById(100L))
+                                .thenReturn(Optional.of(conversation));
+                when(messageRepository.findByConversationOrderByDtEnvoiAsc(conversation))
+                                .thenReturn(List.of(message1));
 
-        List<Message> messages = conversationService.getMessagesForConversation(100L, user);
+                List<Message> messages = conversationService.getMessagesForConversation(100L, user);
 
-        assertEquals(1, messages.size());
-    }
+                assertEquals(1, messages.size());
+        }
 
-    @Test
-    void getMessagesForConversation_notParticipant_shouldThrow() {
-        Utilisateur stranger = new Utilisateur();
-        stranger.setId(99L);
+        @Test
+        void getMessagesForConversation_notParticipant_shouldThrow() {
+                Utilisateur stranger = new Utilisateur();
+                stranger.setId(99L);
 
-        when(conversationPriRepository.findById(100L))
-                .thenReturn(Optional.of(conversation));
+                when(conversationPriRepository.findById(100L))
+                                .thenReturn(Optional.of(conversation));
 
-        assertThrows(IllegalStateException.class,
-                () -> conversationService.getMessagesForConversation(100L, stranger));
-    }
+                assertThrows(IllegalStateException.class,
+                                () -> conversationService.getMessagesForConversation(100L, stranger));
+        }
 
-    @Test
-    void getMessagesForConversation_notFound_shouldThrow() {
-        when(conversationPriRepository.findById(999L))
-                .thenReturn(Optional.empty());
+        @Test
+        void getMessagesForConversation_notFound_shouldThrow() {
+                when(conversationPriRepository.findById(999L))
+                                .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class,
-                () -> conversationService.getMessagesForConversation(999L, user));
-    }
+                assertThrows(IllegalArgumentException.class,
+                                () -> conversationService.getMessagesForConversation(999L, user));
+        }
 
-    @Test
-    void getOtherUser_shouldReturnOtherParticipant() {
-        when(conversationPriRepository.findById(100L))
-                .thenReturn(Optional.of(conversation));
+        @Test
+        void getOtherUser_shouldReturnOtherParticipant() {
+                when(conversationPriRepository.findById(100L))
+                                .thenReturn(Optional.of(conversation));
 
-        Utilisateur result = conversationService.getOtherUser(100L, user);
+                Utilisateur result = conversationService.getOtherUser(100L, user);
 
-        assertEquals(otherUser, result);
-    }
+                assertEquals(otherUser, result);
+        }
 
-    @Test
-    void getOtherUser_notFound_shouldThrow() {
-        when(conversationPriRepository.findById(999L))
-                .thenReturn(Optional.empty());
+        @Test
+        void getOtherUser_notFound_shouldThrow() {
+                when(conversationPriRepository.findById(999L))
+                                .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class,
-                () -> conversationService.getOtherUser(999L, user));
-    }
+                assertThrows(IllegalArgumentException.class,
+                                () -> conversationService.getOtherUser(999L, user));
+        }
 }
