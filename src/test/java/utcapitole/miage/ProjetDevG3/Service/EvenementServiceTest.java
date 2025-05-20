@@ -11,6 +11,7 @@ import utcapitole.miage.projetdevg3.model.*;
 import utcapitole.miage.projetdevg3.repository.EvenementRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -369,6 +370,42 @@ class EvenementServiceTest {
                 IllegalArgumentException.class,
                 () -> evenementService.participerEvenement(eventId, participant));
         assertEquals("Vous êtes déjà inscrit à cet événement", exception.getMessage());
+    }
+
+    /**
+     * US48 Test1 - Visualisation des participants à un événement
+     * Visualiser les participants d'un événement existant
+     */
+    @Test
+    void getParticipantsEvenement_QuandEvenementExistant_DoitRetournerListe() {
+        // Arrange
+        Long eventId = 1L;
+        Evenement event = new Evenement();
+        event.addParticipant(new Utilisateur("Test", "User", "test@example.com", "pass"));
+        
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        // Act
+        List<Utilisateur> result = evenementService.getParticipantsEvenement(eventId);
+
+        // Assert
+        assertEquals(1, result.size());
+        verify(evenementRepository).findById(eventId);
+    }
+
+     /**
+     * US48 Test2 - Visualisation des participants à un événement
+     * Tentative d'accès à un événement inexistant
+     */
+    @Test
+    void getParticipantsEvenement_QuandEvenementInexistant_DoitLeverException() {
+        // Arrange
+        Long invalidId = 999L;
+        when(evenementRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, 
+            () -> evenementService.getParticipantsEvenement(invalidId));
     }
 
 }
