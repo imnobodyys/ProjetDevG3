@@ -331,4 +331,55 @@ class EvenementServiceTest {
             evenementService.supprimerEvenement(eventId, intrus)
         );
     }
+
+
+    /**
+     * US47 Test1 - Participer à un événement
+     * Participation réussie à un événement
+     */
+    @Test
+    void participerEvenement_QuandNouveauParticipant_DoitAjouter(){
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur participant = new Utilisateur();
+        ReflectionTestUtils.setField(participant, "id", 100L);
+
+        Evenement event = new Evenement();
+        ReflectionTestUtils.setField(event, "id", eventId);
+
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+        when(evenementRepository.save(any())).thenAnswer(invocatiom -> invocatiom.getArgument(0));
+
+        // Act
+        Evenement result = evenementService.participerEvenement(eventId, participant);
+
+        // Assert
+        assertTrue(result.getParticipants().contains(participant));
+        verify(evenementRepository).save(event);
+    }
+
+    /**
+     * US47 Test2 - Participer à un événement
+     * Tentative de participation déjà existante
+     */
+    @Test
+    void participerEvenement_QuandDejaInscrit_DoitLeverException(){
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur participant = new Utilisateur();
+        ReflectionTestUtils.setField(participant, "id", 100L);
+
+        Evenement event = new Evenement();
+        ReflectionTestUtils.setField(event, "id", eventId);
+        event.addParticipant(participant);
+
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+        
+        // Act & Assert
+       IllegalArgumentException exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> evenementService.participerEvenement(eventId, participant)
+        );
+        assertEquals("Vous êtes déjà inscrit à cet événement", exception.getMessage());
+    }
 }
