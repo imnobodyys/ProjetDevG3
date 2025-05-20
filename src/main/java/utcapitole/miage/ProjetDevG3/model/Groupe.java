@@ -36,11 +36,8 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
     @NotBlank
     @Size
-=======
->>>>>>> main
     private String nom;
 
     @NotBlank

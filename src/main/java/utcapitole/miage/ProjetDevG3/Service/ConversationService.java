@@ -19,7 +19,6 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
  * Centralise les opérations communes à tous les types de conversations.
  */
 @Service
-@RequiredArgsConstructor
 public class ConversationService {
 
     /**
@@ -30,6 +29,13 @@ public class ConversationService {
     private final ConversationPriRepository conversationPriRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final MessageRepository messageRepository;
+
+    public ConversationService(ConversationPriRepository conversationPriRepository, ConversationRepository conversationRepository, MessageRepository messageRepository, UtilisateurRepository utilisateurRepository) {
+        this.conversationPriRepository = conversationPriRepository;
+        this.conversationRepository = conversationRepository;
+        this.messageRepository = messageRepository;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     /**
      * method pour avoir touts conversation de utlisateur
