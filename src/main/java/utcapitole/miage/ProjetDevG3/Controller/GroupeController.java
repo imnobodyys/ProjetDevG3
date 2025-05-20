@@ -40,7 +40,7 @@ public class GroupeController {
      */
     @Autowired
     private GroupeService groupeService;
-    
+
     /** membreGroupeService : service pour gérer les membres de groupe */
     @Autowired
     private MembreGroupeService membreGroupeService;
@@ -292,7 +292,7 @@ public class GroupeController {
 
     @PostMapping("/{id}/supprimer")
     public String supprimerGroupe(@PathVariable Long id, Principal principal) {
-        Utilisateur utilisateur = utilisateurService.trouverParEmail(principal.getName());
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
 
         try {
             groupeService.supprimerGroupeSiCreateur(id, utilisateur);

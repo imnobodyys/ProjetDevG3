@@ -111,14 +111,6 @@ public class UtilisateurService {
         return utilisateurRepository.searchByKeyword(keyword);
     }
 
-    public Utilisateur findByEmail(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Utilisateur trouverParEmail(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
     }

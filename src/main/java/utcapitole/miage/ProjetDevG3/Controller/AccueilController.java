@@ -5,8 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
+
 @Controller
+@RequiredArgsConstructor
 public class AccueilController {
+
+    private final UtilisateurService utilisateurService;
 
     /**
      * Affiche la page d'accueil avec des contenus différenciés selon l'état
@@ -18,15 +25,14 @@ public class AccueilController {
      * @return Le nom du template Thymeleaf
      */
     @GetMapping("/accueil")
-    public String accueil(Model model, Principal principal) {
-        boolean isAuthenticated = (principal != null);
-        model.addAttribute("isAuthenticated", isAuthenticated);
-
-        if (isAuthenticated) {
-            model.addAttribute("userEmail", principal.getName());
-            // Ajoutez ici d'autres attributs nécessaires pour les utilisateurs connectés
+    public String afficherAccueil(Model model, Principal principal) {
+        if (principal != null) {
+            Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
+            model.addAttribute("utilisateur", utilisateur);
+            model.addAttribute("isAuthenticated", true);
+        } else {
+            model.addAttribute("isAuthenticated", false);
         }
-
         return "accueil";
     }
 }

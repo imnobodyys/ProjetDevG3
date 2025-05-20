@@ -1,5 +1,6 @@
 package utcapitole.miage.projetdevg3.controller;
 
+import java.security.Principal;
 /**
  * Classe MessageController
  * Gère les messages entre utilisateurs
@@ -36,7 +37,7 @@ public class UtilisateurController {
 
     @Autowired
     private UtilisateurService utilisateurService;
-    
+
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
@@ -156,14 +157,16 @@ public class UtilisateurController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
-    public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword, Model model) {
+    public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword, Model model,
+            Principal principal) {
         List<Utilisateur> resultats = null;
 
         // si le utilisateur saisi le keword on commence recherche
         if (keyword != null && !keyword.isEmpty()) {
             resultats = utilisateurService.rechercher(keyword);
         }
-
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
+        model.addAttribute("utilisateur", utilisateur);
         // transmis key word et resultat
         model.addAttribute("keyword", keyword);
         model.addAttribute("resultats", resultats);
