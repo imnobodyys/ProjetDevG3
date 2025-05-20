@@ -189,7 +189,7 @@ public class UtilisateurController {
     public String afficherProfil(@PathVariable Long id, Model model) {
         Utilisateur utilisateur = utilisateurService.trouverParId(id);
         if (utilisateur == null) {
-            return "redirect:/"; // 或返回404页面
+            return "redirect:/";
         }
         model.addAttribute("utilisateur", utilisateur);
         return "profil";

@@ -84,39 +84,33 @@ public class ConversationControllerTest {
     @Test
     @WithMockUser(username = "test@example.com")
     void afficherMessages_ShouldReturnMessagesView() throws Exception {
-        // 构造用户
-        Utilisateur expediteur = new Utilisateur();
-        expediteur.setId(1L);
-        expediteur.setEmail("test@example.com");
-        expediteur.setNom("Alice");
+        // 准备测试数据
+        Utilisateur autreUtilisateur = new Utilisateur();
+        autreUtilisateur.setId(2L);
+        autreUtilisateur.setNom("Bob");
 
-        Utilisateur autre = new Utilisateur();
-        autre.setId(2L);
-        autre.setEmail("ami@example.com");
-        autre.setNom("Bob");
-
-        // 构造消息
         Message msg1 = new Message();
         msg1.setId(100L);
         msg1.setContenu("Bonjour !");
-        msg1.setExpedi(expediteur);
+        msg1.setExpedi(utilisateur);
 
         Message msg2 = new Message();
         msg2.setId(101L);
         msg2.setContenu("Salut !");
-        msg2.setExpedi(autre);
+        msg2.setExpedi(autreUtilisateur);
 
         List<Message> messages = Arrays.asList(msg1, msg2);
 
         when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(utilisateur));
-        when(conversationService.getMessagesForConversation(1L, utilisateur)).thenReturn(messages);
-        when(conversationService.getOtherUser(1L, utilisateur)).thenReturn(autre);
+        when(conversationService.getMessagesForConversation(10L, utilisateur)).thenReturn(messages);
+        when(conversationService.getOtherUser(10L, utilisateur)).thenReturn(autreUtilisateur);
 
-        mockMvc.perform(get("/conversations/1"))
+        mockMvc.perform(get("/conversations/10"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("messages"))
                 .andExpect(model().attributeExists("messages"))
-                .andExpect(model().attributeExists("autreUtilisateur"));
+                .andExpect(model().attributeExists("autreUtilisateur"))
+                .andExpect(model().attribute("messages", hasSize(2)));
     }
 
 }
