@@ -20,101 +20,45 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * Gère l'envoi, l'acceptation et le refus des invitations entre utilisateurs.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DemandeAmiService {
-    /**
-     * Référentiel pour les utilisateurs.
-     * Utilisé pour interagir avec la base de données des utilisateurs.
-     */
-    private UtilisateurRepository utilisateurRepository;
-    private DemandeAmiRepository demandeAmiRepository;
+    private final UtilisateurRepository utilisateurRepository;
+    private final DemandeAmiRepository demandeAmiRepository;
 
     /**
-     * method pour envoyer demande ami
+     * Envoie une demande d'ami
      * 
-     * @param expediteur
-     * @param destinaire
-     *                   Envoie une demande d'amitié d'un utilisateur à un autre.
-     *                   Vérifie si l'expéditeur et le destinataire sont différents.
+     * @throws IllegalArgumentException si l'utilisateur n'existe pas ou tentative
+     *                                  d'auto-ajout
+     * @throws IllegalStateException    si une demande existe déjà
      */
-    public void envoyerdemandeami(Long expediteur, Long destinaire) {
-        if (expediteur.equals(destinaire)) {
-            throw new IllegalArgumentException("ne peuvez pas ajourer vous meme");
+    public void envoyerDemandeAmi(Long expediteurId, Long destinataireId) {
+        if (expediteurId.equals(destinataireId)) {
+            throw new IllegalArgumentException("Vous ne pouvez pas vous ajouter vous-même comme ami");
         }
 
-        if (demandeAmiRepository.existsDemandeBetween(expediteur,
-                destinaire)) {
-            throw new IllegalArgumentException("Deja demande");
+        if (demandeAmiRepository.existsDemandeBetween(expediteurId, destinataireId)) {
+            throw new IllegalStateException("Une demande existe déjà entre ces utilisateurs");
         }
+
+        Utilisateur expediteur = utilisateurRepository.findById(expediteurId)
+                .orElseThrow(() -> new IllegalArgumentException("Expéditeur non trouvé"));
+
+        Utilisateur destinataire = utilisateurRepository.findById(destinataireId)
+                .orElseThrow(() -> new IllegalArgumentException("Destinataire non trouvé"));
+
         DemandeAmi demande = new DemandeAmi();
-        demande.setExpediteurAmi(utilisateurRepository.getReferenceById(expediteur));
-        demande.setDestinataireAmi(utilisateurRepository.getReferenceById(destinaire));
+        demande.setExpediteurAmi(expediteur);
+        demande.setDestinataireAmi(destinataire);
         demande.setStatut(StatutDemande.EN_ATTENTE);
         demande.setDtEnvoi(LocalDateTime.now());
+
         demandeAmiRepository.save(demande);
     }
 
     /**
-     * method pour visualiser list de demande ami
-     * 
-     * @param destinataire
-     * @return
-     */
-    public List<DemandeAmi> getDemandesRecues(Utilisateur destinataire) {
-        return demandeAmiRepository.findByDestinataireAmiAndStatut(destinataire, StatutDemande.EN_ATTENTE);
-    }
-
-    /**
-     * Accepter demande amis
-     * 
-     * @param demandeId
-     * @param currentUser
-     */
-    @Transactional
-    public void accepterDemande(Long demandeId, Utilisateur currentUser) {
-        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
-                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
-
-        if (!demande.getDestinataireAmi().equals(currentUser)) {
-            throw new IllegalStateException("vous n'avez pas drois");
-        }
-
-        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
-            throw new IllegalStateException("Demande est fini");
-        }
-
-        demande.setStatut(StatutDemande.ACCEPTE);
-        demandeAmiRepository.save(demande);
-
-    }
-
-    /**
-     * refuser demand ami
-     * 
-     * @param demandeId
-     * @param currentUser
-     */
-    @Transactional
-    public void refuserDemande(Long demandeId, Utilisateur currentUser) {
-        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
-                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
-
-        if (!demande.getDestinataireAmi().equals(currentUser)) {
-            throw new IllegalStateException("vous n'avez pas drois");
-        }
-
-        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
-            throw new IllegalStateException("Demande est fini");
-        }
-
-        demande.setStatut(StatutDemande.REFUSE);
-        demandeAmiRepository.save(demande);
-    }
-
-    /**
-     * 
-     * @param destinataire
-     * @return List de demande ami en attente
+     * Récupère les demandes reçues en attente pour un utilisateur
      */
     public List<DemandeAmi> getDemandesRecuesEnAttente(Utilisateur destinataire) {
         return demandeAmiRepository.findByDestinataireAmiAndStatut(
@@ -123,9 +67,49 @@ public class DemandeAmiService {
     }
 
     /**
+     * Accepte une demande d'ami
      * 
-     * @param utilisateur
-     * @return list des amis
+     * @throws IllegalStateException si la demande n'est pas en attente
+     */
+    @Transactional
+    public void accepterDemande(Long demandeId, Utilisateur currentUser) {
+        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
+                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
+
+        if (!demande.getDestinataireAmi().equals(currentUser)) {
+            throw new IllegalStateException("Vous n'avez pas le droit d'accepter cette demande");
+        }
+
+        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
+            throw new IllegalStateException("Cette demande a déjà été traitée");
+        }
+
+        demande.setStatut(StatutDemande.ACCEPTE);
+        demandeAmiRepository.save(demande);
+    }
+
+    /**
+     * Refuse une demande d'ami
+     */
+    @Transactional
+    public void refuserDemande(Long demandeId, Utilisateur currentUser) {
+        DemandeAmi demande = demandeAmiRepository.findById(demandeId)
+                .orElseThrow(() -> new IllegalArgumentException("Demande introuvable"));
+
+        if (!demande.getDestinataireAmi().equals(currentUser)) {
+            throw new IllegalStateException("Vous n'avez pas le droit de refuser cette demande");
+        }
+
+        if (demande.getStatut() != StatutDemande.EN_ATTENTE) {
+            throw new IllegalStateException("Cette demande a déjà été traitée");
+        }
+
+        demande.setStatut(StatutDemande.REFUSE);
+        demandeAmiRepository.save(demande);
+    }
+
+    /**
+     * Récupère la liste des amis d'un utilisateur
      */
     public List<Utilisateur> getAmis(Utilisateur utilisateur) {
         List<DemandeAmi> demandes = demandeAmiRepository
@@ -141,17 +125,13 @@ public class DemandeAmiService {
     }
 
     /**
-     * pour supprier un ami
-     * 
-     * @param utilisateur
-     * @param id
+     * Supprime une amitié entre deux utilisateurs
      */
-    public void supprimeramis(Utilisateur utilisateur, Long id) {
-        Utilisateur ami = utilisateurRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ami na pas trouve"));
+    @Transactional
+    public void supprimerAmi(Utilisateur utilisateur, Long amiId) {
+        Utilisateur ami = utilisateurRepository.findById(amiId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur ami non trouvé"));
 
         demandeAmiRepository.deleteAmitie(utilisateur, ami);
-
     }
-
 }

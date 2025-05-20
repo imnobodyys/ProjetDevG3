@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-
 /**
  * Classe ConversationPri
  * Représente une conversation privée entre deux utilisateurs

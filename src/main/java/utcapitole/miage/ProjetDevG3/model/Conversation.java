@@ -40,7 +40,7 @@ public class Conversation {
     /**
      * getter and setter
      * id : identifiant de la conversation
-      */ 
+     */
     public long getId() {
         return id;
     }
@@ -64,6 +64,10 @@ public class Conversation {
         if (messages.remove(message)) {
             message.setConversation(null);
         }
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

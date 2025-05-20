@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,13 +16,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.projetDevG3.Controller.GroupeController;
 import utcapitole.miage.projetDevG3.Service.GroupeService;
 import utcapitole.miage.projetDevG3.Service.MembreGroupeService;
+import utcapitole.miage.projetDevG3.Service.UtilisateurService;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
-
 
 @WebMvcTest(GroupeController.class)
 @AutoConfigureMockMvc(addFilters = false) // ⬅ DÉSACTIVE la sécurité pour les tests
 public class GroupeControllerTests {
-     @Autowired
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -32,6 +30,8 @@ public class GroupeControllerTests {
 
     @MockBean
     private MembreGroupeService membreGroupeService;
+    @MockBean
+    private UtilisateurService utilisateurService;
 
     // US17 - Création de groupe
     @Test
