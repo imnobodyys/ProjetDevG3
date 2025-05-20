@@ -33,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = UtilisateurController.class)
 @Import(SecurityConfig.class)
@@ -50,7 +51,7 @@ public class UtilisateurControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @MockBean
-    private UserDetailsService userDetailsService; 
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     void setup() {
@@ -88,11 +89,11 @@ public class UtilisateurControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/api/utilisateurs/creer")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()) // Important pour POST
-                        .param("nom", "Doe")
-                        .param("prenom", "John")
-                        .param("email", "test@example.com")
-                        .param("mdp", "password123"))
+                .with(SecurityMockMvcRequestPostProcessors.csrf()) // Important pour POST
+                .param("nom", "Doe")
+                .param("prenom", "John")
+                .param("email", "test@example.com")
+                .param("mdp", "password123"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("confirmationUtilisateur"))
                 .andExpect(model().attributeExists("utilisateur"));
@@ -112,17 +113,16 @@ public class UtilisateurControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/api/utilisateurs/creer")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()) // Important pour POST
-                        .param("nom", "Dupont")
-                        .param("prenom", "Alice")
-                        .param("email", "existant@example.com")
-                        .param("mdp", "password123"))
+                .with(SecurityMockMvcRequestPostProcessors.csrf()) // Important pour POST
+                .param("nom", "Dupont")
+                .param("prenom", "Alice")
+                .param("email", "existant@example.com")
+                .param("mdp", "password123"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("creerUtilisateur"))
                 .andExpect(model().attributeExists("message"))
                 .andExpect(model().attribute("message", "Erreur : " + errorMessage));
     }
-
 
     /**
      * US02 Test1 - connexion à mon compte
@@ -142,16 +142,17 @@ public class UtilisateurControllerTest {
                 .build();
 
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
-        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true); 
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
 
         // Act & Assert
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin("/api/utilisateurs/login")
-                .user(email)
-                .password(rawPassword))
+        mockMvc.perform(post("/api/utilisateurs/verifierlogin")
+                .with(csrf())
+                .param("username", email)
+                .param("password", rawPassword))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/api/utilisateurs/index"));
+                .andExpect(redirectedUrl("/accueil"));
+
     }
-    
 
     /**
      * US02 Test2 - connexion à mon compte
@@ -163,7 +164,7 @@ public class UtilisateurControllerTest {
         String email = "bob@example.com";
         String correctPassword = "correctPassword";
         String wrongPassword = "wrongPassword";
-        String encodedPassword = passwordEncoder.encode(correctPassword); 
+        String encodedPassword = passwordEncoder.encode(correctPassword);
 
         UserDetails userDetails = User.builder()
                 .username(email)
@@ -176,9 +177,10 @@ public class UtilisateurControllerTest {
         when(passwordEncoder.matches(wrongPassword, encodedPassword)).thenReturn(false);
 
         // Act & Assert
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin("/api/utilisateurs/login")
-                .user(email)
-                .password(wrongPassword))
+        mockMvc.perform(post("/api/utilisateurs/verifierlogin")
+                .with(csrf())
+                .param("username", email)
+                .param("password", wrongPassword))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/api/utilisateurs/login?error"));
     }
@@ -196,21 +198,22 @@ public class UtilisateurControllerTest {
                 .thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act & Assert
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin("/api/utilisateurs/login")
-                .user(email)
-                .password("anyPassword"))
+        mockMvc.perform(post("/api/utilisateurs/verifierlogin")
+                .with(csrf())
+                .param("username", email)
+                .param("password", "anyPassword"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/api/utilisateurs/login?error"));
     }
 
-
     /**
      * US02 Test4 - Affichage de la page de connexion
-     * Affichage sans erreur : la page de connexion est affichée sans message d’erreur
+     * Affichage sans erreur : la page de connexion est affichée sans message
+     * d’erreur
      */
     @Test
     void afficherPageLogin_SansErreur_DoitRetournerVueSansMessage() throws Exception {
-        mockMvc.perform(get("/api/utilisateurs/login")) 
+        mockMvc.perform(get("/api/utilisateurs/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))
                 .andExpect(model().attributeDoesNotExist("errorMessage"));
@@ -218,48 +221,48 @@ public class UtilisateurControllerTest {
 
     /**
      * US02 Test5 - Affichage de la page de connexion
-     * Affichage avec erreur : un message d’erreur est affiché en cas de tentative échouée
+     * Affichage avec erreur : un message d’erreur est affiché en cas de tentative
+     * échouée
      */
     @Test
     void afficherPageLogin_AvecErreur_DoitAfficherMessage() throws Exception {
         mockMvc.perform(get("/api/utilisateurs/login")
-                .param("error", "true"))  
-            .andExpect(status().isOk())
-            .andExpect(view().name("login"))
-            .andExpect(model().attributeExists("errorMessage"))
-            .andExpect(model().attribute("errorMessage", "Identifiants incorrects"));
+                .param("error", "true"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("errorMessage"))
+                .andExpect(model().attribute("errorMessage", "Identifiants incorrects"));
     }
 
-
     /**
-     * US03 Test1 - Modification du profil 
+     * US03 Test1 - Modification du profil
      * Modifier son profil avec des données valides
      */
     @WithMockUser(username = "user@test.com")
     @Test
     void soumettreModification_QuandValide_DoitConfirmer() throws Exception {
-    // Arrange
-    Utilisateur existingUser = new Utilisateur("Old", "Name", "user@test.com", "oldPass");
+        // Arrange
+        Utilisateur existingUser = new Utilisateur("Old", "Name", "user@test.com", "oldPass");
         existingUser.setId(1L);
-    Utilisateur updatedUser = new Utilisateur("New", "Name", "new@test.com", "newPass");
-        
-    when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(existingUser);
-    when(utilisateurService.modifierUtilisateur(eq(1L), any())).thenReturn(updatedUser);
+        Utilisateur updatedUser = new Utilisateur("New", "Name", "new@test.com", "newPass");
 
-    // Act & Assert
-    mockMvc.perform(post("/api/utilisateurs/modifier")
-        .with(SecurityMockMvcRequestPostProcessors.csrf())
-        .param("nom", "New")
-        .param("prenom", "Name")
-        .param("email", "new@test.com")
-        .param("mdp", "newPass"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("confirmationUtilisateur"))
-        .andExpect(model().attribute("utilisateur", updatedUser));
-        }
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(existingUser);
+        when(utilisateurService.modifierUtilisateur(eq(1L), any())).thenReturn(updatedUser);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/utilisateurs/modifier")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .param("nom", "New")
+                .param("prenom", "Name")
+                .param("email", "new@test.com")
+                .param("mdp", "newPass"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("confirmationUtilisateur"))
+                .andExpect(model().attribute("utilisateur", updatedUser));
+    }
 
     /**
-     * US03 Test2 - Modification du profil 
+     * US03 Test2 - Modification du profil
      * Tentative de modification avec un email déjà utilisé
      */
     @WithMockUser(username = "user@test.com")
@@ -269,23 +272,22 @@ public class UtilisateurControllerTest {
         String errorMessage = "Cet email est déjà utilisé";
         Utilisateur existingUser = new Utilisateur("User", "Test", "user@test.com", "pass");
         existingUser.setId(1L);
-    
+
         when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(existingUser);
         when(utilisateurService.modifierUtilisateur(eq(1L), any()))
                 .thenThrow(new IllegalArgumentException(errorMessage));
 
         // Act & Assert
         mockMvc.perform(post("/api/utilisateurs/modifier")
-            .with(SecurityMockMvcRequestPostProcessors.csrf())
-            .param("email", "existing@example.com"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("modifierProfil"))
-            .andExpect(model().attribute("errorMessage", errorMessage));
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .param("email", "existing@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("modifierProfil"))
+                .andExpect(model().attribute("errorMessage", errorMessage));
     }
 
-
     /**
-     * US03 Test3 - Modification du profil 
+     * US03 Test3 - Modification du profil
      * Affichage formulaire modification
      */
     @WithMockUser(username = "user@test.com")
@@ -297,13 +299,11 @@ public class UtilisateurControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/api/utilisateurs/modifier"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("modifierProfil"))
-            .andExpect(model().attributeExists("utilisateur"))
-            .andExpect(model().attribute("utilisateur", mockUser));
+                .andExpect(status().isOk())
+                .andExpect(view().name("modifierProfil"))
+                .andExpect(model().attributeExists("utilisateur"))
+                .andExpect(model().attribute("utilisateur", mockUser));
     }
-
-
 
     /**
      * US04 Test1 - Suppression de profil
@@ -314,21 +314,18 @@ public class UtilisateurControllerTest {
     void supprimerProfil_QuandUtilisateurAuthentifie_DoitSupprimerEtRediriger() throws Exception {
         Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
         mockUser.setId(1L);
-        
+
         when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(mockUser);
-        
+
         mockMvc.perform(post("/api/utilisateurs/supprimer")
                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/api/utilisateurs/login?logout"));
-        
+
         verify(utilisateurService).supprimerUtilisateur(1L);
     }
 
-
-
-
-    //test pour le controller pour rechercher un utilisateur
+    // test pour le controller pour rechercher un utilisateur
     @WithMockUser(username = "test", roles = { "USER" })
     @Test
     void TestSearch() throws Exception {

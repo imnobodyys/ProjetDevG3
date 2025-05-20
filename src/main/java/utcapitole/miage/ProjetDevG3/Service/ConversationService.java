@@ -1,21 +1,66 @@
 package utcapitole.miage.projetDevG3.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
+import utcapitole.miage.projetDevG3.Repository.ConversationPriRepository;
 import utcapitole.miage.projetDevG3.Repository.ConversationRepository;
+import utcapitole.miage.projetDevG3.Repository.MessageRepository;
+import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import utcapitole.miage.projetDevG3.model.ConversationPri;
+import utcapitole.miage.projetDevG3.model.Message;
+import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 /**
  * Service générique pour la gestion des conversations.
  * Centralise les opérations communes à tous les types de conversations.
  */
 @Service
+@RequiredArgsConstructor
 public class ConversationService {
 
     /**
      * Référentiel pour les conversations.
      * Utilisé pour interagir avec la base de données.
      */
-    @Autowired
-    private ConversationRepository conversationRepository;
+    private final ConversationRepository conversationRepository;
+    private final ConversationPriRepository conversationPriRepository;
+    private final UtilisateurRepository utilisateurRepository;
+    private final MessageRepository messageRepository;
 
+    /**
+     * method pour avoir touts conversation de utlisateur
+     * 
+     * @param utilisateur
+     * @return
+     */
+    public List<ConversationPri> getConversationsOfUser(Utilisateur utilisateur) {
+        return conversationPriRepository.findByExpediteurCPOrDestinataireCP(utilisateur, utilisateur);
+    }
+
+    public List<Message> getMessagesForConversation(Long conversationId, Utilisateur utilisateur) {
+        ConversationPri conversation = conversationPriRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation non trouvée"));
+
+        if (!conversation.getExpediteurCP().equals(utilisateur) &&
+                !conversation.getDestinataireCP().equals(utilisateur)) {
+            throw new IllegalStateException("Vous n'avez pas accès à cette conversation.");
+        }
+
+        return messageRepository.findByConversationOrderByDtEnvoiAsc(conversation);
+    }
+
+    public Utilisateur getOtherUser(Long conversationId, Utilisateur utilisateur) {
+
+        ConversationPri conversation = conversationPriRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation non trouvée"));
+
+        return conversation.getExpediteurCP().equals(utilisateur)
+                ? conversation.getDestinataireCP()
+                : conversation.getExpediteurCP();
+    }
 }
