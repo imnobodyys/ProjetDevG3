@@ -131,24 +131,4 @@ public class EvenementService {
         return evenementRepository.save(evenement);
     }
 
-    /**
-     * US47 Participer à un événement
-     *  Ajoute un participant à un événement
-     * @param id ID de l'événement
-     * @param participant Utilisateur à ajouter
-     * @return Événement mis à jour
-     * @throws IllegalArgumentException Si l'événement n'existe pas ou participant déjà inscrit
-     */
-    public Evenement participerEvenement(Long id, Utilisateur participant){
-        Evenement evenement = evenementRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
-
-            if(evenement.getParticipants().contains(participant)){
-                throw new IllegalArgumentException("Vous êtes déjà inscrit à cet événement");
-            }
-
-            evenement.addParticipant(participant);
-            return evenementRepository.save(evenement);
-    }
-
 }
