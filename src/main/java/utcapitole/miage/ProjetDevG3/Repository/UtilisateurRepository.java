@@ -32,4 +32,6 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
             "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
 
     List<Utilisateur> searchByKeyword(@Param("keyword") String keyword);
+
+    Optional<Utilisateur> findById(Long id);
 }

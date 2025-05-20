@@ -181,4 +181,14 @@ public class UtilisateurController {
         utilisateurRepository.save(u2);
         return "OK";
     }
+
+    @GetMapping("/profil/{id}")
+    public String afficherProfil(@PathVariable Long id, Model model) {
+        Utilisateur utilisateur = utilisateurService.trouverParId(id);
+        if (utilisateur == null) {
+            return "redirect:/"; // 或返回404页面
+        }
+        model.addAttribute("utilisateur", utilisateur);
+        return "profil";
+    }
 }

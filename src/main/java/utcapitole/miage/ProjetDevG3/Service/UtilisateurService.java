@@ -127,4 +127,8 @@ public class UtilisateurService {
     public UtilisateurRepository getUtilisateurRepository() {
         return utilisateurRepository;
     }
+
+    public Utilisateur trouverParId(Long id) {
+        return utilisateurRepository.findById(id).orElse(null);
+    }
 }

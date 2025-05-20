@@ -34,6 +34,11 @@
                     <td>
                         <a th:href="@{/demande/form/{id}{id=${u.id}}}">Ajouter ami</a>
                     </td>
+                    <td>
+                    <a th:href="@{'/profil/' + ${utilisateur.id}}">
+                    [[${utilisateur.prenom}]] [[${utilisateur.nom}]]
+                        </a>
+                        </td>
                 </tr>
             </tbody>
         </table>
