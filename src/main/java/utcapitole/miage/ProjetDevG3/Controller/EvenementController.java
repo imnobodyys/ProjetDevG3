@@ -130,4 +130,29 @@ public class EvenementController {
             return "modifierEvenement";
         }
     }
+
+    /**
+     * US45 - Suppression d'un événement
+     * Supprime un événement existant après vérification des droits
+     * 
+     * @param id ID de l'événement à supprimer
+     * @param authentication Informations d'authentification
+     * @param model Conteneur des attributs
+     * @return Redirection ou page d'erreur
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/supprimer/{id}")
+    public String supprimerEvenement(@PathVariable Long id,
+                                Authentication authentication,
+                                Model model
+    ){
+        try{
+            Utilisateur currenyUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            evenementService.supprimerEvenement(id, currenyUser);
+            return "confirmationSuppression";
+        }catch(IllegalArgumentException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "errorPage";
+        }
+    }
 }

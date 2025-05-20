@@ -286,4 +286,49 @@ class EvenementServiceTest {
     }
 
 
+    /**
+     * US45 Test1 - Suppression d'un événement
+     * Suppression par l'auteur
+     */
+    @Test
+    void supprimerEvenement_QuandAuteurValide_DoitSupprimer() {
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur auteur = new Utilisateur();
+        ReflectionTestUtils.setField(auteur, "id", 100L);
+        
+        Evenement event = new Evenement();
+        event.setAuteur(auteur);
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+        
+        // Act
+        evenementService.supprimerEvenement(eventId, auteur);
+        
+        // Assert
+        verify(evenementRepository).deleteById(eventId);
+    }
+
+    /**
+     * US45 Test2 - Suppression d'un événement
+     * Tentative de suppression par non-auteur
+     */
+    @Test
+    void supprimerEvenement_QuandNonAuteur_DoitLeverException() {
+        // Arrange
+        Long eventId = 1L;
+        Utilisateur auteur = new Utilisateur();
+        ReflectionTestUtils.setField(auteur, "id", 100L);
+        
+        Utilisateur intrus = new Utilisateur();
+        ReflectionTestUtils.setField(intrus, "id", 200L);
+        
+        Evenement event = new Evenement();
+        event.setAuteur(auteur);
+        when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
+        
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> 
+            evenementService.supprimerEvenement(eventId, intrus)
+        );
+    }
 }
