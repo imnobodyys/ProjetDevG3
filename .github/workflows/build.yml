@@ -1,6 +1,3 @@
-- name: Build and test
-  run: mvn clean verify
-
 
 name: SonarQube
 on:
