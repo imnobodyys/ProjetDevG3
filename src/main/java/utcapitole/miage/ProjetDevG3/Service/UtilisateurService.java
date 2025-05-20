@@ -17,6 +17,7 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
  * utilisateurs.
  */
 @Service
+@RequiredArgsConstructor
 public class UtilisateurService {
 
     /**

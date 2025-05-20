@@ -43,139 +43,141 @@ import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 @Import(SecurityConfig.class)
 class DemandeAmiControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockitoBean
-    private DemandeAmiService demandeAmiService;
+        @MockBean
+        private DemandeAmiService demandeAmiService;
 
-    @MockitoBean
-    private UtilisateurRepository utilisateurRepository;
+        @MockBean
+        private UtilisateurRepository utilisateurRepository;
 
-    @Mock
-    private RedirectAttributes redirectAttributes;
+        @Autowired
+        private DemandeAmiController controller;
 
-    private Utilisateur mockUser;
-    private DemandeAmi mockDemande;
+        @Mock
+        private RedirectAttributes redirectAttributes;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockUser = new Utilisateur();
-        mockUser.setId(1L);
-        mockUser.setEmail("test@example.com");
-        mockUser.setNom("Test User");
+        private Utilisateur mockUser;
+        private DemandeAmi mockDemande;
 
-        mockDemande = new DemandeAmi();
-        mockDemande.setId(1L);
-        mockDemande.setExpediteurAmi(mockUser);
-        mockDemande.setDtEnvoi(LocalDateTime.now());
-        mockDemande.setStatut(StatutDemande.EN_ATTENTE);
-    }
+        @BeforeEach
+        void setUp() {
+                MockitoAnnotations.openMocks(this);
+                mockUser = new Utilisateur();
+                mockUser.setId(1L);
+                mockUser.setEmail("test@example.com");
+                mockUser.setNom("Test User");
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void envoyerDemande_Success() throws Exception {
-        Long destinataireId = 2L;
+                mockDemande = new DemandeAmi();
+                mockDemande.setId(1L);
+                mockDemande.setExpediteurAmi(mockUser);
+                mockDemande.setDtEnvoi(LocalDateTime.now());
+                mockDemande.setStatut(StatutDemande.EN_ATTENTE);
+        }
 
-        when(utilisateurRepository.findByEmail("test@example.com"))
-                .thenReturn(Optional.of(mockUser));
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void envoyerDemande_Success() throws Exception {
+                Long destinataireId = 2L;
 
-        mockMvc.perform(post("/demandes/envoyer")
-                .param("destinataireId", destinataireId.toString())
-                .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users"))
-                .andExpect(flash().attribute("success", "Demande envoyée avec succès !"));
+                when(utilisateurRepository.findByEmail("test@example.com"))
+                                .thenReturn(Optional.of(mockUser));
 
-        verify(demandeAmiService).envoyerDemandeAmi(1L, destinataireId);
-    }
+                mockMvc.perform(post("/demandes/envoyer")
+                                .param("destinataireId", destinataireId.toString())
+                                .with(csrf()))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/users"))
+                                .andExpect(flash().attribute("success", "Demande envoyée avec succès !"));
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void testEnvoyerDemande_userNotFound() {
-        Principal principal = () -> "notfound@example.com";
-        when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+                verify(demandeAmiService).envoyerDemandeAmi(1L, destinataireId);
+        }
 
-        DemandeAmiController controller = new DemandeAmiController(null, null);
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void testEnvoyerDemande_userNotFound() {
+                Principal principal = () -> "notfound@example.com";
+                when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UsernameNotFoundException.class,
-                () -> controller.envoyerDemande(2L, principal, redirectAttributes));
+                UsernameNotFoundException exception = assertThrows(
+                                UsernameNotFoundException.class,
+                                () -> controller.envoyerDemande(2L, principal, redirectAttributes));
 
-        assertEquals("Utilisateur non trouvé", exception.getMessage());
-    }
+                assertEquals("Utilisateur non trouvé", exception.getMessage());
+        }
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void getDemandesRecues_ShouldReturnViewAndModel() throws Exception {
-        when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
-        when(demandeAmiService.getDemandesRecuesEnAttente(mockUser)).thenReturn(List.of(mockDemande));
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void getDemandesRecues_ShouldReturnViewAndModel() throws Exception {
+                when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
+                when(demandeAmiService.getDemandesRecuesEnAttente(mockUser)).thenReturn(List.of(mockDemande));
 
-        mockMvc.perform(get("/demandes/recues"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("demandes-recues"))
-                .andExpect(model().attributeExists("demandes"));
-    }
+                mockMvc.perform(get("/demandes/recues"))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("demandes-recues"))
+                                .andExpect(model().attributeExists("demandes"));
+        }
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void accepterDemande_ShouldRedirect() throws Exception {
-        when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void accepterDemande_ShouldRedirect() throws Exception {
+                when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
 
-        mockMvc.perform(post("/demandes/accepter/1").with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/demandes/recues"));
+                mockMvc.perform(post("/demandes/accepter/1").with(csrf()))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/demandes/recues"));
 
-        verify(demandeAmiService).accepterDemande(1L, mockUser);
-    }
+                verify(demandeAmiService).accepterDemande(1L, mockUser);
+        }
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void refuserDemande_ShouldRedirect() throws Exception {
-        when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void refuserDemande_ShouldRedirect() throws Exception {
+                when(utilisateurRepository.findByEmail("test@example.com")).thenReturn(Optional.of(mockUser));
 
-        mockMvc.perform(post("/demandes/refuser/1").with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/demandes/recues"));
+                mockMvc.perform(post("/demandes/refuser/1").with(csrf()))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/demandes/recues"));
 
-        verify(demandeAmiService).refuserDemande(1L, mockUser);
-    }
+                verify(demandeAmiService).refuserDemande(1L, mockUser);
+        }
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void voirMesAmis_ShouldReturnAmisViewWithFriendsList() throws Exception {
-        Utilisateur ami1 = new Utilisateur();
-        ami1.setEmail("ami1@example.com");
-        Utilisateur ami2 = new Utilisateur();
-        ami2.setEmail("ami2@example.com");
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void voirMesAmis_ShouldReturnAmisViewWithFriendsList() throws Exception {
+                Utilisateur ami1 = new Utilisateur();
+                ami1.setEmail("ami1@example.com");
+                Utilisateur ami2 = new Utilisateur();
+                ami2.setEmail("ami2@example.com");
 
-        when(utilisateurRepository.findByEmail("test@example.com"))
-                .thenReturn(Optional.of(mockUser));
+                when(utilisateurRepository.findByEmail("test@example.com"))
+                                .thenReturn(Optional.of(mockUser));
 
-        when(demandeAmiService.getAmis(mockUser))
-                .thenReturn(Arrays.asList(ami1, ami2));
+                when(demandeAmiService.getAmis(mockUser))
+                                .thenReturn(Arrays.asList(ami1, ami2));
 
-        mockMvc.perform(get("/demandes/amis"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("amis"))
-                .andExpect(model().attributeExists("amis"))
-                .andExpect(model().attribute("amis", hasSize(2)));
+                mockMvc.perform(get("/demandes/amis"))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("amis"))
+                                .andExpect(model().attributeExists("amis"))
+                                .andExpect(model().attribute("amis", hasSize(2)));
 
-        verify(utilisateurRepository).findByEmail("test@example.com");
-        verify(demandeAmiService).getAmis(mockUser);
-    }
+                verify(utilisateurRepository).findByEmail("test@example.com");
+                verify(demandeAmiService).getAmis(mockUser);
+        }
 
-    @Test
-    @WithMockUser(username = "test@example.com")
-    void supprimerAmi_ShouldRedirect() throws Exception {
-        Long amiId = 2L;
-        when(utilisateurRepository.findByEmail("test@example.com"))
-                .thenReturn(Optional.of(mockUser));
+        @Test
+        @WithMockUser(username = "test@example.com")
+        void supprimerAmi_ShouldRedirect() throws Exception {
+                Long amiId = 2L;
+                when(utilisateurRepository.findByEmail("test@example.com"))
+                                .thenReturn(Optional.of(mockUser));
 
-        mockMvc.perform(post("/demandes/supprimer/{id}", amiId).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/demandes/amis"));
+                mockMvc.perform(post("/demandes/supprimer/{id}", amiId).with(csrf()))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/demandes/amis"));
 
-        verify(demandeAmiService).supprimerAmi(mockUser, amiId);
-    }
+                verify(demandeAmiService).supprimerAmi(mockUser, amiId);
+        }
 }

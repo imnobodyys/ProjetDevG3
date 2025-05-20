@@ -87,9 +87,6 @@ public class UtilisateurController {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
-        if (logout != null) {
-            model.addAttribute("logoutMessage", "Vous êtes déconnecté.");
-        }
         return "login";
     }
 
