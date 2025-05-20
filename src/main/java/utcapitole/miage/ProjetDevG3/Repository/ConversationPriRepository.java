@@ -11,8 +11,6 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 @Repository
 public interface ConversationPriRepository extends JpaRepository<ConversationPri, Long> {
-    // Méthode pour trouver une conversation privée par son ID
-    ConversationPri findById(long id);
 
     /**
      * pour savoir conversation entre deux personne

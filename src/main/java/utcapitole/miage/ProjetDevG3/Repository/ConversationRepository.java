@@ -12,6 +12,5 @@ import utcapitole.miage.projetDevG3.model.Utilisateur;
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
     // Méthode pour trouver une conversation par son ID
-    Conversation findById(long id);
 
 }

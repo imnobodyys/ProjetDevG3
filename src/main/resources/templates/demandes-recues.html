@@ -19,8 +19,8 @@
                 </thead>
                 <tbody>
                     <tr th:each="d : ${demandes}">
-                        <td th:text="${d.expediteur}">utilisateur</td>
-                        <td th:text="${#temporals.format(d.date, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
+                        <td th:text="${d.expediteurAmi}">utilisateur</td>
+                        <td th:text="${#temporals.format(d.dtEnvoi, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                         <td>
                             <form action="/demandes/accepter/{id}(id=${d.id})" method="post" >
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

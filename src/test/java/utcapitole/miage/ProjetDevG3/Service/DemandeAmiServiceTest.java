@@ -1,12 +1,9 @@
 package utcapitole.miage.projetDevG3.Service;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,175 +12,137 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import utcapitole.miage.projetDevG3.Repository.DemandeAmiRepository;
 import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
 import utcapitole.miage.projetDevG3.model.DemandeAmi;
 import utcapitole.miage.projetDevG3.model.StatutDemande;
 import utcapitole.miage.projetDevG3.model.Utilisateur;
 
-
 @ExtendWith(MockitoExtension.class)
 class DemandeAmiServiceTest {
 
-    @Mock
-    private UtilisateurRepository utilisateurRepository;
+        @Mock
+        private UtilisateurRepository utilisateurRepository;
 
-    @Mock
-    private DemandeAmiRepository demandeAmiRepository;
+        @Mock
+        private DemandeAmiRepository demandeAmiRepository;
 
-    @InjectMocks
-    private DemandeAmiService demandeAmiService;
+        @InjectMocks
+        private DemandeAmiService demandeAmiService;
 
+        private Utilisateur currentUser;
+        private Utilisateur otherUser;
+        private DemandeAmi pendingDemande;
 
-    private Utilisateur currentUser;
-    private Utilisateur otherUser;
-    private DemandeAmi pendingDemande;
+        @BeforeEach
+        void setUp() {
+                currentUser = new Utilisateur();
+                currentUser.setId(1L);
+                currentUser.setEmail("current@example.com");
 
-    /**
-     * Initialisation des données de test avant chaque méthode
-     */
-    @BeforeEach
-    void setUp() {
-        currentUser = new Utilisateur();
-        currentUser.setId(1L);
-        currentUser.setEmail("current@example.com");
+                otherUser = new Utilisateur();
+                otherUser.setId(2L);
+                otherUser.setEmail("other@example.com");
 
-        otherUser = new Utilisateur();
-        otherUser.setId(2L);
-        otherUser.setEmail("other@example.com");
+                pendingDemande = new DemandeAmi();
+                pendingDemande.setId(100L);
+                pendingDemande.setStatut(StatutDemande.EN_ATTENTE);
+                pendingDemande.setDestinataireAmi(currentUser);
+                pendingDemande.setExpediteurAmi(otherUser);
+        }
 
-        pendingDemande = new DemandeAmi();
-        pendingDemande.setId(100L);
-        pendingDemande.setStatut(StatutDemande.EN_ATTENTE);
-        pendingDemande.setDestinataireAmi(currentUser);
-        pendingDemande.setExpediteurAmi(otherUser);
-    }
+        @Test
+        void demandeASoiMeme_DevraitLeverException() {
+                IllegalArgumentException exception = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> demandeAmiService.envoyerDemandeAmi(1L, 1L));
 
-    /**
-     * Teste qu'une demande à soi-même lève une exception
-     */
-    @Test
-    void demandeASoiMeme_DevraitLeverException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> demandeAmiService.envoyerdemandeami(1L, 1L));
+                assertEquals("Vous ne pouvez pas vous ajouter vous-même comme ami", exception.getMessage());
+        }
 
-        assertEquals("ne peuvez pas ajourer vous meme", exception.getMessage());
-    }
+        @Test
+        void demandeExistante_DevraitLeverException() {
+                when(demandeAmiRepository.existsDemandeBetween(1L, 2L)).thenReturn(true);
 
-    /**
-     * Teste qu'une demande en double lève une exception
-     */
-    @Test
-    void demandeExistante_DevraitLeverException() {
-        when(demandeAmiRepository.existsDemandeBetween(1L, 2L))
-                .thenReturn(true);
+                IllegalStateException exception = assertThrows(
+                                IllegalStateException.class,
+                                () -> demandeAmiService.envoyerDemandeAmi(1L, 2L));
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> demandeAmiService.envoyerdemandeami(1L, 2L));
+                assertEquals("Une demande existe déjà entre ces utilisateurs", exception.getMessage());
+                verify(demandeAmiRepository).existsDemandeBetween(1L, 2L);
+        }
 
-        assertEquals("Deja demande", exception.getMessage());
-        verify(demandeAmiRepository).existsDemandeBetween(1L, 2L);
-    }
+        @Test
+        void demandeValide_DevraitSauvegarder() {
+                when(demandeAmiRepository.existsDemandeBetween(1L, 2L)).thenReturn(false);
+                when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(currentUser));
+                when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(otherUser));
 
-    /**
-     * Teste qu'une demande valide est sauvegardée
-     */
-    @Test
-    void demandeValide_DevraitSauvegarder() {
-        when(demandeAmiRepository.existsDemandeBetween(1L, 2L))
-                .thenReturn(false);
-        when(utilisateurRepository.getReferenceById(1L))
-                .thenReturn(currentUser);
-        when(utilisateurRepository.getReferenceById(2L))
-                .thenReturn(otherUser);
+                demandeAmiService.envoyerDemandeAmi(1L, 2L);
 
-        demandeAmiService.envoyerdemandeami(1L, 2L);
+                verify(demandeAmiRepository).save(any(DemandeAmi.class));
+        }
 
-        verify(demandeAmiRepository).save(any(DemandeAmi.class));
-    }
+        @Test
+        void devraitRetournerDemandesEnAttente() {
+                when(demandeAmiRepository.findByDestinataireAmiAndStatut(
+                                currentUser, StatutDemande.EN_ATTENTE)).thenReturn(List.of(pendingDemande));
 
-    /**
-     * Teste la récupération des demandes en attente
-     */
-    @Test
-    void devraitRetournerDemandesEnAttente() {
-        when(demandeAmiRepository.findByDestinataireAmiAndStatut(
-                currentUser, StatutDemande.EN_ATTENTE))
-                .thenReturn(List.of(pendingDemande));
+                List<DemandeAmi> result = demandeAmiService.getDemandesRecuesEnAttente(currentUser);
 
-        List<DemandeAmi> result = demandeAmiService
-                .getDemandesRecuesEnAttente(currentUser);
+                assertAll(
+                                () -> assertNotNull(result),
+                                () -> assertEquals(1, result.size()),
+                                () -> assertEquals(pendingDemande, result.get(0)));
+        }
 
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertEquals(1, result.size()),
-                () -> assertEquals(pendingDemande, result.get(0)));
-    }
+        @Test
+        void devraitAccepterDemandeValide() {
+                when(demandeAmiRepository.findById(100L)).thenReturn(Optional.of(pendingDemande));
 
-    /**
-     * Teste l'acceptation d'une demande valide
-     */
-    @Test
-    void devraitAccepterDemandeValide() {
-        when(demandeAmiRepository.findById(100L))
-                .thenReturn(Optional.of(pendingDemande));
+                demandeAmiService.accepterDemande(100L, currentUser);
 
-        demandeAmiService.accepterDemande(100L, currentUser);
+                assertAll(
+                                () -> assertEquals(StatutDemande.ACCEPTE, pendingDemande.getStatut()),
+                                () -> verify(demandeAmiRepository).save(pendingDemande));
+        }
 
-        assertAll(
-                () -> assertEquals(StatutDemande.ACCEPTE, pendingDemande.getStatut()),
-                () -> verify(demandeAmiRepository).save(pendingDemande));
-    }
+        @Test
+        void refuserDemande_valideDemande_devraitChangerStatut() {
+                when(demandeAmiRepository.findById(100L)).thenReturn(Optional.of(pendingDemande));
 
-    /**
-     * test pour refuser demande
-     */
-    @Test
-    void refuserDemande_valideDemande_devraitChangerStatut() {
-        when(demandeAmiRepository.findById(100L)).thenReturn(Optional.of(pendingDemande));
+                demandeAmiService.refuserDemande(100L, currentUser);
 
-        demandeAmiService.refuserDemande(100L, currentUser);
+                assertEquals(StatutDemande.REFUSE, pendingDemande.getStatut());
+                verify(demandeAmiRepository).save(pendingDemande);
+        }
 
-        assertEquals(StatutDemande.REFUSE, pendingDemande.getStatut());
-        verify(demandeAmiRepository).save(pendingDemande);
-    }
+        @Test
+        void devraitRefuserSiPasDestinataire() {
+                when(demandeAmiRepository.findById(100L)).thenReturn(Optional.of(pendingDemande));
 
-    /**
-     * Teste le refus si l'utilisateur n'est pas le destinataire
-     */
-    @Test
-    void devraitRefuserSiPasDestinataire() {
-        when(demandeAmiRepository.findById(100L))
-                .thenReturn(Optional.of(pendingDemande));
+                IllegalStateException exception = assertThrows(
+                                IllegalStateException.class,
+                                () -> demandeAmiService.accepterDemande(100L, otherUser));
 
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
-                () -> demandeAmiService.accepterDemande(100L, otherUser));
-        assertEquals("vous n'avez pas drois", exception.getMessage());
-    }
+                assertEquals("Vous n'avez pas le droit d'accepter cette demande", exception.getMessage());
+        }
 
-    /**
-     * Teste la récupération de la liste d'amis
-     */
-    @Test
-    void devraitRetournerListeAmis() {
-        DemandeAmi demandeAcceptee1 = new DemandeAmi();
-        demandeAcceptee1.setExpediteurAmi(currentUser);
-        demandeAcceptee1.setDestinataireAmi(otherUser);
-        demandeAcceptee1.setStatut(StatutDemande.ACCEPTE);
+        @Test
+        void devraitRetournerListeAmis() {
+                DemandeAmi demandeAcceptee1 = new DemandeAmi();
+                demandeAcceptee1.setExpediteurAmi(currentUser);
+                demandeAcceptee1.setDestinataireAmi(otherUser);
+                demandeAcceptee1.setStatut(StatutDemande.ACCEPTE);
 
-        when(demandeAmiRepository.findByStatutAndDestinataireAmiOrStatutAndExpediteurAmi(
-                StatutDemande.ACCEPTE, currentUser,
-                StatutDemande.ACCEPTE, currentUser))
-                .thenReturn(List.of(demandeAcceptee1));
+                when(demandeAmiRepository.findByStatutAndDestinataireAmiOrStatutAndExpediteurAmi(
+                                StatutDemande.ACCEPTE, currentUser,
+                                StatutDemande.ACCEPTE, currentUser))
+                                .thenReturn(List.of(demandeAcceptee1));
 
-        List<Utilisateur> amis = demandeAmiService.getAmis(currentUser);
+                List<Utilisateur> amis = demandeAmiService.getAmis(currentUser);
 
-        assertEquals(1, amis.size());
-        assertEquals(otherUser, amis.get(0));
-    }
+                assertEquals(1, amis.size());
+                assertEquals(otherUser, amis.get(0));
+        }
 }
-
