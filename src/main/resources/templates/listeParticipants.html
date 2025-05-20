@@ -1,0 +1,27 @@
+<!-- US48 création de profile personnel -->
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${'Participants au ' + evenement.titre}">Participants</title>
+</head>
+<body>
+    <h1 th:text="${'Participants au ' + evenement.titre}"></h1>
+    
+    <div th:if="${participants.empty}">
+        <p>Aucun participant pour le moment</p>
+    </div>
+
+    <ul th:unless="${participants.empty}">
+        <li th:each="participant : ${participants}">
+            <span th:text="${participant.prenom + ' ' + participant.nom}"></span>
+            (<span th:text="${participant.email}"></span>)
+        </li>
+    </ul>
+    
+    <a th:href="@{/api/evenements}">Retour aux événements</a>
+</body>
+</html>

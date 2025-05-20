@@ -57,7 +57,7 @@ public class EvenementService {
     
 
     /**
-     * US44 Modifier un événement 
+     * US44 - Modifier un événement 
      * Modification d'un événement existant avec validation des droits
      * 
      * @param id Identifiant de l'événement à modifier
@@ -112,7 +112,7 @@ public class EvenementService {
 
 
     /**
-     * US47 Participer à un événement
+     * US47 - Participer à un événement
      *  Ajoute un participant à un événement
      * @param id ID de l'événement
      * @param participant Utilisateur à ajouter
@@ -133,7 +133,8 @@ public class EvenementService {
 
 
     /**
-     * US48 - Récupère la liste des participants d'un événement
+     * US48 - Visualisation des participants à un événement
+     * Récupère la liste des participants d'un événement
      * @param id ID de l'événement
      * @return Liste des participants
      * @throws IllegalArgumentException Si l'événement n'existe pas

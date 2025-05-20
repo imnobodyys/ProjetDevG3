@@ -76,7 +76,7 @@ public class EvenementController {
 
 
     /**
-     * US44 Modifier un événement 
+     * US44 - Modifier un événement 
      * Affiche le formulaire de modification
      * Vérifie que l'utilisateur est l'auteur de l'événement avant d'autoriser l'accès
      * 
@@ -106,7 +106,7 @@ public class EvenementController {
     }
 
     /**
-     * US44 Modifier un événement 
+     * US44 - Modifier un événement 
      * Traite la soumission du formulaire
      * @param id ID de l'événement
      * @param evenement Données mises à jour
@@ -182,5 +182,23 @@ public class EvenementController {
             model.addAttribute("errorMessage", e.getMessage());
             return "errorPage";
         }
+    }
+
+
+    /**
+     * US48 - Visualisation des participants à un événement
+     * Affiche la liste des participants d'un événement donné
+     * 
+     * @param id ID de l'événement
+     * @param model Conteneur des attributs pour la vue
+     * @return Vue affichant la liste des participants
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/participants")
+    public String AfficherParticipants(@PathVariable Long id, Model model){
+        Evenement evenement = evenementService.getEvenementById(id);
+        model.addAttribute("evenement", evenement);
+        model.addAttribute("participants", evenement.getParticipants());
+        return "listeParticipants";
     }
 }
