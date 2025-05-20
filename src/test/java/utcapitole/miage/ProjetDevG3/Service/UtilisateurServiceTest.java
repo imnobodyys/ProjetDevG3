@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -6,8 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ class UtilisateurServiceTest {
         Utilisateur user = new Utilisateur();
         user.setEmail("test@example.com");
         user.setMdp("rawPassword");
-        
+
         when(utilisateurRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode("rawPassword")).thenReturn("encryptedPassword");
         when(utilisateurRepository.save(any())).thenReturn(user);
@@ -70,23 +71,23 @@ class UtilisateurServiceTest {
         // Arrange
         String emailExistant = "existant@example.com";
         when(utilisateurRepository.findByEmail(emailExistant))
-            .thenReturn(Optional.of(new Utilisateur()));
+                .thenReturn(Optional.of(new Utilisateur()));
 
         Utilisateur user = new Utilisateur();
         user.setEmail(emailExistant);
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> utilisateurService.creerUtilisateur(user)
-        );
-        
+                IllegalArgumentException.class,
+                () -> utilisateurService.creerUtilisateur(user));
+
         assertEquals("Cet email est déjà utilisé !", exception.getMessage());
         verify(utilisateurRepository, never()).save(any());
     }
 
     /**
-     * US01 Test3 - Initialiser automatiquement la date d'inscription avant la sauvegarde
+     * US01 Test3 - Initialiser automatiquement la date d'inscription avant la
+     * sauvegarde
      * Teste l'initialisation automatique de la date d'inscription.
      * Vérifie que la date est définie avant la persistance.
      */
@@ -99,10 +100,10 @@ class UtilisateurServiceTest {
         user.setMdp("password"); // Ajout nécessaire
 
         when(utilisateurRepository.findByEmail(nouveauEmail))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encrypted"); // Configuration manquante
         when(utilisateurRepository.save(any(Utilisateur.class)))
-            .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         Utilisateur result = utilisateurService.creerUtilisateur(user);
@@ -112,15 +113,13 @@ class UtilisateurServiceTest {
         assertNotNull(result.getDtInscription(), "La date d'inscription doit être initialisée");
         LocalDateTime maintenant = LocalDateTime.now();
         assertTrue(
-            result.getDtInscription().isBefore(maintenant.plusSeconds(1)) &&
-            result.getDtInscription().isAfter(maintenant.minusSeconds(1)),
-            "La date d'inscription doit être approximativement maintenant"
-        );
+                result.getDtInscription().isBefore(maintenant.plusSeconds(1)) &&
+                        result.getDtInscription().isAfter(maintenant.minusSeconds(1)),
+                "La date d'inscription doit être approximativement maintenant");
     }
 
-    
     /**
-     * US03 Test1 - Modification du profil 
+     * US03 Test1 - Modification du profil
      * Modifier son profil avec des données valides
      */
     @Test
@@ -129,9 +128,9 @@ class UtilisateurServiceTest {
         Long userId = 1L;
         Utilisateur existingUser = new Utilisateur("Old", "User", "old@example.com", "oldPassword");
         existingUser.setId(userId);
-        
+
         Utilisateur newDetails = new Utilisateur("New", "Name", "new@example.com", "newPassword");
-        
+
         when(utilisateurRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(utilisateurRepository.findByEmail("new@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("newPassword")).thenReturn("encodedNewPassword");
@@ -149,7 +148,7 @@ class UtilisateurServiceTest {
     }
 
     /**
-     * US03 Test2 - Modification du profil 
+     * US03 Test2 - Modification du profil
      * Tentative de modification avec un email déjà utilisé
      */
     @Test
@@ -157,25 +156,23 @@ class UtilisateurServiceTest {
         // Arrange
         Long userId = 1L;
         String existingEmail = "existing@example.com";
-        
+
         Utilisateur currentUser = new Utilisateur("Current", "User", "current@example.com", "pass");
         currentUser.setId(userId);
-        
+
         Utilisateur invalidUpdate = new Utilisateur("New", "Name", existingEmail, "pass");
-        
+
         when(utilisateurRepository.findById(userId)).thenReturn(Optional.of(currentUser));
         when(utilisateurRepository.findByEmail(existingEmail)).thenReturn(Optional.of(new Utilisateur()));
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> utilisateurService.modifierUtilisateur(userId, invalidUpdate)
-        );
-        
+                IllegalArgumentException.class,
+                () -> utilisateurService.modifierUtilisateur(userId, invalidUpdate));
+
         assertEquals("Cet email est déjà utilisé", exception.getMessage());
         verify(utilisateurRepository, never()).save(any());
     }
-
 
     /**
      * US04 Test1 - Suppression de profil
@@ -185,9 +182,9 @@ class UtilisateurServiceTest {
     void supprimerUtilisateur_QuandIdValide_DoitAppelerDelete() {
         Long userId = 1L;
         when(utilisateurRepository.existsById(userId)).thenReturn(true);
-        
+
         utilisateurService.supprimerUtilisateur(userId);
-        
+
         verify(utilisateurRepository).deleteById(userId);
     }
 
@@ -199,13 +196,11 @@ class UtilisateurServiceTest {
     void supprimerUtilisateur_QuandIdInvalide_DoitLeverException() {
         Long invalidId = 999L;
         when(utilisateurRepository.existsById(invalidId)).thenReturn(false);
-        
+
         assertThrows(IllegalArgumentException.class,
                 () -> utilisateurService.supprimerUtilisateur(invalidId));
     }
 
-
-    
     @Test
     void testRechercheKeywordFound() {
         Utilisateur u = new Utilisateur("Alice", "Dupont", "alice@test.com", "1234");

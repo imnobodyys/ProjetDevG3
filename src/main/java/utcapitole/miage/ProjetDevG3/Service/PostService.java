@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,13 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.PostRepository;
-import utcapitole.miage.projetDevG3.model.Post;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
+import utcapitole.miage.projetdevg3.repository.PostRepository;
 
 /**
  * Service pour la gestion des publications.
- * Régit la création, la mise à jour et la suppression des contenus utilisateurs.
+ * Régit la création, la mise à jour et la suppression des contenus
+ * utilisateurs.
  */
 @Service
 public class PostService {
@@ -21,7 +22,7 @@ public class PostService {
      * Référentiel pour les publications.
      * Utilisé pour effectuer des opérations CRUD sur les publications.
      */
-   @Autowired
+    @Autowired
     private PostRepository postRepository;
 
     @Autowired
@@ -30,9 +31,8 @@ public class PostService {
     public Post publierDansGroupe(Post post) {
         // Vérifier que l'auteur est membre du groupe
         boolean estMembre = membreGroupeRepository.existsByGroupeIdAndMembreId(
-            post.getGroupe().getId(),
-            post.getAuteur().getId()
-        );
+                post.getGroupe().getId(),
+                post.getAuteur().getId());
 
         if (!estMembre) {
             throw new IllegalArgumentException("L'utilisateur n'est pas membre du groupe");

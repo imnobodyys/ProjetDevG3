@@ -1,5 +1,4 @@
-
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,15 +28,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import utcapitole.miage.projetDevG3.Controller.DemandeAmiController;
-import utcapitole.miage.projetDevG3.Service.DemandeAmiService;
-import utcapitole.miage.projetDevG3.config.SecurityConfig;
-import utcapitole.miage.projetDevG3.model.DemandeAmi;
-import utcapitole.miage.projetDevG3.model.StatutDemande;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.service.DemandeAmiService;
+import utcapitole.miage.projetdevg3.config.SecurityConfig;
+
+import utcapitole.miage.projetdevg3.model.DemandeAmi;
+import utcapitole.miage.projetdevg3.model.StatutDemande;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @WebMvcTest(controllers = DemandeAmiController.class)
 @Import(SecurityConfig.class)

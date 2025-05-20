@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 
@@ -12,21 +12,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
 
-import utcapitole.miage.projetDevG3.Service.ConversationService;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.ConversationService;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-
-import utcapitole.miage.projetDevG3.model.Message;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
  * Classe ConversationController
  * Gère les conversations entre utilisateurs
  * 
- * @author [Votre nom]
+ * 
  */
 @Controller
 @RequiredArgsConstructor

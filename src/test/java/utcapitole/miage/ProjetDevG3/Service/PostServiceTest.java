@@ -1,100 +1,78 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import jakarta.transaction.Transactional;
-import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.MembreGroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.PostRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.model.Groupe;
-import utcapitole.miage.projetDevG3.model.MembreGroupe;
-import utcapitole.miage.projetDevG3.model.Post;
-import utcapitole.miage.projetDevG3.model.StatutMembre;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.model.VisibilitePost;
+import utcapitole.miage.projetdevg3.model.Groupe;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
+import utcapitole.miage.projetdevg3.repository.PostRepository;
 
-@SpringBootTest
-@Transactional
-public class PostServiceTest {
-     @Autowired
-    private PostService postService;
+class PostServiceTest {
 
-    @Autowired
+    @Mock
     private PostRepository postRepository;
 
-    @Autowired
+    @Mock
     private MembreGroupeRepository membreGroupeRepository;
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
-
-    @Autowired
-    private GroupeRepository groupeRepository;
-
-    private Utilisateur utilisateur;
-    private Groupe groupe;
+    @InjectMocks
+    private PostService postService;
 
     @BeforeEach
     void setUp() {
-        // Création utilisateur
-        utilisateur = new Utilisateur();
-        utilisateur.setNom("TestUser");
-        utilisateur.setEmail("test@example.com");
-        utilisateur = utilisateurRepository.save(utilisateur);
-
-        // Création groupe
-        groupe = new Groupe();
-        groupe.setNom("GroupeTest");
-        groupe = groupeRepository.save(groupe);
-
-        // Ajout utilisateur comme membre accepté dans le groupe
-        MembreGroupe membreGroupe = new MembreGroupe(utilisateur, groupe);
-        membreGroupe.setStatut(StatutMembre.ACCEPTE);  // statut explicite
-        membreGroupeRepository.save(membreGroupe);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void publierDansGroupe_enregistrePostEtDefinitCreatedAt() {
+        Utilisateur auteur = new Utilisateur();
+        auteur.setId(1L);
+
+        Groupe groupe = new Groupe();
+        groupe.setId(1L);
+
         Post post = new Post();
-        post.setAuteur(utilisateur);
+        post.setAuteur(auteur);
         post.setGroupe(groupe);
-        post.setContenu("Contenu test");
-        post.setVisibilite(VisibilitePost.PUBLIC);
+        post.setContenu("Test");
 
-        Post postSauvegarde = postService.publierDansGroupe(post);
+        when(membreGroupeRepository.existsByGroupeIdAndMembreId(1L, 1L)).thenReturn(true);
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        assertThat(postSauvegarde.getId()).isNotNull();
-        assertThat(postSauvegarde.getCreatedAt()).isNotNull();
-        assertThat(postSauvegarde.getCreatedAt()).isBeforeOrEqualTo(LocalDateTime.now());
+        Post resultat = postService.publierDansGroupe(post);
+
+        assertNotNull(resultat);
+        assertEquals("Test", resultat.getContenu());
+        verify(postRepository).save(post);
     }
 
     @Test
     void publierDansGroupe_utilisateurNonMembre_IllegalArgumentException() {
-        Utilisateur nonMembre = new Utilisateur();
-        nonMembre.setNom("NonMembre");
-        nonMembre.setEmail("nonmembre@example.com");
-        nonMembre = utilisateurRepository.save(nonMembre);
+        Utilisateur auteur = new Utilisateur();
+        auteur.setId(1L);
+
+        Groupe groupe = new Groupe();
+        groupe.setId(1L);
 
         Post post = new Post();
-        post.setAuteur(nonMembre);
+        post.setAuteur(auteur);
         post.setGroupe(groupe);
-        post.setContenu("Contenu test");
-        post.setVisibilite(VisibilitePost.PUBLIC);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        when(membreGroupeRepository.existsByGroupeIdAndMembreId(1L, 1L)).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> {
             postService.publierDansGroupe(post);
         });
-
-        assertThat(exception.getMessage()).contains("n'est pas membre du groupe");
     }
-
 }

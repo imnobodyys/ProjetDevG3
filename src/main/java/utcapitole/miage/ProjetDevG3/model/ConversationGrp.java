@@ -1,9 +1,8 @@
-package utcapitole.miage.projetDevG3.model;
+package utcapitole.miage.projetdevg3.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
 
 /**
  * Classe ConversationGrp
@@ -11,7 +10,7 @@ import jakarta.persistence.OneToOne;
  */
 @Entity
 public class ConversationGrp extends Conversation {
-    
+
     /**
      * Attributs
      * id : identifiant de la conversation

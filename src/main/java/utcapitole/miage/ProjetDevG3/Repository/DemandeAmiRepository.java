@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Repository;
+package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import utcapitole.miage.projetDevG3.model.DemandeAmi;
-import utcapitole.miage.projetDevG3.model.StatutDemande;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.DemandeAmi;
+import utcapitole.miage.projetdevg3.model.StatutDemande;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 /**
  * DemandeAmiRepository est une interface qui étend JpaRepository pour gérer les

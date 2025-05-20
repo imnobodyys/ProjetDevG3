@@ -1,5 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
-
+package utcapitole.miage.projetdevg3.controller;
 
 /**
  * Classe MembreGroupeController

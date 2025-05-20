@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,11 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-import utcapitole.miage.projetDevG3.Controller.GroupeController;
-import utcapitole.miage.projetDevG3.Service.GroupeService;
-import utcapitole.miage.projetDevG3.Service.MembreGroupeService;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.GroupeService;
+import utcapitole.miage.projetdevg3.service.MembreGroupeService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
+
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 @WebMvcTest(GroupeController.class)
 @AutoConfigureMockMvc(addFilters = false) // ⬅ DÉSACTIVE la sécurité pour les tests

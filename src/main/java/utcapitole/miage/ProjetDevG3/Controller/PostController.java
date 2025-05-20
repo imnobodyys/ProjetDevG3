@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-import utcapitole.miage.projetDevG3.Repository.GroupeRepository;
-import utcapitole.miage.projetDevG3.Repository.UtilisateurRepository;
-import utcapitole.miage.projetDevG3.Service.GroupeService;
-import utcapitole.miage.projetDevG3.Service.PostService;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
-import utcapitole.miage.projetDevG3.model.Groupe;
-import utcapitole.miage.projetDevG3.model.Post;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.PostService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
+import utcapitole.miage.projetdevg3.service.GroupeService;
+import utcapitole.miage.projetdevg3.model.Groupe;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.GroupeRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @Controller
 public class PostController {
@@ -43,7 +42,7 @@ public class PostController {
     @GetMapping("/nouveau")
     public String formNouveauPost(@PathVariable Long groupeId, Model model) {
         Groupe groupe = groupeRepository.findById(groupeId)
-            .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
+                .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
 
         Post post = new Post();
         post.setGroupe(groupe);
@@ -54,13 +53,13 @@ public class PostController {
     }
 
     @PostMapping
-    public String creerPost(@PathVariable Long groupeId, @ModelAttribute Post post, 
-                           @RequestParam Long auteurId, Model model) {
+    public String creerPost(@PathVariable Long groupeId, @ModelAttribute Post post,
+            @RequestParam Long auteurId, Model model) {
         Groupe groupe = groupeRepository.findById(groupeId)
-            .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
+                .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
 
         Utilisateur auteur = utilisateurRepository.findById(auteurId)
-            .orElseThrow(() -> new IllegalArgumentException("Auteur non trouvé"));
+                .orElseThrow(() -> new IllegalArgumentException("Auteur non trouvé"));
 
         post.setGroupe(groupe);
         post.setAuteur(auteur);
@@ -80,12 +79,12 @@ public class PostController {
     @GetMapping
     public String listerPosts(@PathVariable Long groupeId, Model model) {
         Groupe groupe = groupeRepository.findById(groupeId)
-            .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
+                .orElseThrow(() -> new IllegalArgumentException("Groupe non trouvé"));
 
         model.addAttribute("groupe", groupe);
         model.addAttribute("posts", postService.getPostsParGroupe(groupeId));
 
-        return "posts/groupePosts";  // Vue Thymeleaf pour afficher les posts
+        return "posts/groupePosts"; // Vue Thymeleaf pour afficher les posts
     }
 
     @GetMapping("/groupes/{groupeId}/posts")

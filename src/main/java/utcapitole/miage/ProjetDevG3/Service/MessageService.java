@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import java.time.LocalDateTime;
 
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import utcapitole.miage.projetDevG3.Repository.ConversationPriRepository;
-import utcapitole.miage.projetDevG3.Repository.MessageRepository;
-import utcapitole.miage.projetDevG3.model.ConversationPri;
-import utcapitole.miage.projetDevG3.model.Message;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
+import utcapitole.miage.projetdevg3.repository.MessageRepository;
 
 /**
  * Service pour la gestion des messages.
