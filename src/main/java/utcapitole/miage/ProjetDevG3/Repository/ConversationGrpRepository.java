@@ -1,9 +1,9 @@
-package utcapitole.miage.projetDevG3.Repository;
+package utcapitole.miage.projetdevg3.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import utcapitole.miage.projetDevG3.model.ConversationGrp;
+import utcapitole.miage.projetdevg3.model.ConversationGrp;
 
 @Repository
 public interface ConversationGrpRepository extends JpaRepository<ConversationGrp, Long> {

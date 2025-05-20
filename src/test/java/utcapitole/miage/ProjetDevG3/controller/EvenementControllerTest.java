@@ -1,4 +1,4 @@
-package utcapitole.miage.projetDevG3.controller;
+package utcapitole.miage.projetdevg3.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,14 +23,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
-import utcapitole.miage.projetDevG3.config.SecurityConfig;
-import utcapitole.miage.projetDevG3.model.Evenement;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
-import utcapitole.miage.projetDevG3.Controller.EvenementController;
-import utcapitole.miage.projetDevG3.Controller.UtilisateurController;
-import utcapitole.miage.projetDevG3.Repository.EvenementRepository;
-import utcapitole.miage.projetDevG3.Service.EvenementService;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
+import utcapitole.miage.projetdevg3.config.SecurityConfig;
+
+import utcapitole.miage.projetdevg3.model.Evenement;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+
+import utcapitole.miage.projetdevg3.repository.EvenementRepository;
+import utcapitole.miage.projetdevg3.service.EvenementService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -39,290 +39,288 @@ import static org.mockito.Mockito.*;
 @Import(SecurityConfig.class)
 public class EvenementControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private EvenementRepository evenementRepository; 
+        @MockBean
+        private EvenementRepository evenementRepository;
 
-    @MockBean
-    private EvenementService evenementService;
+        @MockBean
+        private EvenementService evenementService;
 
-    @MockBean
-    private UtilisateurService utilisateurService;
+        @MockBean
+        private UtilisateurService utilisateurService;
 
-    @MockBean
-    private PasswordEncoder passwordEncoder;
+        @MockBean
+        private PasswordEncoder passwordEncoder;
 
-    @MockBean
-    private UserDetailsService userDetailsService;
+        @MockBean
+        private UserDetailsService userDetailsService;
 
-    @BeforeEach
-    void setup() {
-        UserDetails mockUserDetails = User.builder()
-            .username("user@test.com")
-            .password("encodedPass")
-            .roles("USER")
-            .build();
-        
-        when(userDetailsService.loadUserByUsername(anyString()))
-            .thenReturn(mockUserDetails);
+        @BeforeEach
+        void setup() {
+                UserDetails mockUserDetails = User.builder()
+                                .username("user@test.com")
+                                .password("encodedPass")
+                                .roles("USER")
+                                .build();
 
-        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
-        when(utilisateurService.getUtilisateurByEmail(anyString()))
-            .thenReturn(mockUser);
-    }
+                when(userDetailsService.loadUserByUsername(anyString()))
+                                .thenReturn(mockUserDetails);
 
-    /**
-     * US43 Test1 - Création d'un événement
-     * Création réussie avec tous les champs
-     */
-    @Test
-    @WithMockUser(username = "user@test.com")
-    void creerEvenement_QuandValide_DoitConfirmer() throws Exception {
-        // Arrange
-        Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
-        when(utilisateurService.getUtilisateurByEmail(anyString())).thenReturn(mockUser);
-        
-        // Act & Assert
-        mockMvc.perform(post("/api/evenements/creer")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .param("titre", "Event")
-                .param("description", "Description")
-                .param("contenu", "Content"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("confirmationEvenement"))
-                .andExpect(model().attributeExists("evenement"));
-    }
+                Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+                when(utilisateurService.getUtilisateurByEmail(anyString()))
+                                .thenReturn(mockUser);
+        }
 
+        /**
+         * US43 Test1 - Création d'un événement
+         * Création réussie avec tous les champs
+         */
+        @Test
+        @WithMockUser(username = "user@test.com")
+        void creerEvenement_QuandValide_DoitConfirmer() throws Exception {
+                // Arrange
+                Utilisateur mockUser = new Utilisateur("Test", "User", "user@test.com", "pass");
+                when(utilisateurService.getUtilisateurByEmail(anyString())).thenReturn(mockUser);
 
-    /**
-     * US43 Test2 - Création d'un événement
-     * Tentative de création sans titre
-     */
-    @Test
-    @WithMockUser(username = "user@test.com")
-    void creerEvenement_QuandTitreManquant_DoitRetournerErreur() throws Exception {
-        when(evenementService.creerEvenement(any()))
-            .thenThrow(new IllegalArgumentException("Le titre est obligatoire"));
-    
-        mockMvc.perform(post("/api/evenements/creer")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .param("description", "Description"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("creerEvenement")) 
-                .andExpect(model().attributeExists("message"));
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/evenements/creer")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .param("titre", "Event")
+                                .param("description", "Description")
+                                .param("contenu", "Content"))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("confirmationEvenement"))
+                                .andExpect(model().attributeExists("evenement"));
+        }
 
+        /**
+         * US43 Test2 - Création d'un événement
+         * Tentative de création sans titre
+         */
+        @Test
+        @WithMockUser(username = "user@test.com")
+        void creerEvenement_QuandTitreManquant_DoitRetournerErreur() throws Exception {
+                when(evenementService.creerEvenement(any()))
+                                .thenThrow(new IllegalArgumentException("Le titre est obligatoire"));
 
-    /**
-     * US43 Test3 - Création d'un événement
-     * Tentative de création sans description
-     */
-    @Test
-    @WithMockUser(username = "user@test.com")
-    void creerEvenement_QuandDescriptionManquante_DoitRetournerErreur() throws Exception {
-        when(evenementService.creerEvenement(any()))
-            .thenThrow(new IllegalArgumentException("La description est obligatoire"));
+                mockMvc.perform(post("/api/evenements/creer")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .param("description", "Description"))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("creerEvenement"))
+                                .andExpect(model().attributeExists("message"));
+        }
 
-        mockMvc.perform(post("/api/evenements/creer")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .param("titre", "Titre sans description"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("creerEvenement")) 
-                .andExpect(model().attributeExists("message"));
-    }
+        /**
+         * US43 Test3 - Création d'un événement
+         * Tentative de création sans description
+         */
+        @Test
+        @WithMockUser(username = "user@test.com")
+        void creerEvenement_QuandDescriptionManquante_DoitRetournerErreur() throws Exception {
+                when(evenementService.creerEvenement(any()))
+                                .thenThrow(new IllegalArgumentException("La description est obligatoire"));
 
+                mockMvc.perform(post("/api/evenements/creer")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .param("titre", "Titre sans description"))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("creerEvenement"))
+                                .andExpect(model().attributeExists("message"));
+        }
 
-    /**
-     * US43 Test4 - Création d'un événement
-     * Tentative de création sans être connecté
-     */
-    @Test
-    void creerEvenement_SansAuthentification_DoitRetournerForbidden() throws Exception {
-        mockMvc.perform(post("/api/evenements/creer"))
-            .andExpect(status().isForbidden());
-    }
-            
+        /**
+         * US43 Test4 - Création d'un événement
+         * Tentative de création sans être connecté
+         */
+        @Test
+        void creerEvenement_SansAuthentification_DoitRetournerForbidden() throws Exception {
+                mockMvc.perform(post("/api/evenements/creer"))
+                                .andExpect(status().isForbidden());
+        }
 
-    /**
-     * US43 Test5 - Création d'un événement
-     * Affiche le formulaire de création d'événement
-     */
-    @Test
-    @WithMockUser
-    void afficherFormulaireEvenement_SansAuthentification_DoitRediriger() throws Exception {
-        mockMvc.perform(get("/api/evenements/creer"))
-                .andExpect(status().isOk()); // @PreAuthorize already handled
-    }
+        /**
+         * US43 Test5 - Création d'un événement
+         * Affiche le formulaire de création d'événement
+         */
+        @Test
+        @WithMockUser
+        void afficherFormulaireEvenement_SansAuthentification_DoitRediriger() throws Exception {
+                mockMvc.perform(get("/api/evenements/creer"))
+                                .andExpect(status().isOk()); // @PreAuthorize already handled
+        }
 
+        /**
+         * US44 Test1 - Modifier événement
+         * Tentative de modification par l'auteur
+         */
+        @Test
+        @WithMockUser(username = "organisateur@test.com")
+        void afficherFormulaireModification_QuandOrganisateurValide_RetourneFormulaire() throws Exception {
+                // Arrange
+                Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com",
+                                "pass");
+                ReflectionTestUtils.setField(organisateur, "id", 1L);
+                Evenement evenementMock = new Evenement();
+                evenementMock.setAuteur(organisateur); // Pas besoin de setter l'ID
 
-    /**
-     * US44 Test1 - Modifier événement  
-     * Tentative de modification par l'auteur
-     */
-    @Test
-    @WithMockUser(username = "organisateur@test.com")
-    void afficherFormulaireModification_QuandOrganisateurValide_RetourneFormulaire() throws Exception {
-        // Arrange
-        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
-        ReflectionTestUtils.setField(organisateur, "id", 1L); 
-        Evenement evenementMock = new Evenement();
-        evenementMock.setAuteur(organisateur); // Pas besoin de setter l'ID
-        
-        when(evenementService.getEvenementById(anyLong())).thenReturn(evenementMock);
-        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+                when(evenementService.getEvenementById(anyLong())).thenReturn(evenementMock);
+                when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
 
-        // Act & Assert
-        mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
-            .andExpect(status().isOk())
-            .andExpect(view().name("modifierEvenement"))
-            .andExpect(model().attributeExists("evenement"))
-            .andExpect(model().attribute("evenement", hasProperty("auteur", equalTo(organisateur))));
-    }
+                // Act & Assert
+                mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("modifierEvenement"))
+                                .andExpect(model().attributeExists("evenement"))
+                                .andExpect(model().attribute("evenement",
+                                                hasProperty("auteur", equalTo(organisateur))));
+        }
 
-    /**
-     * US44 Test2 - Modifier événement   
-     * Tentative de modification par un non-auteur
-     */
-    @Test
-    @WithMockUser(username = "intrus@test.com")
-    void afficherFormulaireModification_QuandUtilisateurNonAutorise_RetourneErreur() throws Exception {
-        // Arrange
-        Utilisateur organisateurLegitime = new Utilisateur("Organisateur", "Legitime", "organisateur@test.com", "pass");
-        ReflectionTestUtils.setField(organisateurLegitime, "id", 1L); 
-        Utilisateur intrus = new Utilisateur("Intrus", "Malveillant", "intrus@test.com", "hack");
-        ReflectionTestUtils.setField(intrus, "id", 2L);
-        Evenement evenementProtege = new Evenement();
-        evenementProtege.setAuteur(organisateurLegitime);
-        
-        when(evenementService.getEvenementById(anyLong())).thenReturn(evenementProtege);
-        when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
+        /**
+         * US44 Test2 - Modifier événement
+         * Tentative de modification par un non-auteur
+         */
+        @Test
+        @WithMockUser(username = "intrus@test.com")
+        void afficherFormulaireModification_QuandUtilisateurNonAutorise_RetourneErreur() throws Exception {
+                // Arrange
+                Utilisateur organisateurLegitime = new Utilisateur("Organisateur", "Legitime", "organisateur@test.com",
+                                "pass");
+                ReflectionTestUtils.setField(organisateurLegitime, "id", 1L);
+                Utilisateur intrus = new Utilisateur("Intrus", "Malveillant", "intrus@test.com", "hack");
+                ReflectionTestUtils.setField(intrus, "id", 2L);
+                Evenement evenementProtege = new Evenement();
+                evenementProtege.setAuteur(organisateurLegitime);
 
-        // Act & Assert
-        mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
-            .andExpect(status().isOk())
-            .andExpect(view().name("errorPage"))
-            .andExpect(model().attribute("errorMessage", 
-                "Accès refusé : Vous n'êtes pas l'auteur de cet événement"));
-    }
+                when(evenementService.getEvenementById(anyLong())).thenReturn(evenementProtege);
+                when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
 
+                // Act & Assert
+                mockMvc.perform(get("/api/evenements/modifier/{id}", 1L))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("errorPage"))
+                                .andExpect(model().attribute("errorMessage",
+                                                "Accès refusé : Vous n'êtes pas l'auteur de cet événement"));
+        }
 
-    /**
-     * US44 Test3 - Modifier événement  
-     * Soumission de la modification par l'auteur
-     */
-    @Test
-    @WithMockUser(username = "organisateur@test.com")
-    void soumettreModification_QuandOrganisateurValide_Succes() throws Exception {
-        // Arrange
-        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
-        ReflectionTestUtils.setField(organisateur, "id", 1L);
+        /**
+         * US44 Test3 - Modifier événement
+         * Soumission de la modification par l'auteur
+         */
+        @Test
+        @WithMockUser(username = "organisateur@test.com")
+        void soumettreModification_QuandOrganisateurValide_Succes() throws Exception {
+                // Arrange
+                Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com",
+                                "pass");
+                ReflectionTestUtils.setField(organisateur, "id", 1L);
 
-        Evenement evenementOriginal = new Evenement();
-        ReflectionTestUtils.setField(evenementOriginal, "id", 1L);
-        evenementOriginal.setAuteur(organisateur);
+                Evenement evenementOriginal = new Evenement();
+                ReflectionTestUtils.setField(evenementOriginal, "id", 1L);
+                evenementOriginal.setAuteur(organisateur);
 
-        Evenement evenementModifie = new Evenement();
-        ReflectionTestUtils.setField(evenementModifie, "id", 1L);
-        evenementModifie.setAuteur(organisateur);
-        evenementModifie.setTitre("Titre modifié");
+                Evenement evenementModifie = new Evenement();
+                ReflectionTestUtils.setField(evenementModifie, "id", 1L);
+                evenementModifie.setAuteur(organisateur);
+                evenementModifie.setTitre("Titre modifié");
 
-        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
-        when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
-            .thenReturn(evenementModifie);
+                when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+                when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
+                                .thenReturn(evenementModifie);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/evenements/modifier/1")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .flashAttr("evenement", evenementModifie))
-            .andExpect(status().isOk())
-            .andExpect(view().name("confirmationEvenement"))
-            .andExpect(model().attributeExists("evenement"))
-            .andExpect(model().attribute("evenement", hasProperty("titre", equalTo("Titre modifié"))));
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/evenements/modifier/1")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .flashAttr("evenement", evenementModifie))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("confirmationEvenement"))
+                                .andExpect(model().attributeExists("evenement"))
+                                .andExpect(model().attribute("evenement",
+                                                hasProperty("titre", equalTo("Titre modifié"))));
+        }
 
+        /**
+         * US44 Test4 - Modifier événement
+         * Soumission de la modification provoque une erreur
+         */
+        @Test
+        @WithMockUser(username = "organisateur@test.com")
+        void soumettreModification_QuandErreur_AlorsRetourneFormulaireAvecErreur() throws Exception {
+                // Arrange
+                Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com",
+                                "pass");
+                ReflectionTestUtils.setField(organisateur, "id", 1L);
 
-    /**
-     * US44 Test4 - Modifier événement  
-     * Soumission de la modification provoque une erreur
-     */
-    @Test
-    @WithMockUser(username = "organisateur@test.com")
-    void soumettreModification_QuandErreur_AlorsRetourneFormulaireAvecErreur() throws Exception {
-        // Arrange
-        Utilisateur organisateur = new Utilisateur("Organisateur", "Evenement", "organisateur@test.com", "pass");
-        ReflectionTestUtils.setField(organisateur, "id", 1L);
+                Evenement evenement = new Evenement();
+                ReflectionTestUtils.setField(evenement, "id", 1L);
+                evenement.setAuteur(organisateur);
 
-        Evenement evenement = new Evenement();
-        ReflectionTestUtils.setField(evenement, "id", 1L);
-        evenement.setAuteur(organisateur);
+                when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
+                when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
+                                .thenThrow(new IllegalArgumentException("Erreur lors de la modification"));
 
-        when(utilisateurService.getUtilisateurByEmail("organisateur@test.com")).thenReturn(organisateur);
-        when(evenementService.modifierEvenement(eq(1L), any(Evenement.class), eq(organisateur)))
-            .thenThrow(new IllegalArgumentException("Erreur lors de la modification"));
+                // Act & Assert
+                mockMvc.perform(post("/api/evenements/modifier/1")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .flashAttr("evenement", evenement))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("modifierEvenement"))
+                                .andExpect(model().attributeExists("errorMessage"))
+                                .andExpect(model().attribute("errorMessage",
+                                                equalTo("Erreur lors de la modification")));
+        }
 
-        // Act & Assert
-        mockMvc.perform(post("/api/evenements/modifier/1")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .flashAttr("evenement", evenement))
-            .andExpect(status().isOk())
-            .andExpect(view().name("modifierEvenement"))
-            .andExpect(model().attributeExists("errorMessage"))
-            .andExpect(model().attribute("errorMessage", equalTo("Erreur lors de la modification")));
-    }
+        /**
+         * US45 Test1 - Suppression d'un événement
+         * Suppression réussie
+         */
+        @Test
+        @WithMockUser(username = "auteur@test.com")
+        void supprimerEvenement_QuandAuteurValide_DoitConfirmer() throws Exception {
+                // Arrange
+                Utilisateur auteur = new Utilisateur();
+                ReflectionTestUtils.setField(auteur, "id", 1L);
+                when(utilisateurService.getUtilisateurByEmail("auteur@test.com")).thenReturn(auteur);
 
+                // Act & Assert
+                mockMvc.perform(post("/api/evenements/supprimer/1")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("confirmationSuppression"));
+        }
 
-    /**
-     * US45 Test1 - Suppression d'un événement
-     * Suppression réussie
-     */
-    @Test
-    @WithMockUser(username = "auteur@test.com")
-    void supprimerEvenement_QuandAuteurValide_DoitConfirmer() throws Exception {
-        // Arrange
-        Utilisateur auteur = new Utilisateur();
-        ReflectionTestUtils.setField(auteur, "id", 1L);
-        when(utilisateurService.getUtilisateurByEmail("auteur@test.com")).thenReturn(auteur);
-        
-        // Act & Assert
-        mockMvc.perform(post("/api/evenements/supprimer/1")
-            .with(SecurityMockMvcRequestPostProcessors.csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("confirmationSuppression"));
-    }
+        /**
+         * US45 Test2 - Suppression d'un événement
+         * Tentative de suppression par un non-auteur
+         */
+        @Test
+        @WithMockUser(username = "intrus@test.com")
+        void supprimerEvenement_QuandNonAuteur_DoitAfficherErreur() throws Exception {
+                // Arrange
+                Utilisateur auteurLegitime = new Utilisateur("Auteur", "Legitime", "auteur@test.com", "pass");
+                ReflectionTestUtils.setField(auteurLegitime, "id", 1L);
 
+                Utilisateur intrus = new Utilisateur("Intrus", "Test", "intrus@test.com", "pass");
+                ReflectionTestUtils.setField(intrus, "id", 2L);
 
-    /**
-     * US45 Test2 - Suppression d'un événement
-     * Tentative de suppression par un non-auteur
-     */
-    @Test
-    @WithMockUser(username = "intrus@test.com")
-    void supprimerEvenement_QuandNonAuteur_DoitAfficherErreur() throws Exception {
-        // Arrange
-        Utilisateur auteurLegitime = new Utilisateur("Auteur", "Legitime", "auteur@test.com", "pass");
-        ReflectionTestUtils.setField(auteurLegitime, "id", 1L);
-        
-        Utilisateur intrus = new Utilisateur("Intrus", "Test", "intrus@test.com", "pass");
-        ReflectionTestUtils.setField(intrus, "id", 2L);
-        
-        // Simuler que l'utilisateur connecté est "intrus"
-        when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
-        
-        // Configurer le service pour lever une exception
-        doThrow(new IllegalArgumentException("Seul l'auteur peut supprimer l'événement"))
-            .when(evenementService).supprimerEvenement(eq(1L), eq(intrus));
+                // Simuler que l'utilisateur connecté est "intrus"
+                when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/evenements/supprimer/1")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())) 
-            .andExpect(status().isOk()) 
-            .andExpect(view().name("errorPage"))
-            .andExpect(model().attributeExists("errorMessage"))
-            .andExpect(model().attribute("errorMessage", "Seul l'auteur peut supprimer l'événement"));
-    }
+                // Configurer le service pour lever une exception
+                doThrow(new IllegalArgumentException("Seul l'auteur peut supprimer l'événement"))
+                                .when(evenementService).supprimerEvenement(eq(1L), eq(intrus));
 
+                // Act & Assert
+                mockMvc.perform(post("/api/evenements/supprimer/1")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("errorPage"))
+                                .andExpect(model().attributeExists("errorMessage"))
+                                .andExpect(model().attribute("errorMessage",
+                                                "Seul l'auteur peut supprimer l'événement"));
+        }
 
     /**
      * US47 Test1 - Participer à un événement

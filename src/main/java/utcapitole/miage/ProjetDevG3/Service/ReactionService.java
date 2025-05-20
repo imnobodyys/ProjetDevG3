@@ -1,8 +1,9 @@
-package utcapitole.miage.projetDevG3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import utcapitole.miage.projetDevG3.Repository.ReactionRepository;
+
+import utcapitole.miage.projetdevg3.repository.ReactionRepository;
 
 /**
  * Service pour la gestion des réactions utilisateur.
