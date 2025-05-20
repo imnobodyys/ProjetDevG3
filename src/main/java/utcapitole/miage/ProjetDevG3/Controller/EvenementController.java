@@ -195,10 +195,15 @@ public class EvenementController {
      */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/participants")
-    public String AfficherParticipants(@PathVariable Long id, Model model){
-        Evenement evenement = evenementService.getEvenementById(id);
-        model.addAttribute("evenement", evenement);
-        model.addAttribute("participants", evenement.getParticipants());
-        return "listeParticipants";
+    public String afficherParticipants(@PathVariable Long id, Model model) {
+        try {
+            Evenement evenement = evenementService.getEvenementById(id);
+            model.addAttribute("evenement", evenement);
+            model.addAttribute("participants", evenement.getParticipants());
+            return "listeParticipants";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", "Événement non trouvé"); // 统一错误信息
+            return "errorPage";
+        }
     }
 }
