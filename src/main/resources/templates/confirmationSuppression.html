@@ -1,15 +1,87 @@
-<!-- US45 Supprimer un événement -->
-
+<!-- US45 - Confirmation de suppression d'événement -->
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation suppression</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de suppression</title>
+    
+    <!-- Styles Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Styles personnalisés -->
+    <style>
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        /* Animation d'icône */
+        .trash-icon {
+            font-size: 4rem;
+            color: #dc3545;
+            margin-bottom: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Style des boutons */
+        .btn-custom {
+            min-width: 220px;
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Événement supprimé avec succès !</h1>
-    <a th:href="@{/api/evenements/}" class="button">Retour aux événements</a>
+    <!-- Barre de navigation -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <main class="container py-5">
+        <!-- Carte de confirmation -->
+        <div class="confirmation-card">
+            <!-- Icône animée -->
+            <i class="bi bi-trash-fill trash-icon"></i>
+            
+            <!-- Titre principal -->
+            <h1 class="display-5 fw-bold text-danger mb-3">
+                Suppression réussie !
+            </h1>
+            
+            <!-- Message de confirmation -->
+            <p class="lead text-muted mb-4">
+                L'événement a été définitivement supprimé du système
+            </p>
+
+            <!-- Boutons d'action -->
+            <div class="d-flex flex-wrap justify-content-center">
+                <!-- Bouton: Retour aux événements -->
+                <a th:href="@{/api/evenements/}" class="btn btn-outline-secondary btn-custom">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Événements
+                </a>
+                
+                <!-- Bouton: Tableau de bord -->
+                <a href="/accueil" class="btn btn-primary btn-custom">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Tableau de bord
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
