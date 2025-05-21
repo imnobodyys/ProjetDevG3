@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -383,7 +383,7 @@ class EvenementServiceTest {
         Long eventId = 1L;
         Evenement event = new Evenement();
         event.addParticipant(new Utilisateur("Test", "User", "test@example.com", "pass"));
-        
+
         when(evenementRepository.findById(eventId)).thenReturn(Optional.of(event));
 
         // Act
@@ -394,7 +394,7 @@ class EvenementServiceTest {
         verify(evenementRepository).findById(eventId);
     }
 
-     /**
+    /**
      * US48 Test2 - Visualisation des participants à un événement
      * Tentative d'accès à un événement inexistant
      */
@@ -405,8 +405,8 @@ class EvenementServiceTest {
         when(evenementRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, 
-            () -> evenementService.getParticipantsEvenement(invalidId));
+        assertThrows(IllegalArgumentException.class,
+                () -> evenementService.getParticipantsEvenement(invalidId));
     }
 
 }

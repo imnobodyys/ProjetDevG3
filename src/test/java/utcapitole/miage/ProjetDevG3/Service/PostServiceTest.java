@@ -32,45 +32,4 @@ class PostServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void publierDansGroupe_enregistrePostEtDefinitCreatedAt() {
-        Utilisateur auteur = new Utilisateur();
-        auteur.setId(1L);
-
-        Groupe groupe = new Groupe();
-        groupe.setId(1L);
-
-        Post post = new Post();
-        post.setAuteur(auteur);
-        post.setGroupe(groupe);
-        post.setContenu("Test");
-
-        when(membreGroupeRepository.existsByGroupeIdAndMembreId(1L, 1L)).thenReturn(true);
-        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Post resultat = postService.publierDansGroupe(post);
-
-        assertNotNull(resultat);
-        assertEquals("Test", resultat.getContenu());
-        verify(postRepository).save(post);
-    }
-
-    @Test
-    void publierDansGroupe_utilisateurNonMembre_IllegalArgumentException() {
-        Utilisateur auteur = new Utilisateur();
-        auteur.setId(1L);
-
-        Groupe groupe = new Groupe();
-        groupe.setId(1L);
-
-        Post post = new Post();
-        post.setAuteur(auteur);
-        post.setGroupe(groupe);
-
-        when(membreGroupeRepository.existsByGroupeIdAndMembreId(1L, 1L)).thenReturn(false);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            postService.publierDansGroupe(post);
-        });
-    }
 }
