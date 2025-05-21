@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.VisibiliteEvenement;
 import utcapitole.miage.projetdevg3.repository.EvenementRepository;
 
 /**
@@ -33,6 +34,31 @@ public class EvenementService {
     public Evenement getEvenementById(Long id) {
         return evenementRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+    }
+    /**
+     * Récupère les événements publics
+     * @return Liste des événements avec visibilité PUBLIC
+     */
+    public List<Evenement> getEvenementsPublics() {
+        return evenementRepository.findByVisibilite(VisibiliteEvenement.PUBLIC);
+    }
+
+    /**
+     * Récupère les événements créés par un utilisateur
+     * @param auteur Utilisateur créateur
+     * @return Liste des événements
+     */
+    public List<Evenement> getEvenementsParAuteur(Utilisateur auteur) {
+        return evenementRepository.findByAuteur(auteur);
+    }
+
+    /**
+     * Récupère les événements où un utilisateur est inscrit
+     * @param participant Utilisateur participant
+     * @return Liste des événements
+     */
+    public List<Evenement> getEvenementsParParticipant(Utilisateur participant) {
+        return evenementRepository.findByParticipantsContaining(participant);
     }
 
     /**

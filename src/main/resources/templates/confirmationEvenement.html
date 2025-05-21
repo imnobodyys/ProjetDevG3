@@ -2,15 +2,25 @@
 
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation evenement</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation événement</title>
 </head>
 <body>
-    <h1>Événement créé avec succès !</h1>
-    <p th:text="'Titre: ' + ${evenement.titre}"></p>
-    <p th:text="'Description: ' + ${evenement.description}"></p>
+    <div class="container">
+        <h1>Événement créé avec succès !</h1>
+        
+        <div class="details">
+            <p><strong>Titre:</strong> <span th:text="${evenement.titre}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${evenement.description}"></span></p>
+            <p><strong>Visibilité:</strong> <span th:text="${evenement.visibilite}"></span></p>
+            <p><strong>Créé le:</strong> 
+                <span th:text="${#temporals.format(evenement.datePublication, 'dd/MM/yyyy HH:mm')}"></span>
+            </p>
+        </div>
+
+        <a th:href="@{/api/evenements/}" class="button">Retour aux événements</a>
+    </div>
 </body>
 </html>

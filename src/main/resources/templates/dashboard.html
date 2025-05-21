@@ -49,20 +49,12 @@
         
         <p class="fs-5">Bienvenue, <strong th:text="${utilisateur.prenom + ' ' + utilisateur.nom}">utilisateur</strong> !</p>
 
-        <h2 class="mb-4">Mes fonctionnalités</h2>
-        <div class="list-group">
-            <a href="/groupes/creer" class="list-group-item list-group-item-action">Créer un groupe</a>
-            <a href="/groupes/liste" class="list-group-item list-group-item-action">Voir mes groupes</a>
-            <a href="/demandes/amis" class="list-group-item list-group-item-action">Voir mes amis</a>
-            <a href="/api/utilisateurs/search" class="list-group-item list-group-item-action">Rechercher une personne</a>
-           </div>
-    </div>
-
-    <div th:unless="${isAuthenticated}">
-        <h2>Bienvenue !</h2>
-        <p>Veuillez vous connecter ou créer un compte pour accéder aux fonctionnalités.</p>
-        <a href="/login" class="btn btn-primary">Se connecter</a>
-        <a href="/inscription" class="btn btn-secondary">Créer un compte</a>
+    <h2 class="mb-4">Mes fonctionnalités</h2>
+    <div class="list-group">
+        <a href="/groupes/creer" class="list-group-item list-group-item-action">Créer un groupe</a>
+        <a href="/groupes/liste" class="list-group-item list-group-item-action">Voir mes groupes</a>
+        <a href="/groupes/disponibles" class="list-group-item list-group-item-action">Liste des groupes à rejoindre</a>
+        <a href="/profil" class="list-group-item list-group-item-action">Mon profil</a>
     </div>
 </main>
 
