@@ -38,7 +38,7 @@ public class AccueilController {
         } else {
             model.addAttribute("isAuthenticated", false);
         }
-        return "/dashboard";
+        return "dashboard";
     }
 
     @GetMapping("/login")

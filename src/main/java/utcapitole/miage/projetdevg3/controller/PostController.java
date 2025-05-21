@@ -55,6 +55,8 @@ public class PostController {
     }
 
     @GetMapping("/liste")
+
+    @PreAuthorize("isAuthenticated()")
     public String afficherPosts(Model model, Principal principal) {
         List<Post> posts = postService.getPostsPublics();
         model.addAttribute("posts", posts);
@@ -65,7 +67,7 @@ public class PostController {
             model.addAttribute("utilisateurConnecte", utilisateur);
         }
 
-        return "liste-posts";
+        return "list-post";
     }
 
     @GetMapping("/mes-posts")
@@ -74,7 +76,7 @@ public class PostController {
         Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         model.addAttribute("posts", postService.getPostsParAuteur(utilisateur));
         model.addAttribute("utilisateurConnecte", utilisateur);
-        return "liste-posts";
+        return "list-post";
     }
 
     @PreAuthorize("isAuthenticated()")
