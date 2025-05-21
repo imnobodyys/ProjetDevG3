@@ -18,10 +18,21 @@
     <div class="section">
         <h2>Événements Ouverts à Tous</h2>
         <div th:each="event : ${evenementsPublics}" class="event-card">
-            <h3 th:text="${event.titre}"></h3>
+            <h3>
+                <a th:href="@{/api/evenements/details/{id}(id=${event.id})}" 
+                   th:text="${event.titre}"></a>
+            </h3>
             <p th:text="${event.description}"></p>
-            <a th:href="@{/api/evenements/participer/{id}(id=${event.id})}" class="button">Participer</a>
-            <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Voir Participants</a>
+            <div class="button-group">
+                <form th:action="@{/api/evenements/participer/{id}(id=${event.id})}" 
+                      method="post" style="display: inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="button">Participer</button>
+                </form>
+            
+                <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" 
+                   class="button">Participants</a>
+            </div>
         </div>
         <div th:if="${evenementsPublics.empty}">
             <p>Aucun événement public disponible.</p>
@@ -32,11 +43,16 @@
     <div class="section">
         <h2>Mes Événements Créés</h2>
         <div th:each="event : ${mesEvenements}" class="event-card">
-            <h3 th:text="${event.titre}"></h3>
+            <h3>
+                <a th:href="@{/api/evenements/details/{id}(id=${event.id})}" 
+                   th:text="${event.titre}"></a>
+            </h3>
             <p th:text="${event.description}"></p>
             <div class="button-group">
-                <a th:href="@{/api/evenements/modifier/{id}(id=${event.id})}" class="button">Modifier</a>
-                <form th:action="@{/api/evenements/supprimer/{id}(id=${event.id})}" method="post" style="display: inline;">
+                <a th:href="@{/api/evenements/modifier/{id}(id=${event.id})}" 
+                   class="button">Modifier</a>
+                <form th:action="@{/api/evenements/supprimer/{id}(id=${event.id})}" 
+                      method="post" style="display: inline;">
                     <button type="submit" class="button button-danger">Supprimer</button>
                 </form>
             </div>
@@ -50,9 +66,13 @@
     <div class="section">
         <h2>Événements où je participe</h2>
         <div th:each="event : ${evenementsInscrits}" class="event-card">
-            <h3 th:text="${event.titre}"></h3>
+            <h3>
+                <a th:href="@{/api/evenements/details/{id}(id=${event.id})}" 
+                   th:text="${event.titre}"></a>
+            </h3>
             <p th:text="${event.description}"></p>
-            <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Détails</a>
+            <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" 
+               class="button">Détails</a>
         </div>
         <div th:if="${evenementsInscrits.empty}">
             <p>Vous ne participez à aucun événement.</p>

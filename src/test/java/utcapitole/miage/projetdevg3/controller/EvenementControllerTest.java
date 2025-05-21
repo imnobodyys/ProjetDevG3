@@ -34,7 +34,7 @@ import utcapitole.miage.projetdevg3.config.SecurityConfig;
 import utcapitole.miage.projetdevg3.controller.EvenementController;
 import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
-
+import utcapitole.miage.projetdevg3.model.VisibiliteEvenement;
 import utcapitole.miage.projetdevg3.repository.EvenementRepository;
 import utcapitole.miage.projetdevg3.service.EvenementService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
@@ -465,4 +465,98 @@ public class EvenementControllerTest {
             .andExpect(view().name("errorPage"))
             .andExpect(model().attribute("errorMessage", "Événement non trouvé"));
     }
+
+
+    /**
+     * Test1 - Visualisation des détails d'un événement
+     * Accès autorisé à un événement public
+     */
+    @WithMockUser(username = "user@test.com")
+    @Test
+    void afficherDetailsEvenement_QuandPublic_DoitAfficherDetails() throws Exception {
+        // Arrange
+        Utilisateur auteur = new Utilisateur("John", "Doe", "auteur@test.com", "pass");
+        Evenement eventPublic = new Evenement();
+        eventPublic.setVisibilite(VisibiliteEvenement.PUBLIC);
+        eventPublic.setAuteur(auteur);
+        
+        when(evenementService.getEvenementById(1L)).thenReturn(eventPublic);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/details/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("detailsEvenement"))
+                .andExpect(model().attributeExists("evenement"));
+    }
+
+    /**
+     * Test2 - Visualisation des détails d'un événement
+     * Accès à un événement privé par l'auteur
+     */
+    @WithMockUser(username = "auteur@test.com")
+    @Test
+    void afficherDetailsEvenement_QuandPriveParAuteur_DoitAutoriser() throws Exception {
+        // Arrange
+        Utilisateur auteur = new Utilisateur("John", "Doe", "auteur@test.com", "pass");
+        ReflectionTestUtils.setField(auteur, "id", 1L);
+        
+        Evenement eventPrive = new Evenement();
+        eventPrive.setVisibilite(VisibiliteEvenement.PRIVE);
+        eventPrive.setAuteur(auteur);
+        
+        when(utilisateurService.getUtilisateurByEmail("auteur@test.com")).thenReturn(auteur);
+        when(evenementService.getEvenementById(1L)).thenReturn(eventPrive);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/details/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("detailsEvenement"));
+    }
+
+    /**
+     * Test3 - Visualisation des détails d'un événement
+     * Tentative d'accès à un événement privé par un non-auteur
+     */
+    @WithMockUser(username = "intrus@test.com")
+    @Test
+    void afficherDetailsEvenement_QuandPriveParNonAuteur_DoitRefuser() throws Exception {
+        // Arrange
+        Utilisateur auteur = new Utilisateur("John", "Doe", "auteur@test.com", "pass");
+        ReflectionTestUtils.setField(auteur, "id", 1L);
+        
+        Utilisateur intrus = new Utilisateur("Intrus", "Test", "intrus@test.com", "pass");
+        ReflectionTestUtils.setField(intrus, "id", 2L);
+        
+        Evenement eventPrive = new Evenement();
+        eventPrive.setVisibilite(VisibiliteEvenement.PRIVE);
+        eventPrive.setAuteur(auteur);
+        
+        when(utilisateurService.getUtilisateurByEmail("intrus@test.com")).thenReturn(intrus);
+        when(evenementService.getEvenementById(1L)).thenReturn(eventPrive);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/details/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorMessage", 
+                "Accès refusé : Événement privé"));
+    }
+
+        /**
+         * Test4 - Visualisation des détails d'un événement
+         * Tentative d'accès à un événement inexistant
+         */
+        @WithMockUser
+        @Test
+        void afficherDetailsEvenement_QuandInexistant_DoitAfficherErreur() throws Exception {
+        // Arrange
+        when(evenementService.getEvenementById(999L))
+                .thenThrow(new IllegalArgumentException("Événement non trouvé"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/details/999"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorMessage", "Événement non trouvé"));
+        }
 }
