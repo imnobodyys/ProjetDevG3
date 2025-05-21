@@ -142,6 +142,7 @@ public class DemandeAmiController {
     public String voirMesAmis(Principal principal, Model model) {
         Utilisateur currentUser = getCurrentUser(principal);
         model.addAttribute("amis", demandeAmiService.getAmis(currentUser));
+        model.addAttribute("utilisateur", currentUser);
         return "amis";
     }
 

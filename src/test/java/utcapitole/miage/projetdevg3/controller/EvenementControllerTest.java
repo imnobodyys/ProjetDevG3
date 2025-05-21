@@ -36,6 +36,7 @@ import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.model.VisibiliteEvenement;
 import utcapitole.miage.projetdevg3.repository.EvenementRepository;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 import utcapitole.miage.projetdevg3.service.EvenementService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
@@ -57,6 +58,9 @@ public class EvenementControllerTest {
 
         @MockBean
         private UtilisateurService utilisateurService;
+
+        @MockBean
+        private UtilisateurRepository utilisateurRepository;
 
         @MockBean
         private PasswordEncoder passwordEncoder;
