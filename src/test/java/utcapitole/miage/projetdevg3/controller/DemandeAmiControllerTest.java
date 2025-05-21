@@ -87,7 +87,7 @@ class DemandeAmiControllerTest {
                                 .param("destinataireId", destinataireId.toString())
                                 .with(csrf()))
                                 .andExpect(status().is3xxRedirection())
-                                .andExpect(redirectedUrl("/users"))
+                                .andExpect(redirectedUrl("/accueil"))
                                 .andExpect(flash().attribute("success", "Demande envoyée avec succès !"));
 
                 verify(demandeAmiService).envoyerDemandeAmi(1L, destinataireId);
@@ -156,13 +156,14 @@ class DemandeAmiControllerTest {
                 when(demandeAmiService.getAmis(mockUser))
                                 .thenReturn(Arrays.asList(ami1, ami2));
 
-                mockMvc.perform(get("/demandes/amis"))
+                mockMvc.perform(get("/demandes/amis")
+                                .sessionAttr("utilisateur", mockUser))
                                 .andExpect(status().isOk())
                                 .andExpect(view().name("amis"))
                                 .andExpect(model().attributeExists("amis"))
                                 .andExpect(model().attribute("amis", hasSize(2)));
 
-                verify(utilisateurRepository).findByEmail("test@example.com");
+                verify(utilisateurRepository,times(2)).findByEmail("test@example.com");
                 verify(demandeAmiService).getAmis(mockUser);
         }
 

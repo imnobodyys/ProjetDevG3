@@ -151,7 +151,7 @@ public class UtilisateurControllerTest {
                                 .param("username", email)
                                 .param("password", rawPassword))
                                 .andExpect(status().is3xxRedirection())
-                                .andExpect(redirectedUrl("/dashboard"));
+                                .andExpect(redirectedUrl("/accueil"));
 
         }
 
@@ -331,6 +331,7 @@ public class UtilisateurControllerTest {
         @Test
         void TestSearch() throws Exception {
                 Utilisateur utilisateur = new Utilisateur("Alice", "Dupont", "alice@example.com", "1234");
+                utilisateur.setId(1L);
 
                 when(utilisateurService.rechercher("ali")).thenReturn(List.of(utilisateur));
 
