@@ -8,11 +8,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -343,7 +351,7 @@ public class EvenementControllerTest {
                 .andExpect(model().attributeExists("evenement"));
     }
 
-     /**
+    /**
      * US47 Test2 - Participer à un événement
      * Tentative de participation déjà existante
      */
@@ -364,5 +372,53 @@ public class EvenementControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorMessage", "Vous êtes déjà inscrit à cet événement"));
+    }
+
+
+
+    /**
+     * US48 Test1 - Visualisation des participants à un événement
+     * Visualiser les participants d'un événement existant
+     */
+    @WithMockUser
+    @Test
+    void afficherParticipants_QuandValide_DoitAfficherVue() throws Exception {
+        // Arrange
+        Evenement mockEvent = new Evenement();
+        mockEvent.setTitre("Event test");
+        mockEvent.addParticipant(new Utilisateur("Jean", "Dupont", "jean@test.com", "pass"));
+        
+        when(evenementService.getEvenementById(1L)).thenReturn(mockEvent);
+
+        // Act & Assert
+        MvcResult result = mockMvc.perform(get("/api/evenements/1/participants"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("listeParticipants"))
+            .andReturn();
+
+        ModelAndView mav = result.getModelAndView();
+        List<Utilisateur> participants = (List<Utilisateur>) mav.getModel().get("participants");
+        
+        assertEquals(1, participants.size());
+        assertEquals("jean@test.com", participants.get(0).getEmail());
+    }
+
+    
+    /**
+     * US48 Test2 - Visualisation des participants à un événement
+     * Tentative d'accès à un événement inexistant
+     */
+    @WithMockUser
+    @Test
+    void afficherParticipants_QuandInvalide_DoitAfficherErreur() throws Exception {
+        // Arrange
+        when(evenementService.getEvenementById(999L))
+            .thenThrow(new IllegalArgumentException("Événement non trouvé"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/999/participants"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("errorPage"))
+            .andExpect(model().attribute("errorMessage", "Événement non trouvé"));
     }
 }
