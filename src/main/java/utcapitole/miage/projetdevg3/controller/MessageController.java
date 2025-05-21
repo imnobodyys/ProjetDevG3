@@ -1,6 +1,7 @@
 package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetdevg3.service.MessageService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
+import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
@@ -27,10 +30,13 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 @RequestMapping("/messages")
 public class MessageController {
 
+    private final UtilisateurService utilisateurService;
     private final UtilisateurRepository utilisateurRepository;
     private final MessageService messageService;
 
-    public MessageController(MessageService messageService, UtilisateurRepository utilisateurRepository) {
+    public MessageController(UtilisateurService utilisateurService, MessageService messageService,
+            UtilisateurRepository utilisateurRepository) {
+        this.utilisateurService = utilisateurService;
         this.messageService = messageService;
         this.utilisateurRepository = utilisateurRepository;
     }
@@ -63,5 +69,25 @@ public class MessageController {
 
         redirectAttributes.addFlashAttribute("success", "Message envoyé !");
         return "redirect:/demandes/amis";
+    }
+
+    /**
+     * pour arriver page de list message
+     * 
+     * @param model
+     * @param principal
+     * @return
+     */
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    public String afficherMessagesAccueil(Model model, Principal principal) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
+
+        List<Message> recentPrivateMessages = messageService.getRecentPriMessages(utilisateur);
+        List<Message> recentGroupMessages = messageService.getRecentGroupMessages(utilisateur);
+
+        model.addAttribute("privateMessages", recentPrivateMessages);
+        model.addAttribute("groupMessages", recentGroupMessages);
+        return "messages";
     }
 }

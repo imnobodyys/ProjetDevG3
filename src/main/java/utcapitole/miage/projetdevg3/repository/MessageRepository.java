@@ -2,13 +2,14 @@ package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import utcapitole.miage.projetdevg3.model.Conversation;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import org.springframework.data.domain.Pageable;
 
 /**
  * MessageRepository est une interface qui étend JpaRepository pour gérer
@@ -34,6 +35,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByConversation(Conversation conversation);
 
     /**
+     * Récupère tous les messages associés à une conversation id
+     * 
+     * @param conversationId
+     * @return
+     */
+    List<Message> findByConversationId(Long conversationId);
+
+    /**
      * Récupère tous les messages d'une conversation, triés par date d'envoi
      * croissante.
      *
@@ -42,4 +51,36 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      */
     List<Message> findByConversationOrderByDtEnvoiAsc(Conversation conversation);
 
+    /**
+     * pour touver message prive de utlisateur
+     * 
+     * @param utilisateur
+     * @param pageable
+     * @return
+     */
+    @Query("""
+            SELECT m FROM Message m
+            JOIN ConversationPri c ON c = m.conversation
+            WHERE TYPE(m.conversation) = ConversationPri
+            AND (c.expediteurCP = :utilisateur OR c.destinataireCP = :utilisateur)
+            ORDER BY m.dtEnvoi DESC
+            """)
+    List<Message> findPrivateMessagesForUser(Utilisateur utilisateur, Pageable pageable);
+
+    /**
+     * pour touver message group de utlisateur
+     * 
+     * @param utilisateur
+     * @param pageable
+     * @return
+     */
+    @Query("""
+            SELECT m FROM Message m
+            JOIN ConversationGrp cg ON cg = m.conversation
+            JOIN Groupe g ON g = cg.groupeCon
+            LEFT JOIN MembreGroupe mg ON mg.groupe = g
+            WHERE g.createur = :utilisateur OR mg.membre = :utilisateur
+            ORDER BY m.dtEnvoi DESC
+            """)
+    List<Message> findGroupMessagesForUser(Utilisateur utilisateur, Pageable pageable);
 }

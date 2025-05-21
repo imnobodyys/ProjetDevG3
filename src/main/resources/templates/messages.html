@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Messages</title></head>
+    <meta charset="UTF-8">
+    <title>Messages récents</title>
+</head>
 <body>
-<h1 th:text="'Conversation avec ' + ${autreUtilisateur.nom}">Conversation</h1>
+    <h1>Messages Privés Récents</h1>
+    <div th:if="${privateMessages.isEmpty()}">
+        <p>Aucun message privé récent.</p>
+    </div>
+    <div th:each="msg : ${privateMessages}">
+        <p>
+            <strong th:text="${msg.expedi.nom}">Expéditeur</strong> : 
+            <span th:text="${msg.contenu}">Contenu</span>
+            <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+        </p>
+    </div>
+    <a href="/messages/prives">Voir tous les messages privés</a>
 
-<div th:each="msg : ${messages}">
-    <p>
-        <b th:text="${msg.expedi.nom}">Nom</b> : 
-        <span th:text="${msg.contenu}">contenu</span>
-        <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
-    </p>
-</div>
+    <hr>
 
-<a th:href="@{'/messages/envoyer/' + ${autreUtilisateur.id}}">Répondre</a>
-
+    <h1>Messages de Groupes Récents</h1>
+    <div th:if="${groupMessages.isEmpty()}">
+        <p>Aucun message de groupe récent.</p>
+    </div>
+    <div th:each="msg : ${groupMessages}">
+        <p>
+            <strong th:text="${msg.expedi.nom}">Expéditeur</strong> : 
+            <span th:text="${msg.contenu}">Contenu</span>
+            <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+        </p>
+    </div>
+    <a href="/messages/groupes">Voir tous les messages de groupe</a>
 </body>
 </html>
