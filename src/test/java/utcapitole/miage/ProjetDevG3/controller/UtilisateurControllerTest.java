@@ -151,7 +151,7 @@ public class UtilisateurControllerTest {
                                 .param("username", email)
                                 .param("password", rawPassword))
                                 .andExpect(status().is3xxRedirection())
-                                .andExpect(redirectedUrl("/accueil"));
+                                .andExpect(redirectedUrl("/dashboard"));
 
         }
 
