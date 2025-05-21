@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import utcapitole.miage.projetdevg3.model.*;
 import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 import utcapitole.miage.projetdevg3.repository.MessageRepository;
+import utcapitole.miage.projetdevg3.service.ConversationService;
 
 import java.time.LocalDateTime;
 

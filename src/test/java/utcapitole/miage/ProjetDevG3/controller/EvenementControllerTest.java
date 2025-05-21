@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
+import utcapitole.miage.projetdevg3.controller.EvenementController;
 import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 

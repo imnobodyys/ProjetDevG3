@@ -11,7 +11,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.PostService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,11 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.security.Principal;
 import java.util.List;
-
-import utcapitole.miage.projetDevG3.Service.PostService;
-import utcapitole.miage.projetDevG3.Service.UtilisateurService;
-import utcapitole.miage.projetDevG3.model.Post;
-import utcapitole.miage.projetDevG3.model.Utilisateur;
 
 @AutoConfigureMockMvc
 @SpringBootTest

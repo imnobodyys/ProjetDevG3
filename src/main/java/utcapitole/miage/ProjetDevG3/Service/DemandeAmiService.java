@@ -20,10 +20,14 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class DemandeAmiService {
     private final UtilisateurRepository utilisateurRepository;
     private final DemandeAmiRepository demandeAmiRepository;
+
+    public DemandeAmiService(DemandeAmiRepository demandeAmiRepository, UtilisateurRepository utilisateurRepository) {
+        this.demandeAmiRepository = demandeAmiRepository;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     /**
      * Envoie une demande d'ami

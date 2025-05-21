@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import utcapitole.miage.projetdevg3.config.SecurityConfig;
+import utcapitole.miage.projetdevg3.controller.MessageController;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.MessageService;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;

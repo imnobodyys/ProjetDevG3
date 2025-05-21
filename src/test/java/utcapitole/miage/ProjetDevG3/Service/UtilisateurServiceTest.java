@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 import java.util.List;
 import java.util.Optional;
