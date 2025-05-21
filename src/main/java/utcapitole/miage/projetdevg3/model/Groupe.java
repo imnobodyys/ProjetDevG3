@@ -185,9 +185,12 @@ public class Groupe {
         this.type = type;
     }
 
-    public void setType(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setType'");
+    public void setType(String typeStr) {
+        if (typeStr == null) {
+        this.type = TypeGroupe.PUBLIC; // ou null, selon ton choix
+    } else {
+        this.type = TypeGroupe.valueOf(typeStr.toUpperCase());
+    }
     }
 
 }
