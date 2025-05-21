@@ -32,7 +32,7 @@ public class GroupeService {
      * Utilisé pour gérer les relations entre utilisateurs et groupes.
      */
     @Autowired
-    private MembreGroupeRepository MembreGroupeRepository;
+    private MembreGroupeRepository membreGroupeRepository;
 
     /**
      * Constructeur pour initialiser le service de groupe.
@@ -43,7 +43,7 @@ public class GroupeService {
     public GroupeService(GroupeRepository groupeRepository,
             utcapitole.miage.projetdevg3.repository.MembreGroupeRepository membreGroupeRepository) {
         this.groupeRepository = groupeRepository;
-        MembreGroupeRepository = membreGroupeRepository;
+        membreGroupeRepository = membreGroupeRepository;
     }
 
     /**
@@ -76,7 +76,7 @@ public class GroupeService {
         membre.setGroupe(groupe);
         membre.setMembre(createur);
         membre.setStatut(StatutMembre.ACCEPTE);
-        MembreGroupeRepository.save(membre);
+        membreGroupeRepository.save(membre);
 
         return groupe;
 
@@ -89,7 +89,7 @@ public class GroupeService {
      */
     public List<MembreGroupe> getMembresDuGroupe(Long idGroupe) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
-        return MembreGroupeRepository.findByGroupe(groupe);
+        return membreGroupeRepository.findByGroupe(groupe);
     }
 
     /**
@@ -107,7 +107,7 @@ public class GroupeService {
     public void demanderAdhesion(Long idGroupe, Utilisateur utilisateur) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
 
-        boolean dejaMembreOuEnAttente = MembreGroupeRepository.findByMembre(utilisateur).stream()
+        boolean dejaMembreOuEnAttente = membreGroupeRepository.findByMembre(utilisateur).stream()
                 .anyMatch(mg -> mg.getGroupe().getId().equals(idGroupe));
         if (dejaMembreOuEnAttente) {
             return; // Ne fait rien si déjà membre ou en attente
@@ -122,7 +122,7 @@ public class GroupeService {
         membre.setMembre(utilisateur);
         membre.setStatut(statut);
 
-        MembreGroupeRepository.save(membre);
+        membreGroupeRepository.save(membre);
     }
 
     /**
@@ -131,7 +131,7 @@ public class GroupeService {
      * @param utilisateur Utilisateur dont on veut récupérer les groupes.
      */
     public List<Groupe> getGroupesDisponiblesPour(Utilisateur utilisateur) {
-        List<MembreGroupe> dejaRejoints = MembreGroupeRepository.findByMembre(utilisateur);
+        List<MembreGroupe> dejaRejoints = membreGroupeRepository.findByMembre(utilisateur);
         List<Long> idsGroupes = dejaRejoints.stream()
                 .map(m -> m.getGroupe().getId())
                 .toList();
@@ -144,25 +144,25 @@ public class GroupeService {
     public void annulerDemande(Long idGroupe, Utilisateur utilisateur) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
 
-        List<MembreGroupe> membresEnAttente = MembreGroupeRepository.findByMembre(utilisateur).stream()
+        List<MembreGroupe> membresEnAttente = membreGroupeRepository.findByMembre(utilisateur).stream()
                 .filter(m -> m.getGroupe().getId().equals(idGroupe) && m.getStatut() == StatutMembre.EN_ATTENTE)
                 .toList();
 
         // Supprime toutes les demandes en attente trouvées
-        MembreGroupeRepository.deleteAll(membresEnAttente);
+        membreGroupeRepository.deleteAll(membresEnAttente);
     }
 
     // Pour récupérer les demandes en attente
     public List<MembreGroupe> getDemandesParGroupe(Long idGroupe) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
-        return MembreGroupeRepository.findByGroupeAndStatut(groupe, StatutMembre.EN_ATTENTE);
+        return membreGroupeRepository.findByGroupeAndStatut(groupe, StatutMembre.EN_ATTENTE);
     }
 
     // Pour changer le statut (accepter ou refuser)
     public void changerStatutMembre(Long idMembre, StatutMembre statut) {
-        MembreGroupe membre = MembreGroupeRepository.findById(idMembre).orElseThrow();
+        MembreGroupe membre = membreGroupeRepository.findById(idMembre).orElseThrow();
         membre.setStatut(statut);
-        MembreGroupeRepository.save(membre);
+        membreGroupeRepository.save(membre);
     }
 
     public void supprimerGroupeSiCreateur(Long idGroupe, Utilisateur utilisateur) {
@@ -182,7 +182,7 @@ public class GroupeService {
     }
 
     public MembreGroupeRepository getMembreGroupeRepository() {
-        return MembreGroupeRepository;
+        return membreGroupeRepository;
     }
 
     public GroupeRepository getGroupeRepository() {
@@ -194,11 +194,11 @@ public class GroupeService {
     }
 
     public void setMembreGroupeRepository(MembreGroupeRepository membreGroupeRepository) {
-        MembreGroupeRepository = membreGroupeRepository;
+        membreGroupeRepository = membreGroupeRepository;
     }
 
     public StatutMembre getStatutPourUtilisateur(Groupe groupe, Utilisateur utilisateur) {
-        return MembreGroupeRepository.findByMembre(utilisateur).stream()
+        return membreGroupeRepository.findByMembre(utilisateur).stream()
                 .filter(m -> m.getGroupe().getId().equals(groupe.getId()))
                 .map(MembreGroupe::getStatut)
                 .findFirst()

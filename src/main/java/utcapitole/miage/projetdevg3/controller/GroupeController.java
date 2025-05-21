@@ -55,14 +55,14 @@ public class GroupeController {
      * Attributs
      * groupeService : service pour gérer les groupes
      */
-    @Autowired
+    
     private GroupeService groupeService;
 
     /** membreGroupeService : service pour gérer les membres de groupe */
-    @Autowired
+   
     private MembreGroupeService membreGroupeService;
 
-    @Autowired
+    
     private final UtilisateurService utilisateurService;
 
     @Autowired
@@ -283,7 +283,7 @@ public class GroupeController {
             statuts.put(g.getId(), statut);
         }
         model.addAttribute("groupes", disponibles);
-        model.addAttribute("statuts", statuts);
+        model.addAttribute("statuts", statuts  != null ? statuts : new HashMap<>());
         return "groupesDisponibles";
     }
     
@@ -302,4 +302,30 @@ public class GroupeController {
         }
         return "redirect:/groupes/liste";
     }
+    // Afficher la liste des groupes disponibles pour rejoindre
+    @GetMapping("/groupes/liste")
+    public String listeGroupesDisponibles(Model model,  Principal principal) {
+        if (principal == null) {
+            return "redirect:/login"; // ou gestion erreur / accès non autorisé
+        }
+         Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+
+        List<Groupe> groupes = groupeService.getTousLesGroupes();
+
+        // On prépare une map <idGroupe, statut> pour l'utilisateur connecté
+        Map<Long, StatutMembre> statuts = new HashMap<>();
+        for (Groupe g : groupes) {
+            StatutMembre statut = groupeService.getStatutPourUtilisateur(g, utilisateur);
+            statuts.put(g.getId(), statut);
+        }
+
+        model.addAttribute("groupes", groupes);
+        model.addAttribute("statuts", statuts);
+        model.addAttribute("userEmail", utilisateur.getEmail());
+
+        return "groupe_disponibles"; // correspond à ton fichier HTML groupe_disponibles.html
+    }
+   
+
+   
 }
