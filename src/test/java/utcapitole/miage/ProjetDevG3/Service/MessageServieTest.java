@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -16,6 +16,7 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 
 import utcapitole.miage.projetdevg3.repository.MessageRepository;
+import utcapitole.miage.projetdevg3.service.MessageService;
 
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {

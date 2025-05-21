@@ -14,6 +14,7 @@ import utcapitole.miage.projetdevg3.model.Post;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
 import utcapitole.miage.projetdevg3.repository.PostRepository;
+import utcapitole.miage.projetdevg3.service.PostService;
 
 class PostServiceTest {
 

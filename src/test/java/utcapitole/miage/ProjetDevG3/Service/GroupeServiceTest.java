@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,7 @@ import utcapitole.miage.projetdevg3.model.StatutMembre;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.GroupeRepository;
 import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
+import utcapitole.miage.projetdevg3.service.GroupeService;
 
 class GroupeServiceTest {
     private GroupeService groupeService;

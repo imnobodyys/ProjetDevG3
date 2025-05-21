@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import utcapitole.miage.projetdevg3.model.*;
 import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 import utcapitole.miage.projetdevg3.repository.MessageRepository;
+import utcapitole.miage.projetdevg3.service.ConversationService;
 
 import java.time.LocalDateTime;
 

@@ -24,12 +24,16 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  * @author [Votre nom]
  */
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/messages")
 public class MessageController {
 
     private final UtilisateurRepository utilisateurRepository;
     private final MessageService messageService;
+
+    public MessageController(MessageService messageService, UtilisateurRepository utilisateurRepository) {
+        this.messageService = messageService;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     /**
      * Formulaire pour envoyer un message privé

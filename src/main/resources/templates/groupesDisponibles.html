@@ -8,37 +8,42 @@
 <body>
 <h2>Groupes que vous pouvez rejoindre</h2>
 
-<table>
+<table border="1">
     <tr>
         <th>Nom</th>
         <th>Description</th>
-        <th>Action</th>
-        <th>Statut</th>
         <th>Type</th>
+        <th>Statut</th>
+        <th>Action</th>
     </tr>
     <tr th:each="g : ${groupes}">
         <td th:text="${g.nom}"></td>
         <td th:text="${g.description}"></td>
         <td th:text="${g.type}"></td>
+
+        <!-- Affichage du statut -->
         <td>
-    <span th:if="${statuts[g.id]} == null">
-            <form th:action="@{/groupes/rejoindre}" method="post">
+            <span th:if="${statuts[g.id]} == null">Aucun</span>
+            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">Demande en attente</span>
+            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">Membre</span>
+            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'REFUSE'}">Refusé</span>
+        </td>
+
+        <!-- Actions en fonction du statut -->
+        <td>
+            <form th:action="@{/groupes/rejoindre}" method="post"
+                  th:if="${statuts[g.id]} == null or (statuts[g.id] != null and statuts[g.id].name() == 'REFUSE')}">
                 <input type="hidden" name="idGroupe" th:value="${g.id}" />
                 <button type="submit">Demander à rejoindre</button>
             </form>
-    </span>
-    <span th:if="${statuts[g.id]?.name() == 'EN_ATTENTE'}">Demande en attente</span>
-    <span th:if="${statuts[g.id]?.name() == 'ACCEPTE'}">Déjà membre</span>
-        </td> <!-- AJOUT -->
-        <td>
-            <form th:action="@{/groupes/rejoindre}" method="post">
+
+            <form th:action="@{/groupes/annuler}" method="post"
+                  th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">
                 <input type="hidden" name="idGroupe" th:value="${g.id}" />
-                <button type="submit">Demander à rejoindre</button>
+                <button type="submit">Annuler la demande</button>
             </form>
-            <form th:action="@{/groupes/annuler}" method="post">
-        <input type="hidden" name="idGroupe" th:value="${g.id}" />
-        <button type="submit">Annuler demande</button>
-            </form>
+
+            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">-</span>
         </td>
     </tr>
 </table>

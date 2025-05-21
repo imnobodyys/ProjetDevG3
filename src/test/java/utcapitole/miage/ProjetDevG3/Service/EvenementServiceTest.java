@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +9,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import utcapitole.miage.projetdevg3.model.*;
 import utcapitole.miage.projetdevg3.repository.EvenementRepository;
+import utcapitole.miage.projetdevg3.service.EvenementService;
 
 import java.time.LocalDateTime;
 import java.util.List;

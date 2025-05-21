@@ -3,6 +3,7 @@ package utcapitole.miage.projetdevg3.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  * utilisateurs.
  */
 @Service
-@RequiredArgsConstructor
+
 public class UtilisateurService {
 
     /**
@@ -25,6 +26,11 @@ public class UtilisateurService {
      */
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
     /**
      * US01
@@ -92,6 +98,12 @@ public class UtilisateurService {
 
         return utilisateurRepository.save(existingUser);
     }
+    
+    public Utilisateur authentifier(String email, String motDePasse) {
+    return utilisateurRepository.findByEmail(email)
+            .filter(utilisateur -> passwordEncoder.matches(motDePasse, utilisateur.getMdp()))
+            .orElse(null);
+    }
 
     /**
      * US04 - Suppression de profil
@@ -109,6 +121,15 @@ public class UtilisateurService {
 
     public List<Utilisateur> rechercher(String keyword) {
         return utilisateurRepository.searchByKeyword(keyword);
+    }
+
+  public Utilisateur findByEmail(String email) {
+    return utilisateurRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+    }
+
+    public Utilisateur trouverParEmail(String email) {
+    return findByEmail(email);
     }
 
     public PasswordEncoder getPasswordEncoder() {

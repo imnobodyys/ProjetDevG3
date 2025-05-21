@@ -10,7 +10,6 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 @Controller
-
 public class AccueilController {
 
     private final UtilisateurService utilisateurService;

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,22 @@ import utcapitole.miage.projetdevg3.service.UtilisateurService;
 @RequestMapping("/groupes")
 public class GroupeController {
 
+    public GroupeService getGroupeService() {
+        return groupeService;
+    }
+
+
+    public MembreGroupeService getMembreGroupeService() {
+        return membreGroupeService;
+    }
+
+
+    public UtilisateurService getUtilisateurService() {
+        return utilisateurService;
+    }
+
+
+
     /**
      * Attributs
      * groupeService : service pour gérer les groupes
@@ -46,27 +63,33 @@ public class GroupeController {
     private MembreGroupeService membreGroupeService;
 
     @Autowired
-    private UtilisateurService utilisateurService;
+    private final UtilisateurService utilisateurService;
 
-    /**
-     * Constructeur
-     * 
-     * @param groupeService : service pour gérer les groupes
-     */
-    public GroupeController(GroupeService groupeService) {
+    @Autowired
+    public GroupeController(GroupeService groupeService, MembreGroupeService membreGroupeService, UtilisateurService utilisateurService) {
         this.groupeService = groupeService;
+        this.membreGroupeService = membreGroupeService;
+        this.utilisateurService = utilisateurService;
     }
 
+
+    @ModelAttribute
+    public void addCsrfToken(Model model, CsrfToken token) {
+        model.addAttribute("_csrf", token);
+    }
     /**
      * Méthode pour afficher le formulaire de création de groupe
      * 
      * @param model : modèle pour la vue
      * @return la vue du formulaire de création de groupe
      */
-    @GetMapping("/creer")
-    public String afficherFormulaire(Model model) {
-        model.addAttribute("groupe", new Groupe());// Ajoute un objet vide au modèle
-        return "formulaireGroupe"; // Va chercher formulaireGroupe.html
+      @GetMapping("/creer")
+      public String afficherFormulaire(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        model.addAttribute("groupe", new Groupe());
+        return "formulaireGroupe";
     }
 
     /**
@@ -75,17 +98,17 @@ public class GroupeController {
      * @param groupe : groupe à créer
      * @param result : résultat de la validation
      */
-    @PostMapping("/creer")
+   @PostMapping("/creer")
     public String creerGroupe(@ModelAttribute("groupe") @Validated Groupe groupe,
-            BindingResult result,
-            HttpSession session) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        if (utilisateur == null) {
-            return "redirect:/groupes/login";
+                              BindingResult result,
+                              Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
         }
         if (result.hasErrors()) {
             return "formulaireGroupe";
         }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         groupeService.creerGroupe(groupe.getNom(), groupe.getDescription(), utilisateur);
         return "redirect:/groupes/liste";
     }
@@ -98,15 +121,14 @@ public class GroupeController {
      * @return la vue de la liste des groupes
      */
     @GetMapping("/liste")
-    public String afficherGroupes(Model model, HttpSession session) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        if (utilisateur == null) {
-            return "redirect:/groupes/login";
+    public String afficherGroupes(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
         }
-
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         List<Groupe> groupes = groupeService.getGroupesByCreateur(utilisateur);
-        model.addAttribute("groupes", groupes); // Ajoute la liste au modèle
-        return "listeGroupe"; // Va chercher groupes/liste.html
+        model.addAttribute("groupes", groupes);
+        return "listeGroupe";
     }
 
     /**
@@ -124,11 +146,14 @@ public class GroupeController {
      * 
      * @return la vue de la page d'inscription
      */
-    @GetMapping("/disponibles")
-    public String afficherGroupesDispo(Model model) {
+     @GetMapping("/disponibles")
+    public String afficherGroupesDispo(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
         List<Groupe> groupes = groupeService.getTousLesGroupes();
         model.addAttribute("groupes", groupes);
-        return "groupesDisponibles"; // nom de la vue
+        return "groupesDisponibles";
     }
 
     /**
@@ -139,12 +164,11 @@ public class GroupeController {
      * @return la vue de la liste des groupes
      */
     @PostMapping("/rejoindre")
-    public String rejoindreGroupe(@RequestParam Long idGroupe, HttpSession session) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        if (utilisateur == null) {
-            return "redirect:/groupes/login";
+    public String rejoindreGroupe(@RequestParam Long idGroupe, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
         }
-
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         groupeService.demanderAdhesion(idGroupe, utilisateur);
         return "redirect:/groupes/liste";
     }
@@ -157,11 +181,11 @@ public class GroupeController {
      * @return la vue de la liste des groupes
      */
     @PostMapping("/annuler")
-    public String annulerDemande(Long idGroupe, HttpSession session) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        if (utilisateur == null)
-            return "redirect:/groupes/login";
-
+    public String annulerDemande(@RequestParam Long idGroupe, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         groupeService.annulerDemande(idGroupe, utilisateur);
         return "redirect:/groupes/disponibles";
     }
@@ -174,20 +198,70 @@ public class GroupeController {
      * @return la vue des demandes d'adhésion
      */
     @GetMapping("/admin/demandes")
-    public String voirDemandes(@RequestParam Long idGroupe, Model model, HttpSession session) {
+    public String voirDemandes(@RequestParam Long idGroupe, Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+        Groupe groupe = groupeService.getGroupeById(idGroupe);
 
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        Groupe groupe = groupeService.getGroupeById(idGroupe); // ★ AJOUT
         if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
             return "redirect:/groupes/liste";
         }
-
         List<MembreGroupe> demandes = groupeService.getDemandesParGroupe(idGroupe);
         model.addAttribute("demandes", demandes);
         model.addAttribute("idGroupe", idGroupe);
         return "demandesGroupe";
     }
 
+    @GetMapping("/admin/membres")
+    public String voirMembres(@RequestParam Long idGroupe, Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+        Groupe groupe = groupeService.getGroupeById(idGroupe);
+        if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
+            return "redirect:/groupes/liste";
+        }
+        List<MembreGroupe> membres = groupeService.getMembresDuGroupe(idGroupe);
+        model.addAttribute("membres", membres);
+        model.addAttribute("idGroupe", idGroupe);
+        return "membresGroupe";
+    }
+
+     @PostMapping("/admin/accepter")
+    public String accepterMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
+        membreGroupeService.accepterMembre(idMembre);
+        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
+    }
+
+    // Refuser demande adhésion
+    @PostMapping("/admin/refuser")
+    public String refuserMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
+        membreGroupeService.refuserMembre(idMembre);
+        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
+    }
+
+     @PostMapping("/admin/exclure")
+    public String exclureMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
+        membreGroupeService.exclureMembre(idMembre);
+        return "redirect:/groupes/admin/membres?idGroupe=" + idGroupe;
+    }
+
+    @PostMapping("/admin/modifierStatut")
+    public String modifierStatut(@RequestParam Long idMembre,
+                                @RequestParam Long idGroupe,
+                                @RequestParam String action) {
+        if ("accepter".equals(action)) {
+            membreGroupeService.accepterMembre(idMembre);
+        } else if ("refuser".equals(action)) {
+            membreGroupeService.refuserMembre(idMembre);
+        } else if ("exclure".equals(action)) {
+            membreGroupeService.exclureMembre(idMembre);
+        }
+        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
+    }
     /**
      * Méthode pour afficher les groupes disponibles pour un utilisateur
      * 
@@ -196,110 +270,36 @@ public class GroupeController {
      * @return la vue des groupes disponibles
      */
     @GetMapping("/rejoindre")
-    public String afficherGroupesDisponibles(Model model, HttpSession session) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte");
-        if (utilisateur == null)
-            return "redirect:/groupes/login";
+    public String afficherGroupesDisponiblesAvecStatut(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
 
         List<Groupe> disponibles = groupeService.getGroupesDisponiblesPour(utilisateur);
-
         Map<Long, StatutMembre> statuts = new HashMap<>();
         for (Groupe g : disponibles) {
             StatutMembre statut = groupeService.getStatutPourUtilisateur(g, utilisateur);
             statuts.put(g.getId(), statut);
         }
-
         model.addAttribute("groupes", disponibles);
         model.addAttribute("statuts", statuts);
-
-        return "groupesDisponibles"; // Vue à créer
+        return "groupesDisponibles";
     }
-
-    /**
-     * Méthode pour accepter une demande d'adhésion
-     * 
-     * @param idMembre : id du membre
-     */
-    @PostMapping("/admin/accepter")
-    public String accepterMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
-        membreGroupeService.accepterMembre(idMembre);
-        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
-    }
-
-    /**
-     * Méthode pour refuser une demande d'adhésion
-     * 
-     * @param idMembre : id du membre
-     */
-    @PostMapping("/admin/refuser")
-    public String refuserMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
-        membreGroupeService.refuserMembre(idMembre);
-        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
-    }
-
-    /**
-     * Méthode pour exclure un membre d'un groupe
-     * 
-     * @param idMembre : id du membre
-     */
-    @PostMapping("/admin/exclure")
-    public String exclureMembre(@RequestParam Long idMembre, @RequestParam Long idGroupe) {
-        membreGroupeService.exclureMembre(idMembre);
-        return "redirect:/groupes/admin/membres?idGroupe=" + idGroupe;
-    }
-
-    /**
-     * Méthode pour modifier le statut d'un membre
-     * 
-     * @param idMembre : id du membre
-     */
-    @PostMapping("/admin/modifierStatut")
-    public String modifierStatut(
-            @RequestParam Long idMembre,
-            @RequestParam Long idGroupe,
-            @RequestParam String action) {
-
-        if ("accepter".equals(action)) {
-            membreGroupeService.accepterMembre(idMembre);
-        } else if ("refuser".equals(action)) {
-            membreGroupeService.refuserMembre(idMembre);
-        } else if ("exclure".equals(action)) {
-            membreGroupeService.exclureMembre(idMembre);
-        }
-
-        return "redirect:/groupes/admin/demandes?idGroupe=" + idGroupe;
-    }
-
-    /**
-     * Méthode pour afficher les membres d'un groupe
-     * 
-     * @param idGroupe : id du groupe
-     */
-    @GetMapping("/admin/membres")
-    public String voirMembres(@RequestParam Long idGroupe, Model model, HttpSession session) {
-
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateurConnecte"); // ✅
-        Groupe groupe = groupeService.getGroupeById(idGroupe);
-        if (!groupe.getCreateur().getId().equals(utilisateur.getId())) {
-            return "redirect:/groupes/liste";
-        }
-
-        List<MembreGroupe> membres = groupeService.getMembresDuGroupe(idGroupe);
-        model.addAttribute("membres", membres);
-        model.addAttribute("idGroupe", idGroupe);
-        return "membresGroupe"; // nom du template Thymeleaf à créer
-    }
+    
+    
 
     @PostMapping("/{id}/supprimer")
     public String supprimerGroupe(@PathVariable Long id, Principal principal) {
-        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
-
+        if (principal == null) {
+            return "redirect:/api/utilisateurs/login";
+        }
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         try {
             groupeService.supprimerGroupeSiCreateur(id, utilisateur);
         } catch (SecurityException e) {
             return "redirect:/groupes/liste?erreur=acces";
         }
-
         return "redirect:/groupes/liste";
     }
 }

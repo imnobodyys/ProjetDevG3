@@ -18,11 +18,15 @@ import utcapitole.miage.projetdevg3.repository.MessageRepository;
  * utilisateur.
  */
 @Service
-@RequiredArgsConstructor
 public class MessageService {
 
     private final MessageRepository messageRepository;
     private final ConversationPriRepository conversationRepository;
+
+    public MessageService(ConversationPriRepository conversationRepository, MessageRepository messageRepository) {
+        this.conversationRepository = conversationRepository;
+        this.messageRepository = messageRepository;
+    }
 
     /**
      * Envoie un message privé dans une conversation

@@ -26,12 +26,16 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  * 
  */
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/conversations")
 public class ConversationController {
 
         private final UtilisateurRepository utilisateurRepository;
         private final ConversationService conversationService;
+
+    public ConversationController(ConversationService conversationService, UtilisateurRepository utilisateurRepository) {
+        this.conversationService = conversationService;
+        this.utilisateurRepository = utilisateurRepository;
+    }
 
         /**
          * Récupère l'utilisateur courant depuis Principal
