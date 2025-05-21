@@ -37,10 +37,10 @@ public class AccueilController {
         } else {
             model.addAttribute("isAuthenticated", false);
         }
-        return "accueil";
+        return "login";
     }
 
-    @GetMapping("/accueil")
+    @GetMapping("//redirect-accueil")
     public String accueil() {
         return "redirect:/api/utilisateurs/login"; // Nom de la vue Thymeleaf accueil.html
     }

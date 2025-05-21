@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
+import utcapitole.miage.projetdevg3.controller.AccueilController;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 
 import static org.mockito.Mockito.when;
