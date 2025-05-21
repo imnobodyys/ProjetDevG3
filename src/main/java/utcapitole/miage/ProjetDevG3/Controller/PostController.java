@@ -106,7 +106,7 @@ public class PostController {
 
     @PostMapping("/groupes/{groupeId}/posts")
     public String publierPost(@PathVariable Long groupeId, @ModelAttribute Post post, Principal principal) {
-        Utilisateur auteur = utilisateurService.findByEmail(principal.getName());
+        Utilisateur auteur = utilisateurService.getUtilisateurByEmail(principal.getName());
         Groupe groupe = groupeService.getGroupeById(groupeId);
 
         post.setAuteur(auteur);
