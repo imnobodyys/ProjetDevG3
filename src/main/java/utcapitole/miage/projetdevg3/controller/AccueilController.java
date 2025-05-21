@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
+import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
