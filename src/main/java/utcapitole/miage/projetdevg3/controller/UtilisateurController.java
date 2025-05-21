@@ -83,10 +83,12 @@ public class UtilisateurController {
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
-            Model model) {
+            Model model,CsrfToken csrfToken) {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
+         model.addAttribute("_csrf", csrfToken);  // <-- Ajout ici
+    
         return "login";
     }
 
