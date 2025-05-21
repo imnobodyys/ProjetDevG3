@@ -9,24 +9,26 @@
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
-    <div th:if="${demandeId}" >
+    <div th:unless="${destinataireId}" >
         <h2>Ajouter des amis manuellement</h2>
-        <form action="/demande/envoye" method="post">
+        <form action="/demandes/envoyer" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <label>siair ID de votre destinaire</label>
             <input type="number" name="destinaireId" required>
             <button type="submit">envoyer</button>
         </form>
     </div>
-    <div th:unless="${demandeId}">
+    <div th:if="${destinataireId}">
         <h2>Comfirmer demande ami</h2>
-        <P>vous allez envoyer un demande ami a<span th:text="${destinaireId}">ID</span></P>
+        <P>vous allez envoyer un demande ami a<span th:text="${destinataireId}">ID</span></P>
     
-        <form action="/demande/envoye" method="post">
-            <input type="hidden" name="demandeId" th:value ="${destinaireId}">
+        <form action="/demandes/envoyer" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="destinataireId" th:value ="${destinataireId}">
             <button type="submit">confirmer</button>
         </form>
     </div>
 
-    <a href="/acceuil">returner acceuil</a>
+    <a href="/accueueil">returner acceuil</a>
 
 </html>

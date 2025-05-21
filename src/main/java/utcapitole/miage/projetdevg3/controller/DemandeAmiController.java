@@ -3,7 +3,7 @@ package utcapitole.miage.projetdevg3.controller;
 import java.security.Principal;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +22,7 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
  */
 @Controller
 @RequestMapping("/demandes")
+@EnableMethodSecurity
 public class DemandeAmiController {
 
     public DemandeAmiController(utcapitole.miage.projetdevg3.service.DemandeAmiService demandeAmiService,
@@ -50,6 +51,7 @@ public class DemandeAmiController {
      * 
      */
     @GetMapping("/form/{destinataireId}")
+    @PreAuthorize("isAuthenticated()")
     public String showDemandeForm(@PathVariable Long destinataireId, Model model) {
         model.addAttribute("destinataireId", destinataireId);
         return "form_demande";
@@ -74,7 +76,7 @@ public class DemandeAmiController {
         demandeAmiService.envoyerDemandeAmi(currentUser.getId(), destinataireId);
 
         redirectAttributes.addFlashAttribute("success", "Demande envoyée avec succès !");
-        return "redirect:/users";
+        return "redirect:/accueil";
     }
 
     /**

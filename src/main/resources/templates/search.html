@@ -28,19 +28,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="u : ${resultats}">
-                    <td th:text = "${u.nom}">user</td>
-                    <td th text = "${u.email}">email </td>
-                    <td>
-                        <a th:href="@{/demande/form/{id}{id=${u.id}}}">Ajouter ami</a>
-                    </td>
-                    <td>
-                    <a th:href="@{'/profil/' + ${utilisateur.id}}">
-                    [[${utilisateur.prenom}]] [[${utilisateur.nom}]]
-                        </a>
-                        </td>
-                </tr>
-            </tbody>
+    <tr th:each="u : ${resultats}">
+        <td th:text="${u.nom}">user</td>
+        <td th:text="${u.email}">email</td>
+        <td>
+            <a th:href="@{/demandes/form/{id}(id=${u.id})}">Ajouter ami</a>
+        </td>
+        <td>
+            <a th:href="@{/api/utilisateurs/profil/{id}(id=${u.id})}">
+                [[${u.prenom}]] [[${u.nom}]]
+            </a>
+        </td>
+    </tr>
+</tbody>
+
         </table>
 
     </div>

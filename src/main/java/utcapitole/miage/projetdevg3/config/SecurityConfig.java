@@ -20,54 +20,59 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                // Autoriser globalement toutes les requêtes (aucune authentification requise
-                // par défaut)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                            "/api/utilisateurs/login",
-                                         "/api/utilisateurs/verifierlogin",
-                                          "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/groupes/**").authenticated()
-                        .anyRequest().permitAll())
-                // login
-                .formLogin(form -> form
-                        .loginPage("/api/utilisateurs/login") // Page de login personnalisée
-                        .loginProcessingUrl("/api/utilisateurs/verifierlogin") // URL de traitement par Spring
-                        .defaultSuccessUrl("/dashboard", true) // Redirection après succès
-                        .failureUrl("/api/utilisateurs/login?error") // Redirection en cas d'erreur
-                        .usernameParameter("username")
-   
-                        .passwordParameter("password")
-                        .permitAll())
-                // logout
-                .logout(logout -> logout
-                          .logoutUrl("/logout")
-                        .logoutSuccessUrl("/api/utilisateurs/login?logout")
-                        .permitAll());
+                http
+                                // Autoriser globalement toutes les requêtes (aucune authentification requise
+                                // par défaut)
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(
+                                                                "/api/utilisateurs/login",
+                                                                "/api/utilisateurs/verifierlogin",
+                                                                "/css/**", "/js/**")
+                                                .permitAll()
+                                                .requestMatchers("/groupes/**", "/demandes/**").authenticated()
+                                                .anyRequest().permitAll())
+                                // login
+                                .formLogin(form -> form
+                                                .loginPage("/login") // Page de login personnalisée
+                                                .loginProcessingUrl("/api/utilisateurs/verifierlogin") // URL de
+                                                                                                       // traitement par
+                                                                                                       // Spring
+                                                .defaultSuccessUrl("/accueil", true) // Redirection après succès
+                                                .failureUrl("/api/utilisateurs/login?error") // Redirection en cas
+                                                                                             // d'erreur
+                                                .usernameParameter("username")
 
-        return http.build();
-    }
+                                                .passwordParameter("password")
+                                                .permitAll())
+                                // logout
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/accueil")
+                                                .permitAll());
 
-    @Bean
-    public UserDetailsService userDetailsService(UtilisateurRepository utilisateurRepository) {
-        return new CustomUserDetailsService(utilisateurRepository);
-    }
+                return http.build();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .build();
-    }
+        @Bean
+        public UserDetailsService userDetailsService(UtilisateurRepository utilisateurRepository) {
+                return new CustomUserDetailsService(utilisateurRepository);
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService)
+                        throws Exception {
+                return http.getSharedObject(AuthenticationManagerBuilder.class)
+                                .userDetailsService(userDetailsService)
+                                .passwordEncoder(passwordEncoder())
+                                .and()
+                                .build();
+        }
 }
