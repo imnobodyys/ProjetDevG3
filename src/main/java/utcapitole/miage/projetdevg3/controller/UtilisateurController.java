@@ -1,14 +1,18 @@
 package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 /**
  * Classe MessageController
  * Gère les messages entre utilisateurs
  * @author projetdevg3
  */
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
@@ -83,12 +88,12 @@ public class UtilisateurController {
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
-            Model model,CsrfToken csrfToken) {
+            Model model, CsrfToken csrfToken) {
         if (error != null) {
             model.addAttribute("errorMessage", "Identifiants incorrects");
         }
-         model.addAttribute("_csrf", csrfToken);  // <-- Ajout ici
-    
+        model.addAttribute("_csrf", csrfToken); // <-- Ajout ici
+
         return "login";
     }
 
@@ -156,23 +161,38 @@ public class UtilisateurController {
         return "redirect:/api/utilisateurs/login?logout";
     }
 
+    /**
+     * pour search utilisateur
+     * 
+     * @param keyword
+     * @param model
+     * @param principal
+     * @return
+     */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search")
-    public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword, Model model,
+    public String searchUtilisateurs(@RequestParam(value = "q", required = false) String keyword,
+            Model model,
             Principal principal) {
-        List<Utilisateur> resultats = null;
+        List<Utilisateur> resultats = new ArrayList<>();
 
-        // si le utilisateur saisi le keword on commence recherche
-        if (keyword != null && !keyword.isEmpty()) {
-            resultats = utilisateurService.rechercher(keyword);
-        }
         Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
+
+        if (keyword != null && !keyword.isEmpty()) {
+            resultats = utilisateurService.rechercher(keyword).stream()
+                    .filter(u -> !u.getId().equals(utilisateur.getId()))
+                    .toList();
+        }
+        List<Utilisateur> amis = utilisateurService.listerAmis(utilisateur.getId());
+        Set<Long> amisIds = amis.stream()
+                .map(Utilisateur::getId)
+                .collect(Collectors.toSet());
+
         model.addAttribute("utilisateur", utilisateur);
-        // transmis key word et resultat
         model.addAttribute("keyword", keyword);
         model.addAttribute("resultats", resultats);
+        model.addAttribute("amisIds", amisIds);
 
-        // rentrer page search
         return "search";
     }
 
@@ -186,11 +206,12 @@ public class UtilisateurController {
         return "OK";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profil/{id}")
     public String afficherProfil(@PathVariable Long id, Model model) {
         Utilisateur utilisateur = utilisateurService.trouverParId(id);
         if (utilisateur == null) {
-            return "redirect:/"; // 或返回404页面
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé");
         }
         model.addAttribute("utilisateur", utilisateur);
         return "profil";

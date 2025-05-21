@@ -1,15 +1,65 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>Profil de l'utilisateur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .profile-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .profile-detail {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .edit-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .edit-link:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Profil de [[${utilisateur.prenom}]] [[${utilisateur.nom}]]</h1>
-    <p>Email : [[${utilisateur.email}]]</p>
-    <p>Date d'inscription : [[${utilisateur.dtInscription}]]</p>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Profil de [[${utilisateur.prenom}]] [[${utilisateur.nom}]]</h1>
+        </div>
+        
+        <div class="profile-details">
+            <p class="profile-detail">Email : [[${utilisateur.email}]]</p>
+            <p class="profile-detail">Date d'inscription : [[${utilisateur.dtInscription}]]</p>
+            
+            <a th:if="${utilisateurconnet?.id == utilisateur.id}"
+               th:href="@{/api/utilisateurs/modifier}"
+               class="edit-link">Modifier mon profil</a>
+        </div>
+    </div>
 
-   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

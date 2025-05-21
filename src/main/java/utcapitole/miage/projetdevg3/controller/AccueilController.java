@@ -4,6 +4,7 @@ import java.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
@@ -37,7 +38,20 @@ public class AccueilController {
         } else {
             model.addAttribute("isAuthenticated", false);
         }
+        return "/dashboard";
+    }
+
+    @GetMapping("/login")
+    public String afficherlogin() {
         return "login";
+    }
+
+    @GetMapping("/test")
+    @ResponseBody
+    public String testLogin(Principal principal) {
+        return principal != null
+                ? "Connecté en tant que : " + principal.getName()
+                : "NON CONNECTÉ";
     }
 
     @GetMapping("//redirect-accueil")

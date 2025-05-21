@@ -72,4 +72,17 @@ public interface DemandeAmiRepository extends JpaRepository<DemandeAmi, Long> {
                         "(d.expediteurAmi = :user2 AND d.destinataireAmi = :user1)")
         @Modifying
         void deleteAmitie(@Param("user1") Utilisateur user1, @Param("user2") Utilisateur user2);
+
+        /**
+         * pour avoir touts les amis
+         * 
+         * @param id
+         * @return
+         */
+        @Query("SELECT d.expediteurAmi FROM DemandeAmi d WHERE d.destinataireAmi.id = :id AND d.statut = 'ACCEPTE'")
+        List<Utilisateur> findExpediteursAmis(@Param("id") Long id);
+
+        @Query("SELECT d.destinataireAmi FROM DemandeAmi d WHERE d.expediteurAmi.id = :id AND d.statut = 'ACCEPTE'")
+        List<Utilisateur> findDestinatairesAmis(@Param("id") Long id);
+
 }
