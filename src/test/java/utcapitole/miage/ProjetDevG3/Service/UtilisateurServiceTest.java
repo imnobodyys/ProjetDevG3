@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
