@@ -35,19 +35,42 @@ import utcapitole.miage.projetdevg3.service.UtilisateurService;
 @RequestMapping("/groupes")
 public class GroupeController {
 
+    public GroupeService getGroupeService() {
+        return groupeService;
+    }
+
+
+    public MembreGroupeService getMembreGroupeService() {
+        return membreGroupeService;
+    }
+
+
+    public UtilisateurService getUtilisateurService() {
+        return utilisateurService;
+    }
+
+
+
     /**
      * Attributs
      * groupeService : service pour gérer les groupes
      */
     @Autowired
     private GroupeService groupeService;
-    
+
     /** membreGroupeService : service pour gérer les membres de groupe */
     @Autowired
     private MembreGroupeService membreGroupeService;
 
     @Autowired
-    private UtilisateurService utilisateurService;
+    private final UtilisateurService utilisateurService;
+
+    @Autowired
+    public GroupeController(GroupeService groupeService, MembreGroupeService membreGroupeService, UtilisateurService utilisateurService) {
+        this.groupeService = groupeService;
+        this.membreGroupeService = membreGroupeService;
+        this.utilisateurService = utilisateurService;
+    }
 
 
     @ModelAttribute

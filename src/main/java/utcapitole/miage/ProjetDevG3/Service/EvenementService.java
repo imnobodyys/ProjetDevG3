@@ -1,5 +1,7 @@
 package utcapitole.miage.projetdevg3.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +57,7 @@ public class EvenementService {
     }
 
     /**
-     * US44 Modifier un événement
+     * US44 - Modifier un événement 
      * Modification d'un événement existant avec validation des droits
      * 
      * @param id              Identifiant de l'événement à modifier
@@ -110,10 +112,9 @@ public class EvenementService {
     }
 
     /**
-     * US47 Participer à un événement
-     * Ajoute un participant à un événement
-     * 
-     * @param id          ID de l'événement
+     * US47 - Participer à un événement
+     *  Ajoute un participant à un événement
+     * @param id ID de l'événement
      * @param participant Utilisateur à ajouter
      * @return Événement mis à jour
      * @throws IllegalArgumentException Si l'événement n'existe pas ou participant
@@ -129,6 +130,22 @@ public class EvenementService {
 
         evenement.addParticipant(participant);
         return evenementRepository.save(evenement);
+    }
+
+
+    /**
+     * US48 - Visualisation des participants à un événement
+     * Récupère la liste des participants d'un événement
+     * @param id ID de l'événement
+     * @return Liste des participants
+     * @throws IllegalArgumentException Si l'événement n'existe pas
+     */
+    public List<Utilisateur> getParticipantsEvenement(Long id){
+        Evenement evenement = evenementRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Événement non trouvé"));
+
+            return evenement.getParticipants();
+
     }
 
 }

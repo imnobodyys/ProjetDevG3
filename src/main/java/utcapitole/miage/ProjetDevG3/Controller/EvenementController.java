@@ -77,7 +77,7 @@ public class EvenementController {
     }
 
     /**
-     * US44 Modifier un événement
+     * US44 - Modifier un événement 
      * Affiche le formulaire de modification
      * Vérifie que l'utilisateur est l'auteur de l'événement avant d'autoriser
      * l'accès
@@ -107,7 +107,7 @@ public class EvenementController {
     }
 
     /**
-     * US44 Modifier un événement
+     * US44 - Modifier un événement 
      * Traite la soumission du formulaire
      * 
      * @param id             ID de l'événement
@@ -181,6 +181,29 @@ public class EvenementController {
             return "confirmationParticipation";
         } catch (IllegalArgumentException e){
             model.addAttribute("errorMessage", e.getMessage());
+            return "errorPage";
+        }
+    }
+
+
+    /**
+     * US48 - Visualisation des participants à un événement
+     * Affiche la liste des participants d'un événement donné
+     * 
+     * @param id ID de l'événement
+     * @param model Conteneur des attributs pour la vue
+     * @return Vue affichant la liste des participants
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/participants")
+    public String afficherParticipants(@PathVariable Long id, Model model) {
+        try {
+            Evenement evenement = evenementService.getEvenementById(id);
+            model.addAttribute("evenement", evenement);
+            model.addAttribute("participants", evenement.getParticipants());
+            return "listeParticipants";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", "Événement non trouvé"); // 统一错误信息
             return "errorPage";
         }
     }

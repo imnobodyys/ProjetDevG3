@@ -334,6 +334,8 @@ public class UtilisateurControllerTest {
 
                 when(utilisateurService.rechercher("ali")).thenReturn(List.of(utilisateur));
 
+                when(utilisateurService.getUtilisateurByEmail("test")).thenReturn(utilisateur);
+
                 mockMvc.perform(get("/api/utilisateurs/search").param("q", "ali"))
                                 .andExpect(status().isOk())
                                 .andExpect(view().name("search"))
