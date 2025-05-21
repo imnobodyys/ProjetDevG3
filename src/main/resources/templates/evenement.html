@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements</title>
+</head>
+<body>
+    <header>
+        <h1>Événements</h1>
+        <div th:if="${#authentication.authenticated}">
+            <a th:href="@{/api/evenements/creer}" class="button">Créer un événement</a>
+            <a th:href="@{/logout}" class="button">Déconnexion</a>
+        </div>
+        <div th:unless="${#authentication.authenticated}">
+            <a th:href="@{/api/utilisateurs/login}" class="button">Connexion</a>
+        </div>
+    </header>
+
+    <!-- Événements Publics -->
+    <div class="section">
+        <h2>Événements Publics</h2>
+        <div th:each="event : ${evenementsPublics}" class="event-card">
+            <h3 th:text="${event.titre}"></h3>
+            <p th:text="${event.description}"></p>
+            <div class="button-group">
+                <a th:href="@{/api/evenements/participer/{id}(id=${event.id})}" class="button">Participer</a>
+                <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Voir participants</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mes Événements (Connecté uniquement) -->
+    <div th:if="${#authentication.authenticated}" class="section">
+        <h2>Mes Événements Créés</h2>
+        <div th:each="event : ${mesEvenements}" class="event-card">
+            <h3 th:text="${event.titre}"></h3>
+            <p th:text="${event.description}"></p>
+            <div class="button-group">
+                <a th:href="@{/api/evenements/modifier/{id}(id=${event.id})}" class="button">Modifier</a>
+                <form th:action="@{/api/evenements/supprimer/{id}(id=${event.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="button">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
