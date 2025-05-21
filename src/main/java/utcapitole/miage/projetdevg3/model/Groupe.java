@@ -45,6 +45,7 @@ public class Groupe {
     private String description;
     private LocalDateTime dtCreation;
 
+
     public enum TypeGroupe {
         PUBLIC,
         PRIVE
@@ -182,6 +183,11 @@ public class Groupe {
 
     public void setType(TypeGroupe type) {
         this.type = type;
+    }
+
+    public void setType(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setType'");
     }
 
 }

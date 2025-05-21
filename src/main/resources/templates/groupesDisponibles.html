@@ -2,51 +2,55 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Groupes disponibles</title></head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Groupes disponibles</title>
+</head>
+
 <body>
-<h2>Groupes que vous pouvez rejoindre</h2>
+    <h2>Groupes que vous pouvez rejoindre</h2>
 
-<table border="1">
-    <tr>
-        <th>Nom</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Statut</th>
-        <th>Action</th>
-    </tr>
-    <tr th:each="g : ${groupes}">
-        <td th:text="${g.nom}"></td>
-        <td th:text="${g.description}"></td>
-        <td th:text="${g.type}"></td>
+    <table border="1">
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Action</th>
+        </tr>
+        <tr th:each="g : ${groupes}">
+            <td th:text="${g.nom}"></td>
+            <td th:text="${g.description}"></td>
+            <td th:text="${g.type}"></td>
 
-        <!-- Affichage du statut -->
-        <td>
-            <span th:if="${statuts[g.id]} == null">Aucun</span>
-            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">Demande en attente</span>
-            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">Membre</span>
-            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'REFUSE'}">Refusé</span>
-        </td>
+            <!-- Affichage du statut -->
+            <td>
+                <span th:if="${statuts[g.id]} == null">Aucun</span>
+                <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">Demande en attente</span>
+                <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">Membre</span>
+                <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'REFUSE'}">Refusé</span>
+            </td>
 
-        <!-- Actions en fonction du statut -->
-        <td>
-            <form th:action="@{/groupes/rejoindre}" method="post"
-                  th:if="${statuts[g.id]} == null or (statuts[g.id] != null and statuts[g.id].name() == 'REFUSE')}">
-                <input type="hidden" name="idGroupe" th:value="${g.id}" />
-                <button type="submit">Demander à rejoindre</button>
-            </form>
+            <!-- Actions en fonction du statut -->
+            <td>
+                <form th:action="@{/groupes/rejoindre}" method="post"
+                      th:if="${statuts[g.id]} == null or statuts[g.id].name() == 'REFUSE'">
+                    <input type="hidden" name="idGroupe" th:value="${g.id}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit">Demander à rejoindre</button>
+                </form>
 
-            <form th:action="@{/groupes/annuler}" method="post"
-                  th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">
-                <input type="hidden" name="idGroupe" th:value="${g.id}" />
-                <button type="submit">Annuler la demande</button>
-            </form>
+                <form th:action="@{/groupes/annuler}" method="post"
+                      th:if="${statuts[g.id] != null and statuts[g.id].name() == 'EN_ATTENTE'}">
+                    <input type="hidden" name="idGroupe" th:value="${g.id}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit">Annuler la demande</button>
+                </form>
 
-            <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">-</span>
-        </td>
-    </tr>
-</table>
-
+                <span th:if="${statuts[g.id] != null and statuts[g.id].name() == 'ACCEPTE'}">-</span>
+            </td>
+        </tr>
+    </table>
 </body>
+
 </html>
