@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

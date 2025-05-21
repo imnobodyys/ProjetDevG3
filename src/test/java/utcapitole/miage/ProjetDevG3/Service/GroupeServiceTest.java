@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.service;
+package utcapitole.miage.projetdevg3.Service;
 
 import java.util.List;
 import java.util.Optional;
