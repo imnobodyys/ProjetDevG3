@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 import utcapitole.miage.projetdevg3.controller.AccueilController;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,6 +25,10 @@ public class AccueilControllerTest {
     @MockBean
     private UtilisateurService utilisateurService;
 
+    @MockBean
+    private UtilisateurRepository utilisateurRepository;
+    
+
     @WithMockUser(username = "alice@example.com")
     @Test
     void testAfficherAccueil_Authentifie() throws Exception {
@@ -33,7 +38,7 @@ public class AccueilControllerTest {
 
         mockMvc.perform(get("/accueil"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login"))
+                .andExpect(view().name("/dashboard"))
                 .andExpect(model().attribute("isAuthenticated", true))
                 .andExpect(model().attribute("utilisateur", utilisateur));
     }

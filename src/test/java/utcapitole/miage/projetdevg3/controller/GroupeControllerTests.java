@@ -24,6 +24,7 @@ import utcapitole.miage.projetdevg3.service.UtilisateurService;
 import utcapitole.miage.projetdevg3.controller.GroupeController;
 import utcapitole.miage.projetdevg3.model.Groupe;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 @WebMvcTest(GroupeController.class)
 @AutoConfigureMockMvc
@@ -38,6 +39,10 @@ public class GroupeControllerTests {
     private MembreGroupeService membreGroupeService;
     @MockBean
     private UtilisateurService utilisateurService;
+
+    @MockBean
+    private UtilisateurRepository utilisateurRepository;
+
 
     // US17 - Création de groupe
     @Test

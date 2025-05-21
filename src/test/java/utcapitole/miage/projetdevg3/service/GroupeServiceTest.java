@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -23,8 +26,13 @@ import utcapitole.miage.projetdevg3.repository.MembreGroupeRepository;
 import utcapitole.miage.projetdevg3.service.GroupeService;
 
 class GroupeServiceTest {
+    @InjectMocks
     private GroupeService groupeService;
+
+    @Mock
     private GroupeRepository groupeRepository;
+
+    @Mock
     private MembreGroupeRepository membreGroupeRepository;
 
     @BeforeEach
