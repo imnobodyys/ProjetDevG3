@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +79,48 @@ public class EvenementControllerTest {
                 when(utilisateurService.getUtilisateurByEmail(anyString()))
                                 .thenReturn(mockUser);
         }
+
+
+        /**
+         * Accueil des événements
+         * Authentifié : l'utilisateur voit ses événements, ceux publics et ceux auxquels il participe
+         */
+        @Test
+        @WithMockUser(username = "user@test.com")
+        void accueilEvenements_QuandAuthentifie_DoitAfficherVueEvenementAvecAttributs() throws Exception {
+        // Arrange : prépares des événements fictifs
+        Utilisateur utilisateurMock = new Utilisateur("Jean", "Dupont", "user@test.com", "pass");
+        ReflectionTestUtils.setField(utilisateurMock, "id", 1L);
+
+        List<Evenement> evenementsPublics = Arrays.asList(new Evenement(), new Evenement());
+        List<Evenement> mesEvenements = Arrays.asList(new Evenement());
+        List<Evenement> evenementsInscrits = Arrays.asList(new Evenement(), new Evenement(), new Evenement());
+
+        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(utilisateurMock);
+        when(evenementService.getEvenementsPublics()).thenReturn(evenementsPublics);
+        when(evenementService.getEvenementsParAuteur(utilisateurMock)).thenReturn(mesEvenements);
+        when(evenementService.getEvenementsParParticipant(utilisateurMock)).thenReturn(evenementsInscrits);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/evenements/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("evenement"))
+                .andExpect(model().attribute("evenementsPublics", evenementsPublics))
+                .andExpect(model().attribute("mesEvenements", mesEvenements))
+                .andExpect(model().attribute("evenementsInscrits", evenementsInscrits));
+        }
+
+        /**
+         * Accueil des événements
+         * Non authentifié : accès refusé
+         */
+        @Test
+        void accueilEvenements_SansAuthentification_DoitRetournerRedirectionLogin() throws Exception {
+        mockMvc.perform(get("/api/evenements/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        }
+
 
         /**
          * US43 Test1 - Création d'un événement

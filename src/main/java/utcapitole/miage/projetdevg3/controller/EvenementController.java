@@ -40,19 +40,18 @@ public class EvenementController {
      * 
      * @param model Conteneur des attributs pour la vue
      * @param authentication Informations d'authentification
-     * @return Vue Thymeleaf "index"
+     * @return Vue Thymeleaf "evenement"
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/")
     public String accueilEvenements(Model model, Authentication authentication) {
-        // Événements publics (visibles par tous)
+
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
+        
         model.addAttribute("evenementsPublics", evenementService.getEvenementsPublics());
         
-        // Si utilisateur connecté
-        if (authentication != null && authentication.isAuthenticated()) {
-            Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
-            model.addAttribute("mesEvenements", evenementService.getEvenementsParAuteur(utilisateur));
-            model.addAttribute("evenementsInscrits", evenementService.getEvenementsParParticipant(utilisateur));
-        }
+        model.addAttribute("mesEvenements", evenementService.getEvenementsParAuteur(utilisateur));
+        model.addAttribute("evenementsInscrits", evenementService.getEvenementsParParticipant(utilisateur));
         
         return "evenement";
     }

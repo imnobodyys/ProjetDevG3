@@ -3,45 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Événements</title>
+    <title>Événements - Accueil</title>
 </head>
 <body>
     <header>
-        <h1>Événements</h1>
-        <div th:if="${#authentication.authenticated}">
-            <a th:href="@{/api/evenements/creer}" class="button">Créer un événement</a>
-            <a th:href="@{/logout}" class="button">Déconnexion</a>
-        </div>
-        <div th:unless="${#authentication.authenticated}">
-            <a th:href="@{/api/utilisateurs/login}" class="button">Connexion</a>
+        <h1>Événements Publics</h1>
+        <div>
+            <a th:href="@{/api/evenements/creer}" class="button">Créer un Événement</a>
+            <a th:href="@{/logout}" class="button button-danger">Déconnexion</a>
         </div>
     </header>
 
-    <!-- Événements Publics -->
+    <!-- Section: Événements Publics -->
     <div class="section">
-        <h2>Événements Publics</h2>
+        <h2>Événements Ouverts à Tous</h2>
         <div th:each="event : ${evenementsPublics}" class="event-card">
             <h3 th:text="${event.titre}"></h3>
             <p th:text="${event.description}"></p>
-            <div class="button-group">
-                <a th:href="@{/api/evenements/participer/{id}(id=${event.id})}" class="button">Participer</a>
-                <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Voir participants</a>
-            </div>
+            <a th:href="@{/api/evenements/participer/{id}(id=${event.id})}" class="button">Participer</a>
+            <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Voir Participants</a>
+        </div>
+        <div th:if="${evenementsPublics.empty}">
+            <p>Aucun événement public disponible.</p>
         </div>
     </div>
 
-    <!-- Mes Événements (Connecté uniquement) -->
-    <div th:if="${#authentication.authenticated}" class="section">
+    <!-- Section: Mes Événements Créés -->
+    <div class="section">
         <h2>Mes Événements Créés</h2>
         <div th:each="event : ${mesEvenements}" class="event-card">
             <h3 th:text="${event.titre}"></h3>
             <p th:text="${event.description}"></p>
             <div class="button-group">
                 <a th:href="@{/api/evenements/modifier/{id}(id=${event.id})}" class="button">Modifier</a>
-                <form th:action="@{/api/evenements/supprimer/{id}(id=${event.id})}" method="post" style="display:inline;">
-                    <button type="submit" class="button">Supprimer</button>
+                <form th:action="@{/api/evenements/supprimer/{id}(id=${event.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="button button-danger">Supprimer</button>
                 </form>
             </div>
+        </div>
+        <div th:if="${mesEvenements.empty}">
+            <p>Vous n'avez créé aucun événement.</p>
+        </div>
+    </div>
+
+    <!-- Section: Événements Inscrits -->
+    <div class="section">
+        <h2>Événements où je participe</h2>
+        <div th:each="event : ${evenementsInscrits}" class="event-card">
+            <h3 th:text="${event.titre}"></h3>
+            <p th:text="${event.description}"></p>
+            <a th:href="@{/api/evenements/{id}/participants(id=${event.id})}" class="button">Détails</a>
+        </div>
+        <div th:if="${evenementsInscrits.empty}">
+            <p>Vous ne participez à aucun événement.</p>
         </div>
     </div>
 </body>
