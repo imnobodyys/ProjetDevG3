@@ -33,6 +33,30 @@ public class EvenementController {
     @Autowired
     private EvenementService evenementService;
 
+
+    /**
+     * Page d'accueil des événements
+     * Affiche les événements publics, les événements créés et les participations de l'utilisateur
+     * 
+     * @param model Conteneur des attributs pour la vue
+     * @param authentication Informations d'authentification
+     * @return Vue Thymeleaf "index"
+     */
+    @GetMapping("/")
+    public String accueilEvenements(Model model, Authentication authentication) {
+        // Événements publics (visibles par tous)
+        model.addAttribute("evenementsPublics", evenementService.getEvenementsPublics());
+        
+        // Si utilisateur connecté
+        if (authentication != null && authentication.isAuthenticated()) {
+            Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            model.addAttribute("mesEvenements", evenementService.getEvenementsParAuteur(utilisateur));
+            model.addAttribute("evenementsInscrits", evenementService.getEvenementsParParticipant(utilisateur));
+        }
+        
+        return "evenement";
+    }
+
     /**
      * US43 - Création d'événement
      * Affiche le formulaire de création d'événement
