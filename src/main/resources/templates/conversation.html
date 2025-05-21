@@ -1,19 +1,33 @@
-<!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Conversations</title></head>
-<body>
-<h1>Mes Conversations</h1>
-
-<ul>
-    <li th:each="conv : ${conversations}">
+<h2>Conversations Privées</h2>
+<ul th:each="conv : ${privateConvs}">
+    <li>
         <a th:href="@{'/conversations/' + ${conv.id}}">
             <span th:text="${conv.expediteurCP.nom + ' ' + conv.destinataireCP.nom}">Nom</span>
         </a>
     </li>
 </ul>
-</body>
-</html>
+
+<h2>Conversations de Groupe</h2>
+<ul th:each="conv : ${groupConvs}">
+    <li>
+        <a th:href="@{'/conversations/groupe/' + ${conv.id}}">
+            <span th:text="${conv.groupeCon.nom}">Nom du Groupe</span>
+        </a>
+    </li>
+</ul>
+
+<h2>Messages Privés Récents</h2>
+<div th:each="msg : ${recentPrivate}">
+    <p>
+        <strong th:text="${msg.expedi.nom}">Nom</strong> :
+        <span th:text="${msg.contenu}">Contenu</span>
+    </p>
+</div>
+
+<h2>Messages de Groupes Récents</h2>
+<div th:each="msg : ${recentGroup}">
+    <p>
+        <strong th:text="${msg.expedi.nom}">Nom</strong> :
+        <span th:text="${msg.contenu}">Contenu</span>
+    </p>
+</div>

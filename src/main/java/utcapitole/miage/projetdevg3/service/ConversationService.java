@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.repository.ConversationGrpRepository;
 import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 import utcapitole.miage.projetdevg3.repository.ConversationRepository;
 import utcapitole.miage.projetdevg3.repository.MessageRepository;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
-
+import utcapitole.miage.projetdevg3.model.ConversationGrp;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
@@ -29,12 +30,22 @@ public class ConversationService {
     private final ConversationPriRepository conversationPriRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final MessageRepository messageRepository;
+    private final ConversationGrpRepository conversationGrpRepository;
+    private final MessageService messageService;
 
-    public ConversationService(ConversationPriRepository conversationPriRepository, ConversationRepository conversationRepository, MessageRepository messageRepository, UtilisateurRepository utilisateurRepository) {
+    public ConversationService(
+            ConversationPriRepository conversationPriRepository,
+            ConversationRepository conversationRepository,
+            MessageRepository messageRepository,
+            UtilisateurRepository utilisateurRepository,
+            ConversationGrpRepository conversationGrpRepository,
+            MessageService messageService) {
         this.conversationPriRepository = conversationPriRepository;
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.utilisateurRepository = utilisateurRepository;
+        this.conversationGrpRepository = conversationGrpRepository;
+        this.messageService = messageService;
     }
 
     /**
@@ -68,4 +79,17 @@ public class ConversationService {
                 ? conversation.getDestinataireCP()
                 : conversation.getExpediteurCP();
     }
+
+    public List<ConversationGrp> getGroupConversationsOfUser(Utilisateur utilisateur) {
+        return conversationGrpRepository.findByUtilisateur(utilisateur);
+    }
+
+    public List<Message> getRecentPrivateMessages(Utilisateur utilisateur) {
+        return messageService.getRecentPriMessages(utilisateur);
+    }
+
+    public List<Message> getRecentGroupMessages(Utilisateur utilisateur) {
+        return messageService.getRecentGroupMessages(utilisateur);
+    }
+
 }

@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +57,7 @@ public class MessageController {
      */
     @PostMapping("/envoyer")
     @PreAuthorize("isAuthenticated()")
-    public String envoyerMessage(@RequestParam Long destinataireId,
+    public String envoyerMessagePri(@RequestParam Long destinataireId,
             @RequestParam String contenu,
             Principal principal,
             RedirectAttributes redirectAttributes) {
@@ -89,5 +90,24 @@ public class MessageController {
         model.addAttribute("privateMessages", recentPrivateMessages);
         model.addAttribute("groupMessages", recentGroupMessages);
         return "messages";
+    }
+
+    /**
+     * envoyer mesasage au group
+     * 
+     * @param groupeId
+     * @param contenu
+     * @param principal
+     * @return
+     */
+    @PostMapping("/{groupeId}/messages")
+    public String envoyerMessageGrp(@PathVariable Long groupeId,
+            @RequestParam String contenu,
+            Principal principal) {
+        Utilisateur expediteur = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+        messageService.envoyerMessageAuGroupe(groupeId, expediteur, contenu);
+        return "redirect:/groupes/" + groupeId + "/messages";
     }
 }

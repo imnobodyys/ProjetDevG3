@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetdevg3.model.Conversation;
+import utcapitole.miage.projetdevg3.model.ConversationGrp;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.ConversationGrpRepository;
 import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 import utcapitole.miage.projetdevg3.repository.MessageRepository;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,13 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final ConversationPriRepository conversationRepository;
+    private final ConversationGrpRepository conversationGrpRepository;
 
-    public MessageService(ConversationPriRepository conversationRepository, MessageRepository messageRepository) {
+    public MessageService(ConversationPriRepository conversationRepository, MessageRepository messageRepository,
+            ConversationGrpRepository conversationGrpRepository) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
+        this.conversationGrpRepository = conversationGrpRepository;
     }
 
     /**
@@ -104,5 +109,36 @@ public class MessageService {
      */
     public List<Message> getRecentGroupMessages(Utilisateur utilisateur) {
         return messageRepository.findGroupMessagesForUser(utilisateur, topFive);
+    }
+
+    /**
+     * pour envoyer une message au groupe
+     * 
+     * @param groupeId
+     * @param expediteur
+     * @param contenu
+     */
+    public void envoyerMessageAuGroupe(Long groupeId, Utilisateur expediteur, String contenu) {
+        ConversationGrp conversationGrp = conversationGrpRepository.findByGroupeCon_Id(groupeId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation de groupe introuvable"));
+
+        Message message = new Message();
+        message.setExpedi(expediteur);
+        message.setContenu(contenu);
+        message.setConversation(conversationGrp);
+
+        messageRepository.save(message);
+    }
+
+    /**
+     * pour avoit list de message de group
+     * 
+     * @param groupeId
+     * @return
+     */
+    public List<Message> listerMessagesDuGroupe(Long groupeId) {
+        ConversationGrp conversationGrp = conversationGrpRepository.findByGroupeCon_Id(groupeId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation de groupe introuvable"));
+        return conversationGrp.getMessages();
     }
 }

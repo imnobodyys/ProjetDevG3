@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.model.ConversationGrp;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 
 import utcapitole.miage.projetdevg3.model.Message;
@@ -32,10 +33,11 @@ public class ConversationController {
         private final UtilisateurRepository utilisateurRepository;
         private final ConversationService conversationService;
 
-    public ConversationController(ConversationService conversationService, UtilisateurRepository utilisateurRepository) {
-        this.conversationService = conversationService;
-        this.utilisateurRepository = utilisateurRepository;
-    }
+        public ConversationController(ConversationService conversationService,
+                        UtilisateurRepository utilisateurRepository) {
+                this.conversationService = conversationService;
+                this.utilisateurRepository = utilisateurRepository;
+        }
 
         /**
          * Récupère l'utilisateur courant depuis Principal
@@ -57,29 +59,17 @@ public class ConversationController {
         public String afficherConversations(Principal principal, Model model) {
                 Utilisateur utilisateur = getCurrentUser(principal);
 
-                List<ConversationPri> conversations = conversationService.getConversationsOfUser(utilisateur);
-                model.addAttribute("conversations", conversations);
+                List<ConversationPri> privateConvs = conversationService.getConversationsOfUser(utilisateur);
+                List<ConversationGrp> groupConvs = conversationService.getGroupConversationsOfUser(utilisateur);
+                List<Message> recentPrivate = conversationService.getRecentPrivateMessages(utilisateur);
+                List<Message> recentGroup = conversationService.getRecentGroupMessages(utilisateur);
+
+                model.addAttribute("privateConvs", privateConvs);
+                model.addAttribute("groupConvs", groupConvs);
+                model.addAttribute("recentPrivate", recentPrivate);
+                model.addAttribute("recentGroup", recentGroup);
+
                 return "conversation";
-        }
 
-        /**
-         * pour voir message de conversation
-         * 
-         * @param id
-         * @param principal
-         * @param model
-         * @returnpage
-         */
-        @GetMapping("/{id}")
-        @PreAuthorize("isAuthenticated()")
-        public String afficherMessages(@PathVariable Long id, Principal principal, Model model) {
-                Utilisateur utilisateur = getCurrentUser(principal);
-                List<Message> messages = conversationService.getMessagesForConversation(id, utilisateur);
-                Utilisateur autreUtilisateur = conversationService.getOtherUser(id, utilisateur);
-
-                model.addAttribute("messages", messages);
-                model.addAttribute("autreUtilisateur", autreUtilisateur);
-
-                return "messages";
         }
 }
