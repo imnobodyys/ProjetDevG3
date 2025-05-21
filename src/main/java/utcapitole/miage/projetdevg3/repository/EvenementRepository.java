@@ -27,4 +27,7 @@ public interface EvenementRepository extends JpaRepository<Evenement, Long> {
     // Méthode pour trouver un événement par son ID
     Evenement findById(long id);
 
+    // Méthode pour trouver tous les événements d'un participant
+    List<Evenement> findByParticipantsContaining(Utilisateur participant);
+
 }

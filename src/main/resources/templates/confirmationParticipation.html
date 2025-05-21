@@ -11,6 +11,6 @@
 <body>
     <h1>Participation confirmée !</h1>
     <p>Vous participez à l'événement: <span th:text="${evenement.titre}"></span></p>
-    <a href="/index">Retour à l'accueil</a>
+    <a th:href="@{/api/evenements/}" class="button">Retour aux événements</a>
 </body>
 </html>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import utcapitole.miage.projetdevg3.model.Evenement;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.VisibiliteEvenement;
 import utcapitole.miage.projetdevg3.service.EvenementService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
@@ -32,6 +33,29 @@ public class EvenementController {
 
     @Autowired
     private EvenementService evenementService;
+
+
+    /**
+     * Page d'accueil des événements
+     * Affiche les événements publics, les événements créés et les participations de l'utilisateur
+     * 
+     * @param model Conteneur des attributs pour la vue
+     * @param authentication Informations d'authentification
+     * @return Vue Thymeleaf "evenement"
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/")
+    public String accueilEvenements(Model model, Authentication authentication) {
+
+        Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(authentication.getName());
+        
+        model.addAttribute("evenementsPublics", evenementService.getEvenementsPublics());
+        
+        model.addAttribute("mesEvenements", evenementService.getEvenementsParAuteur(utilisateur));
+        model.addAttribute("evenementsInscrits", evenementService.getEvenementsParParticipant(utilisateur));
+        
+        return "evenement";
+    }
 
     /**
      * US43 - Création d'événement
@@ -204,6 +228,39 @@ public class EvenementController {
             return "listeParticipants";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", "Événement non trouvé"); // 统一错误信息
+            return "errorPage";
+        }
+    }
+
+
+    /**
+     * Affiche les détails d’un événement spécifique.
+     * @param id             l’identifiant de l’événement à afficher
+     * @param model          l’objet {@link Model} utilisé pour transmettre les données à la vue
+     * @param authentication l’objet {@link Authentication} contenant les informations sur l’utilisateur connecté
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/details/{id}")
+    public String afficherDetailsEvenement(
+            @PathVariable Long id,
+            Model model,
+            Authentication authentication) {
+        
+        try {
+            Evenement evenement = evenementService.getEvenementById(id);
+            Utilisateur currentUser = utilisateurService.getUtilisateurByEmail(authentication.getName());
+            
+            if (evenement.getVisibilite() == VisibiliteEvenement.PRIVE 
+                    && !evenement.getAuteur().getId().equals(currentUser.getId())) {
+                model.addAttribute("errorMessage", "Accès refusé : Événement privé");
+                return "errorPage";
+            }
+            
+            model.addAttribute("evenement", evenement);
+            return "detailsEvenement";
+            
+        } catch (IllegalArgumentException e) { // 捕获服务层抛出的异常
+            model.addAttribute("errorMessage", "Événement non trouvé");
             return "errorPage";
         }
     }
