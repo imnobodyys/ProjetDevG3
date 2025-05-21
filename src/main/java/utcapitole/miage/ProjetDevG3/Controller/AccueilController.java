@@ -10,10 +10,14 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 @Controller
-@RequiredArgsConstructor
+
 public class AccueilController {
 
     private final UtilisateurService utilisateurService;
+
+    public AccueilController(UtilisateurService utilisateurService) {
+        this.utilisateurService = utilisateurService;
+    }
 
     /**
      * Affiche la page d'accueil avec des contenus différenciés selon l'état
