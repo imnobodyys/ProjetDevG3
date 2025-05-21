@@ -1,4 +1,4 @@
-package utcapitole.miage.projetdevg3.Service;
+package utcapitole.miage.projetdevg3.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
