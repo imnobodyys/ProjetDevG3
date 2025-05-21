@@ -1,6 +1,7 @@
 package utcapitole.miage.projetdevg3.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.DemandeAmiRepository;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
@@ -26,10 +28,13 @@ public class UtilisateurService {
      */
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DemandeAmiRepository demandeAmiRepository;
 
-    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository) {
+    public UtilisateurService(PasswordEncoder passwordEncoder, UtilisateurRepository utilisateurRepository,
+            DemandeAmiRepository demandeAmiRepository) {
         this.passwordEncoder = passwordEncoder;
         this.utilisateurRepository = utilisateurRepository;
+        this.demandeAmiRepository = demandeAmiRepository;
     }
 
     /**
@@ -98,11 +103,11 @@ public class UtilisateurService {
 
         return utilisateurRepository.save(existingUser);
     }
-    
+
     public Utilisateur authentifier(String email, String motDePasse) {
-    return utilisateurRepository.findByEmail(email)
-            .filter(utilisateur -> passwordEncoder.matches(motDePasse, utilisateur.getMdp()))
-            .orElse(null);
+        return utilisateurRepository.findByEmail(email)
+                .filter(utilisateur -> passwordEncoder.matches(motDePasse, utilisateur.getMdp()))
+                .orElse(null);
     }
 
     /**
@@ -123,13 +128,13 @@ public class UtilisateurService {
         return utilisateurRepository.searchByKeyword(keyword);
     }
 
-  public Utilisateur findByEmail(String email) {
-    return utilisateurRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+    public Utilisateur findByEmail(String email) {
+        return utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
     }
 
     public Utilisateur trouverParEmail(String email) {
-    return findByEmail(email);
+        return findByEmail(email);
     }
 
     public PasswordEncoder getPasswordEncoder() {
@@ -142,5 +147,19 @@ public class UtilisateurService {
 
     public Utilisateur trouverParId(Long id) {
         return utilisateurRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * pour avoir list amis
+     * 
+     * @param utilisateurId
+     * @return
+     */
+    public List<Utilisateur> listerAmis(Long utilisateurId) {
+
+        List<Utilisateur> amis = new ArrayList<>();
+        amis.addAll(demandeAmiRepository.findExpediteursAmis(utilisateurId));
+        amis.addAll(demandeAmiRepository.findDestinatairesAmis(utilisateurId));
+        return amis;
     }
 }

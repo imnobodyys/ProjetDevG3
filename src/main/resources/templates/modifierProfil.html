@@ -11,6 +11,7 @@
 </head>
 
 <body>
+     <div th:replace="fragments/navbar :: navbar"></div>
     <h2>Modifier votre profil</h2>
     <form th:action="@{/api/utilisateurs/modifier}" 
           th:object="${utilisateur}" method="post">

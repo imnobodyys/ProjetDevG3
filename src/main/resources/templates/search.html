@@ -1,49 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche d'utilisateurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 2rem;
+        }
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .search-form {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .results-container {
+            margin-top: 2rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .action-link {
+            margin: 0 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Recherche d'utilisateurs</h1>
+     <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="search-container">
+        <h1>Recherche d'utilisateurs</h1>
 
-    <form th:action="@{/api/utilisateurs/search}" method="get">
-        <label for="q">Mot-clé :</label>
-        <input type="text" id="q" name="q" th:value="${keyword}" required>
-        <button type="submit">Rechercher</button>
-    </form>
+        <form th:action="@{/api/utilisateurs/search}" method="get" class="search-form">
+            <div class="mb-3">
+                <label for="q" class="form-label">Mot-clé :</label>
+                <input type="text" class="form-control" id="q" name="q" th:value="${keyword}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
 
-    <div th:if="${resultats != null}">
-        <ul th:if="${#lists.isEmpty(resultats)}">
-            <li>Aucun utilisateur trouvé.</li>
-        </ul >
-        <h2>Résultats :</h2>
-        <table th:if="${!#lists.isEmpty(resultats)}">
-            <thead>
-                <tr>
-                    <th>Nom utilisateur</th>
-                    <th>Demande Ami</th>
-                </tr>
-            </thead>
-            <tbody>
-    <tr th:each="u : ${resultats}">
-        <td th:text="${u.nom}">user</td>
-        <td th:text="${u.email}">email</td>
-        <td>
-            <a th:href="@{/demandes/form/{id}(id=${u.id})}">Ajouter ami</a>
-        </td>
-        <td>
-            <a th:href="@{/api/utilisateurs/profil/{id}(id=${u.id})}">
-                [[${u.prenom}]] [[${u.nom}]]
-            </a>
-        </td>
-    </tr>
-</tbody>
-
-        </table>
-
+        <div th:if="${resultats != null}" class="results-container">
+            <ul th:if="${#lists.isEmpty(resultats)}" class="list-unstyled">
+                <li>Aucun utilisateur trouvé.</li>
+            </ul>
+            
+            <div th:if="${!#lists.isEmpty(resultats)}">
+                <h2>Résultats :</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nom utilisateur</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                                <th>Profil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u : ${resultats}">
+                                <td th:text="${u.nom}">user</td>
+                                <td th:text="${u.email}">email</td>
+                               
+                                    <td th:if="${amisIds.contains(u.id)}">
+                                    C'est votre ami
+                                </td>
+                                 <td th:if="${!amisIds.contains(u.id)}">
+                                    <a th:href="@{/demandes/form/{id}(id=${u.id})}" class="action-link btn btn-sm btn-outline-primary">
+                                        Ajouter ami
+                                    </a>
+                                </td>
+                               <td>
+                                    <a th:href="@{/api/utilisateurs/profil/{id}(id=${u.id})}" 
+                                       class="action-link btn btn-sm btn-outline-secondary">
+                                        [[${u.prenom}]] [[${u.nom}]]
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

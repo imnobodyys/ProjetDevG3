@@ -137,4 +137,5 @@ public class DemandeAmiService {
 
         demandeAmiRepository.deleteAmitie(utilisateur, ami);
     }
+
 }

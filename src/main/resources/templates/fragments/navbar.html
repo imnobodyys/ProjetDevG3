@@ -62,8 +62,8 @@
             <button class="dropbtn">☰ Menu</button>
             <div class="dropdown-content">
                 <a th:href="@{/accueil}">Accueil</a>
-                <a th:href="@{/profil/{id}(id=${utilisateur.id})}">Profil</a>
-
+                <a th:href="@{/api/utilisateurs/profil/{id}(id=${utilisateurconnet.id})}">Mon profil</a>
+      
                 <form th:action="@{/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" style="background: none; border: none; width: 100%; text-align: left;">Se déconnecter</button>

@@ -20,7 +20,7 @@ public class GlobalModelAttributes {
         this.utilisateurRepository = utilisateurRepository;
     }
 
-    @ModelAttribute("utilisateur")
+    @ModelAttribute("utilisateurconnet")
     public Utilisateur addUtilisateurToModel(Principal principal) {
         if (principal != null) {
             return utilisateurRepository.findByEmail(principal.getName())

@@ -54,8 +54,8 @@
             <a href="/groupes/creer" class="list-group-item list-group-item-action">Créer un groupe</a>
             <a href="/groupes/liste" class="list-group-item list-group-item-action">Voir mes groupes</a>
             <a href="/demandes/amis" class="list-group-item list-group-item-action">Voir mes amis</a>
-            <a th:href="@{/profil/{id}(id=${utilisateur.id})}" class="list-group-item list-group-item-action">Mon profil</a>
-        </div>
+            <a href="/api/utilisateurs/search" class="list-group-item list-group-item-action">Rechercher une personne</a>
+           </div>
     </div>
 
     <div th:unless="${isAuthenticated}">
