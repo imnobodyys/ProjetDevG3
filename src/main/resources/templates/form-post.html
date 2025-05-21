@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+    <title>Nouveau Post</title>
+</head>
+<body>
+    <h1>Créer un post</h1>
+
+    <form th:action="@{/posts/nouveau}" method="post" th:object="${post}">
+        <label>Titre :</label>
+        <input type="text" th:field="*{titre}" required /><br/>
+
+        <label>Contenu :</label><br/>
+        <textarea th:field="*{contenu}" rows="6" cols="50" required></textarea><br/>
+
+        <label>Visibilité :</label>
+        <select th:field="*{visibilite}">
+            <option value="PUBLIC">Public</option>
+            <option value="PRIVE">Privé</option>
+        </select><br/>
+
+        <input type="submit" value="Publier" />
+    </form>
+</body>
+</html>

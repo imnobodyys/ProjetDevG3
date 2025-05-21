@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import utcapitole.miage.projetdevg3.model.Post;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.model.VisibilitePost;
 
 /**
  * PostRepository est une interface qui étend JpaRepository pour gérer les
@@ -18,5 +19,10 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
       List<Post> findByGroupeIdOrderByCreatedAtDesc(Long groupeId);
+
       List<Post> findByAuteurOrderByCreatedAtDesc(Utilisateur auteur);
+
+      List<Post> findByVisibilite(VisibilitePost visibilite);
+
+      List<Post> findByAuteur(Utilisateur auteur);
 }

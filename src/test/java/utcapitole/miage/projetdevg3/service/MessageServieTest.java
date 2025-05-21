@@ -153,13 +153,20 @@ class MessageServiceTest {
 
         @Test
         void testListerMessagesDuGroupe_Success() {
+                // Arrange
+                ConversationGrp mockGroupConv = mock(ConversationGrp.class);
+                Message mockMessage = new Message();
+                mockMessage.setContenu("Test message");
+
                 when(conversationGrpRepository.findByGroupeCon_Id(1L))
                                 .thenReturn(Optional.of(mockGroupConv));
                 when(mockGroupConv.getMessages())
                                 .thenReturn(List.of(mockMessage));
 
+                // Act
                 List<Message> messages = messageService.listerMessagesDuGroupe(1L);
 
+                // Assert
                 assertEquals(1, messages.size());
                 assertEquals("Test message", messages.get(0).getContenu());
         }

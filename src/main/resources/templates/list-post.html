@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Posts</title>
+</head>
+<body>
+    <h1>📢 Posts</h1>
+
+    <div>
+        <a href="/posts/liste">🌍 Voir tous les posts</a> |
+        <a href="/posts/mes-posts">👤 Mes posts</a> |
+        <a href="/posts/nouveau">✍️ Rédiger un post</a>
+    </div>
+
+    <hr>
+
+    <div th:if="${posts.isEmpty()}">
+        <p>Aucun post trouvé.</p>
+    </div>
+
+    <table th:if="${not posts.isEmpty()}">
+        <thead>
+            <tr>
+                <th>Contenu</th>
+                <th>Auteur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.contenu}">Contenu du post</td>
+                <td th:text="${post.auteur.nom}">Auteur</td>
+                <td>
+                    <div th:if="${utilisateurConnecte != null and post.auteur.id == utilisateurConnecte.id}">
+                        <form th:action="@{'/posts/supprimer/' + ${post.id}}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit">🗑 Supprimer</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
