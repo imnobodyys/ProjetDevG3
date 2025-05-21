@@ -24,35 +24,31 @@ import org.springframework.data.domain.PageRequest;
  * Contrôle l'envoi, la modification et la suppression des communications
  * utilisateur.
  */
+/**
+ * Service pour la gestion des messages entre utilisateurs.
+ * Gère l'envoi, la récupération et la suppression des messages.
+ */
 @Service
+@RequiredArgsConstructor
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final ConversationPriRepository conversationRepository;
+    private final ConversationPriRepository conversationPriRepository;
     private final ConversationGrpRepository conversationGrpRepository;
-
-    public MessageService(ConversationPriRepository conversationRepository, MessageRepository messageRepository,
-            ConversationGrpRepository conversationGrpRepository) {
-        this.conversationRepository = conversationRepository;
-        this.messageRepository = messageRepository;
-        this.conversationGrpRepository = conversationGrpRepository;
-    }
+    private static final Pageable TOP_FIVE = PageRequest.of(0, 5);
 
     /**
-     * Envoie un message privé dans une conversation
+     * Envoie un message dans une conversation privée
+     * 
+     * @param conversationId l'identifiant de la conversation
+     * @param expediteur     l'utilisateur qui envoie le message
+     * @param contenu        le contenu du message
+     * @throws IllegalArgumentException si la conversation n'existe pas
      */
     @Transactional
-    public void envoyerMessage(Utilisateur expediteur, Utilisateur destinataire, String contenu) {
-        // Vérifie s'il y a déjà une conversation
-        ConversationPri conversation = conversationRepository
-                .findByExpediteurCPAndDestinataireCPOrExpediteurCPAndDestinataireCP(
-                        expediteur, destinataire, destinataire, expediteur)
-                .orElseGet(() -> {
-                    ConversationPri c = new ConversationPri();
-                    c.setExpediteurCP(expediteur);
-                    c.setDestinataireCP(destinataire);
-                    return conversationRepository.save(c);
-                });
+    public void envoyerMessagePrive(Long conversationId, Utilisateur expediteur, String contenu) {
+        ConversationPri conversation = conversationPriRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation non trouvée"));
 
         Message message = new Message();
         message.setExpedi(expediteur);
@@ -64,77 +60,63 @@ public class MessageService {
     }
 
     /**
-     * avoir Message par ConversationId
+     * Envoie un message dans une conversation de groupe
      * 
-     * @param conversationId
-     * @return
+     * @param conversationId l'identifiant de la conversation de groupe
+     * @param expediteur     l'utilisateur qui envoie le message
+     * @param contenu        le contenu du message
+     * @throws IllegalArgumentException si la conversation n'existe pas
+     */
+    @Transactional
+    public void envoyerMessageGroupe(Long conversationId, Utilisateur expediteur, String contenu) {
+        ConversationGrp conversation = conversationGrpRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation de groupe non trouvée"));
+
+        Message message = new Message();
+        message.setExpedi(expediteur);
+        message.setConversation(conversation);
+        message.setContenu(contenu);
+        message.setDtEnvoi(LocalDateTime.now());
+
+        messageRepository.save(message);
+    }
+
+    /**
+     * Récupère tous les messages d'une conversation
+     * 
+     * @param conversationId l'identifiant de la conversation
+     * @return liste des messages de la conversation
      */
     public List<Message> getMessagesByConversationId(Long conversationId) {
         return messageRepository.findByConversationId(conversationId);
     }
 
     /**
-     * envoyer message dans un group
+     * Récupère les 5 derniers messages privés d'un utilisateur
      * 
-     * @param expediteur
-     * @param conversation
-     * @param contenu
-     * @return
-     */
-    public Message envoyerMessageGP(Utilisateur expediteur, Conversation conversation, String contenu) {
-        Message message = new Message();
-        message.setExpedi(expediteur);
-        message.setContenu(contenu);
-        message.setConversation(conversation);
-        return messageRepository.save(message);
-    }
-
-    Pageable topFive = PageRequest.of(0, 5);
-
-    /**
-     * method pour avoir 5 message prive recent
-     * 
-     * @param utilisateur
-     * @return
+     * @param utilisateur l'utilisateur dont on veut les messages
+     * @return liste des 5 derniers messages privés
      */
     public List<Message> getRecentPriMessages(Utilisateur utilisateur) {
-        return messageRepository.findPrivateMessagesForUser(utilisateur, topFive);
+        return messageRepository.findPrivateMessagesForUser(utilisateur, TOP_FIVE);
     }
 
     /**
-     * method pour avoiri 5 message group recent
+     * Récupère les 5 derniers messages de groupe d'un utilisateur
      * 
-     * @param utilisateur
-     * @return
+     * @param utilisateur l'utilisateur dont on veut les messages
+     * @return liste des 5 derniers messages de groupe
      */
     public List<Message> getRecentGroupMessages(Utilisateur utilisateur) {
-        return messageRepository.findGroupMessagesForUser(utilisateur, topFive);
+        return messageRepository.findGroupMessagesForUser(utilisateur, TOP_FIVE);
     }
 
     /**
-     * pour envoyer une message au groupe
+     * Récupère tous les messages d'un groupe spécifique
      * 
-     * @param groupeId
-     * @param expediteur
-     * @param contenu
-     */
-    public void envoyerMessageAuGroupe(Long groupeId, Utilisateur expediteur, String contenu) {
-        ConversationGrp conversationGrp = conversationGrpRepository.findByGroupeCon_Id(groupeId)
-                .orElseThrow(() -> new IllegalArgumentException("Conversation de groupe introuvable"));
-
-        Message message = new Message();
-        message.setExpedi(expediteur);
-        message.setContenu(contenu);
-        message.setConversation(conversationGrp);
-
-        messageRepository.save(message);
-    }
-
-    /**
-     * pour avoit list de message de group
-     * 
-     * @param groupeId
-     * @return
+     * @param groupeId l'identifiant du groupe
+     * @return liste des messages du groupe
+     * @throws IllegalArgumentException si le groupe n'existe pas
      */
     public List<Message> listerMessagesDuGroupe(Long groupeId) {
         ConversationGrp conversationGrp = conversationGrpRepository.findByGroupeCon_Id(groupeId)

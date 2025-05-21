@@ -1,8 +1,11 @@
 package utcapitole.miage.projetdevg3.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 
 /**
  * Classe ConversationGrp
@@ -20,10 +23,22 @@ public class ConversationGrp extends Conversation {
     @JoinColumn(name = "group_id", unique = true)
     private Groupe groupeCon;
 
+    @Transient
+    private List<Message> recentMessages;
+
     /**
      * getters et setters
      * getId : retourne l'identifiant de la conversationGrp
      */
+
+    public List<Message> getRecentMessages() {
+        return recentMessages;
+    }
+
+    public void setRecentMessages(List<Message> recentMessages) {
+        this.recentMessages = recentMessages;
+    }
+
     public Groupe getGroupeCon() {
         return groupeCon;
     }

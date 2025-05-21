@@ -66,7 +66,7 @@ public class MessageController {
         Utilisateur destinataire = utilisateurRepository.findById(destinataireId)
                 .orElseThrow();
 
-        messageService.envoyerMessage(expediteur, destinataire, contenu);
+        messageService.envoyerMessagePrive(expediteur.getId(), destinataire, contenu);
 
         redirectAttributes.addFlashAttribute("success", "Message envoyé !");
         return "redirect:/demandes/amis";
@@ -107,7 +107,7 @@ public class MessageController {
         Utilisateur expediteur = utilisateurRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
 
-        messageService.envoyerMessageAuGroupe(groupeId, expediteur, contenu);
+        messageService.envoyerMessageGroupe(groupeId, expediteur, contenu);
         return "redirect:/groupes/" + groupeId + "/messages";
     }
 }
