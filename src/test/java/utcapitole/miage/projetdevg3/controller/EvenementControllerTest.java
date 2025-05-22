@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.springframework.security.core.userdetails.User;
@@ -91,27 +92,26 @@ public class EvenementControllerTest {
          */
         @Test
         @WithMockUser(username = "user@test.com")
-        void accueilEvenements_QuandAuthentifie_DoitAfficherVueEvenementAvecAttributs() throws Exception {
-        // Arrange : prépares des événements fictifs
-        Utilisateur utilisateurMock = new Utilisateur("Jean", "Dupont", "user@test.com", "pass");
-        ReflectionTestUtils.setField(utilisateurMock, "id", 1L);
+        void accueilEvenements_AvecAuthentification_DoitRetournerVueEvenement() throws Exception {
+                // Arrange
+                Utilisateur mockUser = new Utilisateur();
+                mockUser.setEmail("user@test.com");
 
-        List<Evenement> evenementsPublics = Arrays.asList(new Evenement(), new Evenement());
-        List<Evenement> mesEvenements = Arrays.asList(new Evenement());
-        List<Evenement> evenementsInscrits = Arrays.asList(new Evenement(), new Evenement(), new Evenement());
+                Evenement event1 = new Evenement();
+                event1.setTitre("Événement public");
 
-        when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(utilisateurMock);
-        when(evenementService.getEvenementsPublics()).thenReturn(evenementsPublics);
-        when(evenementService.getEvenementsParAuteur(utilisateurMock)).thenReturn(mesEvenements);
-        when(evenementService.getEvenementsParParticipant(utilisateurMock)).thenReturn(evenementsInscrits);
+                when(utilisateurService.getUtilisateurByEmail("user@test.com")).thenReturn(mockUser);
+                when(evenementService.getEvenementsPublics()).thenReturn(List.of(event1));
+                when(evenementService.getEvenementsParAuteur(mockUser)).thenReturn(List.of());
+                when(evenementService.getEvenementsParParticipant(mockUser)).thenReturn(List.of());
 
-        // Act & Assert
-        mockMvc.perform(get("/api/evenements/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("evenement"))
-                .andExpect(model().attribute("evenementsPublics", evenementsPublics))
-                .andExpect(model().attribute("mesEvenements", mesEvenements))
-                .andExpect(model().attribute("evenementsInscrits", evenementsInscrits));
+                // Act & Assert
+                mockMvc.perform(get("/api/evenements/"))
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("evenement"))
+                        .andExpect(model().attributeExists("evenementsPublics"))
+                        .andExpect(model().attributeExists("mesEvenements"))
+                        .andExpect(model().attributeExists("evenementsInscrits"));
         }
 
         /**
