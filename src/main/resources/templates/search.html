@@ -5,64 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche d'utilisateurs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             background-color: #f8f9fa;
-            padding: 2rem;
         }
         .search-container {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 900px;
+            margin: 3rem auto;
             background: white;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .search-form {
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+        }
+        .search-form .form-control {
+            border-radius: 0.5rem;
         }
         .results-container {
             margin-top: 2rem;
         }
-        .table-responsive {
-            overflow-x: auto;
-        }
         .action-link {
-            margin: 0 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            text-decoration: none;
+            margin: 0 0.25rem;
         }
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+        .table td, .table th {
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
-     <div th:replace="fragments/navbar :: navbar"></div>
-    <div class="search-container">
-        <h1>Recherche d'utilisateurs</h1>
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <main class="search-container">
+        <div class="search-header">
+            <h1 class="h3 text-primary"><i class="bi bi-search me-2"></i>Recherche d'utilisateurs</h1>
+        </div>
 
         <form th:action="@{/api/utilisateurs/search}" method="get" class="search-form">
-            <div class="mb-3">
-                <label for="q" class="form-label">Mot-clé :</label>
-                <input type="text" class="form-control" id="q" name="q" th:value="${keyword}" required>
+            <div class="row g-3 align-items-center">
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="q" name="q" th:value="${keyword}" placeholder="Entrez un nom ou email" required>
+                </div>
+                <div class="col-sm-3 text-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i> Rechercher
+                    </button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Rechercher</button>
         </form>
 
         <div th:if="${resultats != null}" class="results-container">
-            <ul th:if="${#lists.isEmpty(resultats)}" class="list-unstyled">
-                <li>Aucun utilisateur trouvé.</li>
-            </ul>
-            
+            <div th:if="${#lists.isEmpty(resultats)}" class="alert alert-warning mt-4">
+                Aucun utilisateur trouvé.
+            </div>
+
             <div th:if="${!#lists.isEmpty(resultats)}">
-                <h2>Résultats :</h2>
+                <h2 class="h5 mt-4 mb-3">Résultats :</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Nom utilisateur</th>
@@ -73,21 +78,17 @@
                         </thead>
                         <tbody>
                             <tr th:each="u : ${resultats}">
-                                <td th:text="${u.nom}">user</td>
-                                <td th:text="${u.email}">email</td>
-                               
-                                    <td th:if="${amisIds.contains(u.id)}">
-                                    C'est votre ami
-                                </td>
-                                 <td th:if="${!amisIds.contains(u.id)}">
-                                    <a th:href="@{/demandes/form/{id}(id=${u.id})}" class="action-link btn btn-sm btn-outline-primary">
-                                        Ajouter ami
+                                <td th:text="${u.nom}">Nom</td>
+                                <td th:text="${u.email}">Email</td>
+                                <td>
+                                    <span th:if="${amisIds.contains(u.id)}" class="text-success">C'est votre ami</span>
+                                    <a th:if="${!amisIds.contains(u.id)}" th:href="@{/demandes/form/{id}(id=${u.id})}" class="btn btn-outline-primary btn-sm action-link">
+                                        <i class="bi bi-person-plus"></i> Ajouter ami
                                     </a>
                                 </td>
-                               <td>
-                                    <a th:href="@{/api/utilisateurs/profil/{id}(id=${u.id})}" 
-                                       class="action-link btn btn-sm btn-outline-secondary">
-                                        [[${u.prenom}]] [[${u.nom}]]
+                                <td>
+                                    <a th:href="@{/api/utilisateurs/profil/{id}(id=${u.id})}" class="btn btn-outline-secondary btn-sm action-link">
+                                        <i class="bi bi-person"></i> [[${u.prenom}]] [[${u.nom}]]
                                     </a>
                                 </td>
                             </tr>
@@ -96,7 +97,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

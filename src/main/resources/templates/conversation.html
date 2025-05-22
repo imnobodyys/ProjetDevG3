@@ -75,10 +75,12 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="h5 mb-2">
-                            <a th:href="@{'/conversations/' + ${conv.id}}" class="text-decoration-none text-dark">
+                            <a th:href="@{/messages/list/privee/{id}(id=${autreUtilisateurs[conv.id].id})}" 
+                            class="text-decoration-none text-dark">
                                 <i class="bi bi-person-circle me-2"></i>
                                 <span th:text="${conv.expediteurCP.nom + ' → ' + conv.destinataireCP.nom}"></span>
                             </a>
+
                         </h3>
                         <div th:if="${not conv.recentMessages.empty}" class="message-item">
                             <div class="text-muted" th:text="${conv.recentMessages[0].contenu}"></div>
@@ -88,7 +90,7 @@
                             </small>
                         </div>
                     </div>
-                    <a th:href="@{'/messages/envoyer/' + ${conv.expediteurCP.id}}" class="btn btn-primary btn-custom">
+                    <a th:href="@{/messages/envoyer/{id}(id=${autreUtilisateurs[conv.id].id})}" class="btn btn-primary btn-custom">
                         <i class="bi bi-reply me-2"></i>Répondre
                     </a>
                 </div>

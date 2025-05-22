@@ -2,7 +2,9 @@
 package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,30 +40,20 @@ public class ConversationController {
 
                 // Récupère les conversations avec les derniers messages inclus
                 List<ConversationPri> privateConvs = conversationService
-                                .getConversationsWithRecentMessages(utilisateur);
+                                .getPrivateConversationsWithRecentMessages(utilisateur);
                 List<ConversationGrp> groupConvs = conversationService
                                 .getGroupConversationsWithRecentMessages(utilisateur);
 
+                Map<Long, Utilisateur> autres = new HashMap<>();
+                for (ConversationPri conv : privateConvs) {
+                        Utilisateur autre = conversationService.getOtherUser(conv.getId(), utilisateur);
+                        autres.put(conv.getId(), autre);
+                }
                 model.addAttribute("privateConvs", privateConvs);
                 model.addAttribute("groupConvs", groupConvs);
+                model.addAttribute("autreUtilisateurs", autres);
 
                 return "conversation"; // Correspond au nouveau template HTML
-        }
-
-        /**
-         * Envoyer un message privé
-         */
-        @PostMapping("/privee/{conversationId}")
-        @PreAuthorize("isAuthenticated()")
-        public String envoyerMessagePrive(
-                        @PathVariable Long conversationId,
-                        @RequestParam String contenu,
-                        Principal principal) {
-                Utilisateur expediteur = getCurrentUser(principal);
-
-                messageService.envoyerMessagePrive(conversationId, expediteur, contenu);
-
-                return "redirect:/conversations#" + conversationId;
         }
 
         /**

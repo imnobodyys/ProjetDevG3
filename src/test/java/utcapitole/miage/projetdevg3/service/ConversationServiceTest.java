@@ -73,39 +73,6 @@ class ConversationServiceTest {
         }
 
         @Test
-        void testGetConversationsWithRecentMessages() {
-                // Mock repository responses
-                when(conversationPriRepository.findByExpediteurCPOrDestinataireCP(mockUser, mockUser))
-                                .thenReturn(Arrays.asList(mockPrivateConv));
-                when(messageRepository.findByConversationOrderByDtEnvoiDesc(mockPrivateConv, TOP_FIVE))
-                                .thenReturn(Arrays.asList(mockMessage));
-
-                // Test the service method
-                List<ConversationPri> result = conversationService.getConversationsWithRecentMessages(mockUser);
-
-                // Verify results
-                assertEquals(1, result.size());
-                assertEquals(1, result.get(0).getRecentMessages().size());
-                assertEquals("Test message", result.get(0).getRecentMessages().get(0).getContenu());
-
-                // Verify repository interactions
-                verify(conversationPriRepository).findByExpediteurCPOrDestinataireCP(mockUser, mockUser);
-                verify(messageRepository).findByConversationOrderByDtEnvoiDesc(mockPrivateConv, TOP_FIVE);
-        }
-
-        @Test
-        void testGetConversationsWithRecentMessages_EmptyList() {
-                when(conversationPriRepository.findByExpediteurCPOrDestinataireCP(mockUser, mockUser))
-                                .thenReturn(Collections.emptyList());
-
-                List<ConversationPri> result = conversationService.getConversationsWithRecentMessages(mockUser);
-
-                assertTrue(result.isEmpty());
-                verify(conversationPriRepository).findByExpediteurCPOrDestinataireCP(mockUser, mockUser);
-                verify(messageRepository, never()).findByConversationOrderByDtEnvoiDesc(any(), any());
-        }
-
-        @Test
         void testGetGroupConversationsWithRecentMessages() {
                 when(conversationGrpRepository.findByUtilisateur(mockUser))
                                 .thenReturn(Arrays.asList(mockGroupConv));

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.service.ConversationService;
 import utcapitole.miage.projetdevg3.service.MessageService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
 /**
@@ -34,21 +37,25 @@ public class MessageController {
     private final UtilisateurService utilisateurService;
     private final UtilisateurRepository utilisateurRepository;
     private final MessageService messageService;
+    private final ConversationPriRepository conversationPriRepository;
 
     public MessageController(UtilisateurService utilisateurService, MessageService messageService,
-            UtilisateurRepository utilisateurRepository) {
+            UtilisateurRepository utilisateurRepository, ConversationPriRepository ConversationPriRepository) {
         this.utilisateurService = utilisateurService;
         this.messageService = messageService;
         this.utilisateurRepository = utilisateurRepository;
+        this.conversationPriRepository = ConversationPriRepository;
     }
 
     /**
      * Formulaire pour envoyer un message privé
      */
-    @GetMapping("/envoyer/{destinataireId}")
+    @GetMapping("/envoyer/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String formulaireMessage(@PathVariable Long destinataireId, Model model) {
-        model.addAttribute("destinataireId", destinataireId);
+    public String afficherFormulaireMessage(@PathVariable Long id, Model model) {
+        Utilisateur destinataire = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+        model.addAttribute("destinataire", destinataire);
         return "form-message";
     }
 
@@ -66,10 +73,9 @@ public class MessageController {
         Utilisateur destinataire = utilisateurRepository.findById(destinataireId)
                 .orElseThrow();
 
-        messageService.envoyerMessagePrive(expediteur.getId(), destinataire, contenu);
+        messageService.envoyerOuCreerMessagePrive(expediteur, destinataire, contenu);
 
-        redirectAttributes.addFlashAttribute("success", "Message envoyé !");
-        return "redirect:/demandes/amis";
+        return "redirect:/messages/list/privee/" + destinataireId;
     }
 
     /**
@@ -84,11 +90,40 @@ public class MessageController {
     public String afficherMessagesAccueil(Model model, Principal principal) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurByEmail(principal.getName());
 
-        List<Message> recentPrivateMessages = messageService.getRecentPriMessages(utilisateur);
+        List<Message> recentPrivateMessages = messageService.getRecentPrivateMessages(utilisateur);
         List<Message> recentGroupMessages = messageService.getRecentGroupMessages(utilisateur);
 
         model.addAttribute("privateMessages", recentPrivateMessages);
         model.addAttribute("groupMessages", recentGroupMessages);
+        return "messages";
+    }
+
+    /**
+     * pour avoir page de list message de un ami
+     * 
+     * @param utilisateurId
+     * @param principal
+     * @param model
+     * @return
+     */
+    @GetMapping("/list/privee/{utilisateurId}")
+    @PreAuthorize("isAuthenticated()")
+    public String afficherMessagesAvecUtilisateur(@PathVariable Long utilisateurId, Principal principal, Model model) {
+        Utilisateur moi = utilisateurRepository.findByEmail(principal.getName())
+                .orElseThrow();
+        Utilisateur autre = utilisateurRepository.findById(utilisateurId)
+                .orElseThrow();
+
+        ConversationPri conversation = conversationPriRepository
+                .findConversationBetween(
+                        moi, autre)
+                .orElseThrow(() -> new IllegalArgumentException("Pas de conversation trouvée."));
+
+        List<Message> messages = messageService.getMessagesByConversationId(conversation.getId());
+
+        model.addAttribute("currentUserId", moi.getId());
+        model.addAttribute("messages", messages);
+        model.addAttribute("autre", autre); // pour affichage
         return "messages";
     }
 

@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Envoyer un message</title></head>
-<body>
-    <h1>Envoyer un message privé</h1>
-
-    <form th:action="@{/messages/envoyer}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <input type="hidden" name="destinataireId" th:value="${destinataireId}" />
-
-        <label>Message :</label><br/>
-        <textarea name="contenu" rows="5" cols="40"></textarea><br/>
-
-        <button type="submit">Envoyer</button>
-    </form>
-</body>
-</html>
+<form th:action="@{/messages/envoyer}" method="post">
+    <input type="hidden" name="destinataireId" th:value="${destinataire.id}" />
+    
+    <div class="mb-3">
+        <label for="contenu">Message</label>
+        <textarea id="contenu" name="contenu" class="form-control" required></textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+</form>
