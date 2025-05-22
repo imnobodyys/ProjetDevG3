@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.model.Commentaire;
 import utcapitole.miage.projetdevg3.model.ConversationGrp;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Post;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.service.CommentaireService;
 import utcapitole.miage.projetdevg3.service.ConversationService;
 import utcapitole.miage.projetdevg3.service.MessageService;
 import utcapitole.miage.projetdevg3.service.PostService;
@@ -26,13 +28,15 @@ import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 @RequestMapping("/posts")
 
 public class PostController {
-
+    private final CommentaireService commentaireService;
     private final PostService postService;
     private final UtilisateurService utilisateurService;
 
-    public PostController(PostService postService, UtilisateurService utilisateurService) {
+    public PostController(PostService postService, UtilisateurService utilisateurService,
+            CommentaireService commentaireService) {
         this.postService = postService;
         this.utilisateurService = utilisateurService;
+        this.commentaireService = commentaireService;
     }
 
     @GetMapping("/nouveau")
@@ -55,11 +59,11 @@ public class PostController {
     }
 
     @GetMapping("/liste")
-
     @PreAuthorize("isAuthenticated()")
     public String afficherPosts(Model model, Principal principal) {
         List<Post> posts = postService.getPostsPublics();
         model.addAttribute("posts", posts);
+        model.addAttribute("pageType", "tous");
 
         if (principal != null) {
             Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
@@ -76,6 +80,7 @@ public class PostController {
         Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         model.addAttribute("posts", postService.getPostsParAuteur(utilisateur));
         model.addAttribute("utilisateurConnecte", utilisateur);
+        model.addAttribute("pageType", "mes");
         return "list-post";
     }
 
@@ -91,6 +96,32 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "Vous n'êtes pas autorisé à supprimer ce post.");
         }
 
+        return "redirect:/posts/liste";
+    }
+
+    @GetMapping("/voir/{id}")
+    public String voirPost(@PathVariable Long id, Model model, Principal principal) {
+        Post post = postService.getPostById(id);
+        List<Commentaire> commentaires = commentaireService.getCommentaires(post);
+
+        model.addAttribute("post", post);
+        model.addAttribute("commentaires", commentaires);
+        model.addAttribute("nouveauCommentaire", new Commentaire());
+
+        return "voir-post";
+    }
+
+    @PostMapping("/{postId}/commenter")
+    @PreAuthorize("isAuthenticated()")
+    public String commenterPost(@PathVariable Long postId,
+            @RequestParam String contenu,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+
+        postService.ajouterCommentaire(postId, contenu, utilisateur);
+
+        redirectAttributes.addFlashAttribute("success", "Commentaire ajouté !");
         return "redirect:/posts/liste";
     }
 

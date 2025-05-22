@@ -5,11 +5,18 @@
     <title>Liste des Posts</title>
 </head>
 <body>
+    <div th:replace="fragments/navbar :: navbar"></div>
     <h1>📢 Posts</h1>
 
     <div>
-        <a href="/posts/liste">🌍 Voir tous les posts</a> |
-        <a href="/posts/mes-posts">👤 Mes posts</a> |
+       <div th:if="${pageType == 'mes'}">
+            <a href="/posts/liste">🌍 Voir tous les posts</a>
+        </div>
+
+        <div th:if="${pageType == 'tous'}">
+            <a href="/posts/mes-posts">👤 Mes posts</a>
+        </div>
+
         <a href="/posts/nouveau">✍️ Rédiger un post</a>
     </div>
 
@@ -19,28 +26,44 @@
         <p>Aucun post trouvé.</p>
     </div>
 
-    <table th:if="${not posts.isEmpty()}">
-        <thead>
-            <tr>
-                <th>Contenu</th>
-                <th>Auteur</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="post : ${posts}">
-                <td th:text="${post.contenu}">Contenu du post</td>
-                <td th:text="${post.auteur.nom}">Auteur</td>
-                <td>
-                    <div th:if="${utilisateurConnecte != null and post.auteur.id == utilisateurConnecte.id}">
-                        <form th:action="@{'/posts/supprimer/' + ${post.id}}" method="post">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <button type="submit">🗑 Supprimer</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div th:each="post : ${posts}">
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+            <p>
+                <a th:href="@{'/posts/voir/' + ${post.id}}">🔍 Voir plus</a>
+            </p>
+            <p><strong th:text="${post.auteur.nom}">Auteur</strong></p>
+            <p th:text="${post.contenu}">Contenu du post</p>
+
+            <!-- Supprimer bouton si auteur -->
+            <div th:if="${utilisateurConnecte != null and post.auteur.id == utilisateurConnecte.id}">
+                <form th:action="@{'/posts/supprimer/' + ${post.id}}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit">🗑 Supprimer</button>
+                </form>
+            </div>
+
+            <!-- Liste des commentaires -->
+            <div th:if="${post.commentaires != null}">
+                <h4>💬 Commentaires :</h4>
+                <ul>
+                    <li th:each="comment : ${post.commentaires}">
+                        <strong th:text="${comment.expediteur.nom}">Nom</strong> :
+                        <span th:text="${comment.contenu}">Contenu</span>
+                    </li>
+                </ul>
+            </div>
+
+
+            <!-- Formulaire de commentaire -->
+            <form th:action="@{'/posts/' + ${post.id} + '/commenter'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <textarea name="contenu" rows="2" cols="50" placeholder="Écrivez un commentaire..." required></textarea><br>
+                <button type="submit">💬 Commenter</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        Total posts: <span th:text="${posts.size()}">0</span>
+    </div>
 </body>
 </html>
