@@ -79,13 +79,17 @@ public class PostController {
         model.addAttribute("posts", posts);
         model.addAttribute("pageType", "tous");
 
+        Map<Long, Map<TypeReaction, Long>> reactionsStats = new HashMap<>();
+        posts.forEach(post -> {
+            reactionsStats.put(post.getId(), reactionService.compterReactions(post));
+        });
+        model.addAttribute("reactionsStats", reactionsStats);
+
         if (principal != null) {
             Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
-
             model.addAttribute("utilisateurConnecte", utilisateur);
         }
-        ajouterStatsReaction(posts, model);
-
+        System.out.println("Reactions Stats: " + reactionsStats);
         return "list-post";
     }
 
@@ -95,12 +99,16 @@ public class PostController {
         Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
         List<Post> posts = postService.getPostsParAuteur(utilisateur);
 
-        model.addAttribute("posts", postService.getPostsParAuteur(utilisateur));
+        model.addAttribute("posts", posts);
         model.addAttribute("utilisateurConnecte", utilisateur);
         model.addAttribute("pageType", "mes");
 
-        ajouterStatsReaction(posts, model);
-
+        Map<Long, Map<TypeReaction, Long>> reactionsStats = new HashMap<>();
+        posts.forEach(post -> {
+            reactionsStats.put(post.getId(), reactionService.compterReactions(post));
+        });
+        model.addAttribute("reactionsStats", reactionsStats);
+        System.out.println("Reactions Stats: " + reactionsStats);
         return "list-post";
     }
 
@@ -157,6 +165,8 @@ public class PostController {
         reactionService.ajouterOuModifierReaction(utilisateur, post, type);
 
         redirectAttributes.addFlashAttribute("success", "Réaction enregistrée !");
+        System.out.println("Reaction type: " + type);
+        System.out.println("Post ID: " + postId);
         return "redirect:/posts/liste";
     }
 

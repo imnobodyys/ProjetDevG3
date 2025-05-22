@@ -1,6 +1,7 @@
 package utcapitole.miage.projetdevg3.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,14 @@ public class ReactionService {
     }
 
     public Map<TypeReaction, Long> compterReactions(Post post) {
-        return reactionRepository.findByPost(post).stream()
+        if (post == null || post.getId() == null) {
+            return new HashMap<>();
+        }
+
+        Map<TypeReaction, Long> counts = reactionRepository.findByPost(post).stream()
                 .collect(Collectors.groupingBy(Reaction::getType, Collectors.counting()));
+
+        System.out.println("Reactions for Post " + post.getId() + ": " + counts);
+        return counts;
     }
 }

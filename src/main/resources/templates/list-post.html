@@ -81,6 +81,13 @@
                 😢 <span th:text="${reactionsStats[post.id]['TRISTE'] ?: 0}">0</span>
             </p>
         </div>
+        <div>
+    Post ID: <span th:text="${post.id}"></span>
+    Reactions: <span th:text="${reactionsStats[post.id]}"></span>
+</div>
+        <div th:if="${reactionsStats}">
+            <p>Debug: <span th:text="${reactionsStats}"></span></p>
+        </div>
 
             <!-- Liste des commentaires -->
             <div th:if="${post.commentaires != null}">
