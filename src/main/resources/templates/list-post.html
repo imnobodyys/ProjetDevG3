@@ -74,19 +74,12 @@
 
         <div>
             <p>
-                👍 <span th:text="${reactionsStats[post.id]['JAIME'] ?: 0}">0</span>
-                👏 <span th:text="${reactionsStats[post.id]['BRAVO'] ?: 0}">0</span>
-                😎 <span th:text="${reactionsStats[post.id]['COOL'] ?: 0}">0</span>
-                🤔 <span th:text="${reactionsStats[post.id]['INTERESSANT'] ?: 0}">0</span>
-                😢 <span th:text="${reactionsStats[post.id]['TRISTE'] ?: 0}">0</span>
+                👍 <span th:text="${reactionsStats[post.id][T(utcapitole.miage.projetdevg3.model.TypeReaction).JAIME] ?: 0}">0</span>
+                👏 <span th:text="${reactionsStats[post.id][T(utcapitole.miage.projetdevg3.model.TypeReaction).BRAVO] ?: 0}">0</span>
+                😎 <span th:text="${reactionsStats[post.id][T(utcapitole.miage.projetdevg3.model.TypeReaction).COOL] ?: 0}">0</span>
+                🤔 <span th:text="${reactionsStats[post.id][T(utcapitole.miage.projetdevg3.model.TypeReaction).INTERESSANT] ?: 0}">0</span>
+                😢 <span th:text="${reactionsStats[post.id][T(utcapitole.miage.projetdevg3.model.TypeReaction).TRISTE] ?: 0}">0</span>
             </p>
-        </div>
-        <div>
-    Post ID: <span th:text="${post.id}"></span>
-    Reactions: <span th:text="${reactionsStats[post.id]}"></span>
-</div>
-        <div th:if="${reactionsStats}">
-            <p>Debug: <span th:text="${reactionsStats}"></span></p>
         </div>
 
             <!-- Liste des commentaires -->
