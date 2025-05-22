@@ -38,7 +38,7 @@ public class AccueilControllerTest {
 
         mockMvc.perform(get("/accueil"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/dashboard"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attribute("isAuthenticated", true))
                 .andExpect(model().attribute("utilisateur", utilisateur));
     }
