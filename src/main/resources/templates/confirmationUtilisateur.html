@@ -1,27 +1,47 @@
-<!-- US01 création de profile personnel -->
+<!-- US01 création de profil personnel -->
 
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation d'inscription</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de votre profil</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Inscription réussie !</h1>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-    <div class="container">
-		<ul>
-		    <li><strong>Nom :</strong> <span th:text="${utilisateur.nom}"></span></li>
-		    <li><strong>Prénom :</strong> <span th:text="${utilisateur.prenom}"></span></li>
-		    <li><strong>Email :</strong> <span th:text="${utilisateur.email}"></span></li>
-		</ul>
+    <main class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-5 text-success">
+                <i class="bi bi-check-circle-fill me-2"></i>Profil confirmé avec succès !
+            </h1>
+        </div>
 
-		<a th:href="@{/accueil}">Retour à l'accueil</a>
-	</div>
-    
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h5 class="card-title">Informations personnelles</h5>
+                <ul class="list-group list-group-flush">
+					<li class="list-group-item"><strong>ID utilisateur :</strong> <span th:text="${utilisateur.id}"></span></li>
+                    <li class="list-group-item"><strong>Nom :</strong> <span th:text="${utilisateur.nom}"></span></li>
+                    <li class="list-group-item"><strong>Prénom :</strong> <span th:text="${utilisateur.prenom}"></span></li>
+                    <li class="list-group-item"><strong>Email :</strong> <span th:text="${utilisateur.email}"></span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/accueil}" class="btn btn-outline-primary">
+                <i class="bi bi-house-door me-2"></i>Retour à l'accueil
+            </a>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
