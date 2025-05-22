@@ -66,7 +66,7 @@ class GroupeServiceTest {
         groupe.setId(10L);
 
         when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
-        when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of());
+        when(membreGroupeRepository.findByMembreUtilisateur(utilisateur)).thenReturn(List.of());
 
         groupeService.demanderAdhesion(10L, utilisateur);
 
@@ -83,10 +83,10 @@ class GroupeServiceTest {
 
         MembreGroupe membreExistant = new MembreGroupe(utilisateur, groupe);
         membreExistant.setGroupe(groupe);
-        membreExistant.setMembre(utilisateur);
+        membreExistant.setMembreUtilisateur(utilisateur);
 
         when(groupeRepository.findById(10L)).thenReturn(Optional.of(groupe));
-        when(membreGroupeRepository.findByMembre(utilisateur)).thenReturn(List.of(membreExistant));
+        when(membreGroupeRepository.findByMembreUtilisateur(utilisateur)).thenReturn(List.of(membreExistant));
 
         groupeService.demanderAdhesion(10L, utilisateur);
 

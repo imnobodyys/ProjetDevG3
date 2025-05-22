@@ -91,4 +91,8 @@ public class Reaction {
         this.post = post;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
