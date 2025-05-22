@@ -95,7 +95,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
                         JOIN ConversationGrp cg ON cg = m.conversation
                         JOIN Groupe g ON g = cg.groupeCon
                         LEFT JOIN MembreGroupe mg ON mg.groupe = g
-                        WHERE g.createur = :utilisateur OR mg.membre = :utilisateur
+                        WHERE g.createur = :utilisateur OR mg.membreUtilisateur  = :utilisateur
                         ORDER BY m.dtEnvoi DESC
                         """)
         List<Message> findGroupMessagesForUser(Utilisateur utilisateur, Pageable pageable);

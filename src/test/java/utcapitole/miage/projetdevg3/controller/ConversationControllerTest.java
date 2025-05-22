@@ -29,91 +29,91 @@ import utcapitole.miage.projetdevg3.service.MessageService;
 @WithMockUser
 class ConversationControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private ConversationService conversationService;
+        @MockBean
+        private ConversationService conversationService;
 
-    @MockBean
-    private MessageService messageService;
+        @MockBean
+        private MessageService messageService;
 
-    @MockBean
-    private UtilisateurRepository utilisateurRepository;
+        @MockBean
+        private UtilisateurRepository utilisateurRepository;
 
-    private Utilisateur mockUser;
-    private Principal mockPrincipal;
+        private Utilisateur mockUser;
+        private Principal mockPrincipal;
 
-    @BeforeEach
-    void setUp() {
-        mockUser = new Utilisateur();
-        mockUser.setId(1L);
-        mockUser.setEmail("test@example.com");
+        @BeforeEach
+        void setUp() {
+                mockUser = new Utilisateur();
+                mockUser.setId(1L);
+                mockUser.setEmail("test@example.com");
 
-        mockPrincipal = () -> "test@example.com";
+                mockPrincipal = () -> "test@example.com";
 
-        when(utilisateurRepository.findByEmail("test@example.com"))
-                .thenReturn(java.util.Optional.of(mockUser));
-    }
+                when(utilisateurRepository.findByEmail("test@example.com"))
+                                .thenReturn(java.util.Optional.of(mockUser));
+        }
 
-    @Test
-    void testAfficherCentreMessages() throws Exception {
-        // Mock data
-        ConversationPri privateConv = new ConversationPri();
-        ConversationGrp groupConv = new ConversationGrp();
+        @Test
+        void testAfficherCentreMessages() throws Exception {
+                // Mock data
+                ConversationPri privateConv = new ConversationPri();
+                ConversationGrp groupConv = new ConversationGrp();
 
-        when(conversationService.getConversationsWithRecentMessages(any(Utilisateur.class)))
-                .thenReturn(Arrays.asList(privateConv));
-        when(conversationService.getGroupConversationsWithRecentMessages(any(Utilisateur.class)))
-                .thenReturn(Arrays.asList(groupConv));
+                when(conversationService.getPrivateConversationsWithRecentMessages(any(Utilisateur.class)))
+                                .thenReturn(Arrays.asList(privateConv));
+                when(conversationService.getGroupConversationsWithRecentMessages(any(Utilisateur.class)))
+                                .thenReturn(Arrays.asList(groupConv));
 
-        // Test & Verify
-        mockMvc.perform(get("/conversations").principal(mockPrincipal))
-                .andExpect(status().isOk())
-                .andExpect(view().name("message-centre"))
-                .andExpect(model().attributeExists("privateConvs"))
-                .andExpect(model().attributeExists("groupConvs"));
-    }
+                // Test & Verify
+                mockMvc.perform(get("/conversations").principal(mockPrincipal))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("message-centre"))
+                                .andExpect(model().attributeExists("privateConvs"))
+                                .andExpect(model().attributeExists("groupConvs"));
+        }
 
-    @Test
-    void testAfficherCentreMessages_NoConversations() throws Exception {
-        when(conversationService.getConversationsWithRecentMessages(any(Utilisateur.class)))
-                .thenReturn(Collections.emptyList());
-        when(conversationService.getGroupConversationsWithRecentMessages(any(Utilisateur.class)))
-                .thenReturn(Collections.emptyList());
+        @Test
+        void testAfficherCentreMessages_NoConversations() throws Exception {
+                when(conversationService.getPrivateConversationsWithRecentMessages(any(Utilisateur.class)))
+                                .thenReturn(Collections.emptyList());
+                when(conversationService.getGroupConversationsWithRecentMessages(any(Utilisateur.class)))
+                                .thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/conversations").principal(mockPrincipal))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("privateConvs", Collections.emptyList()))
-                .andExpect(model().attribute("groupConvs", Collections.emptyList()));
-    }
+                mockMvc.perform(get("/conversations").principal(mockPrincipal))
+                                .andExpect(status().isOk())
+                                .andExpect(model().attribute("privateConvs", Collections.emptyList()))
+                                .andExpect(model().attribute("groupConvs", Collections.emptyList()));
+        }
 
-    @Test
-    void testEnvoyerMessagePrive() throws Exception {
-        mockMvc.perform(post("/conversations/privee/1")
-                .principal(mockPrincipal)
-                .param("contenu", "Bonjour"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/conversations#1"));
-    }
+        @Test
+        void testEnvoyerMessagePrive() throws Exception {
+                mockMvc.perform(post("/conversations/privee/1")
+                                .principal(mockPrincipal)
+                                .param("contenu", "Bonjour"))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/conversations#1"));
+        }
 
-    @Test
-    void testEnvoyerMessageGroupe() throws Exception {
-        mockMvc.perform(post("/conversations/groupe/2")
-                .principal(mockPrincipal)
-                .param("contenu", "Message de groupe"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/conversations#groupe-2"));
-    }
+        @Test
+        void testEnvoyerMessageGroupe() throws Exception {
+                mockMvc.perform(post("/conversations/groupe/2")
+                                .principal(mockPrincipal)
+                                .param("contenu", "Message de groupe"))
+                                .andExpect(status().is3xxRedirection())
+                                .andExpect(redirectedUrl("/conversations#groupe-2"));
+        }
 
-    @Test
-    @WithMockUser(username = "unknown@example.com")
-    void testGetCurrentUser_UserNotFound() throws Exception {
-        when(utilisateurRepository.findByEmail("unknown@example.com"))
-                .thenReturn(java.util.Optional.empty());
+        @Test
+        @WithMockUser(username = "unknown@example.com")
+        void testGetCurrentUser_UserNotFound() throws Exception {
+                when(utilisateurRepository.findByEmail("unknown@example.com"))
+                                .thenReturn(java.util.Optional.empty());
 
-        mockMvc.perform(get("/conversations")
-                .principal(() -> "unknown@example.com"))
-                .andExpect(status().is4xxClientError());
-    }
+                mockMvc.perform(get("/conversations")
+                                .principal(() -> "unknown@example.com"))
+                                .andExpect(status().is4xxClientError());
+        }
 }

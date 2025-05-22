@@ -16,8 +16,6 @@ public interface ConversationGrpRepository extends JpaRepository<ConversationGrp
     // Méthode pour trouver une conversation de groupe par son ID
     Optional<ConversationGrp> findByGroupeCon_Id(Long groupeId);
 
-    // methode pour trouver une conversation de groupe par utilisateurs
-    @Query("SELECT c FROM ConversationGrp c JOIN c.groupeCon g JOIN MembreGroupe m ON m.groupe = g WHERE m.membre = :user")
-    List<ConversationGrp> findByUtilisateur(@Param("user") Utilisateur user);
+    List<ConversationGrp> findByGroupeCon_Membres_membreUtilisateur(Utilisateur user);
 
 }
