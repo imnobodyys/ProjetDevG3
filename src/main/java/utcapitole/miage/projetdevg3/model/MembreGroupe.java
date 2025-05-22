@@ -47,44 +47,92 @@ public class MembreGroupe {
      * membre : utilisateur qui est membre du groupe
      */
     @ManyToOne
-    private Utilisateur membre;
+    private Utilisateur membreUtilisateur;
 
     public MembreGroupe(Utilisateur membre, Groupe groupe) {
-        this.membre = membre;
+        this.membreUtilisateur = membre;
         this.groupe = groupe;
         this.statut = StatutMembre.EN_ATTENTE;
     }
 
-    // getters et setters
-    public Groupe getGroupe() {
-        return groupe;
+ 
+    public Long getId() {
+        return id;
     }
 
-    public void setGroupe(Groupe groupe) {
-        this.groupe = groupe;
-    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Utilisateur getMembre() {
-        return membre;
-    }
-
-    public void setMembre(Utilisateur membre) {
-        this.membre = membre;
-    }
 
     public StatutMembre getStatut() {
         return statut;
     }
 
+
     public void setStatut(StatutMembre statut) {
         this.statut = statut;
     }
 
-    public Long getId() {
-        return id;
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
+
+
+    public Utilisateur getMembreUtilisateur() {
+        return membreUtilisateur;
+    }
+
+
+    public void setMembreUtilisateur(Utilisateur membreUtilisateur) {
+        this.membreUtilisateur = membreUtilisateur;
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((statut == null) ? 0 : statut.hashCode());
+        result = prime * result + ((groupe == null) ? 0 : groupe.hashCode());
+        result = prime * result + ((membreUtilisateur == null) ? 0 : membreUtilisateur.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MembreGroupe other = (MembreGroupe) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (statut != other.statut)
+            return false;
+        if (groupe == null) {
+            if (other.groupe != null)
+                return false;
+        } else if (!groupe.equals(other.groupe))
+            return false;
+        if (membreUtilisateur == null) {
+            if (other.membreUtilisateur != null)
+                return false;
+        } else if (!membreUtilisateur.equals(other.membreUtilisateur))
+            return false;
+        return true;
     }
 }

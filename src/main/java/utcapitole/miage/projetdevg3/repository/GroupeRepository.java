@@ -19,12 +19,15 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 @Repository
 public interface GroupeRepository extends JpaRepository<Groupe, Long> {
 
-    boolean existsByNomIgnoreCase(String nom);
+    
 
     // Méthode pour trouver un groupe par son ID
     Optional<Groupe> findById(Long id);
 
     List<Groupe> findByCreateur(Utilisateur createur);
 
-    List<Groupe> findByMembresMembreAndMembresStatut(Utilisateur membre, StatutMembre statut);
+    List<Groupe> findByMembresMembreUtilisateurAndMembresStatut(Utilisateur membre, StatutMembre statut);
+
+    boolean existsByNomIgnoreCase(String nom);
+     
 }

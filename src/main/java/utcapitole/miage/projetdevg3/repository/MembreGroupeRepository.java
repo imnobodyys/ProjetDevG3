@@ -19,14 +19,16 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 @Repository
 public interface MembreGroupeRepository extends JpaRepository<MembreGroupe, Long> {
 
-    boolean existsByGroupeIdAndMembreId(Long groupeId, Long membreId);
+    boolean existsByGroupeIdAndMembreUtilisateurId(Long groupeId, Long membreUtilisateurId);
 
     // Méthode pour trouver tous les membres d'un groupe
     List<MembreGroupe> findByGroupe(Groupe groupe);
 
     // Méthode pour trouver tous les groupes d'un utilisateur
-    List<MembreGroupe> findByMembre(Utilisateur membre);
+    List<MembreGroupe> findByMembreUtilisateur(Utilisateur membreUtilisateur);
 
     List<MembreGroupe> findByGroupeAndStatut(Groupe groupe, StatutMembre statut);
+
+    List<MembreGroupe> findByMembreUtilisateurAndStatut(Utilisateur membreUtilisateur, StatutMembre statut);
 
 }

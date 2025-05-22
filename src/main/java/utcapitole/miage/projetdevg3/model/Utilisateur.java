@@ -98,7 +98,7 @@ public class Utilisateur {
      * Relation
      * groupes : liste des groupes auxquels l'utilisateur appartient
      */
-    @OneToMany(mappedBy = "membre", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "membreUtilisateur", cascade = CascadeType.ALL)
     private List<MembreGroupe> groupes = new ArrayList<>();
 
     /**
@@ -273,14 +273,14 @@ public class Utilisateur {
     public void addGroupe(MembreGroupe membreGroupe) {
         if (membreGroupe != null && !groupes.contains(membreGroupe)) {
             groupes.add(membreGroupe);
-            membreGroupe.setMembre(this);
+            membreGroupe.setMembreUtilisateur(this);
         }
     }
 
     public void removeGroupe(MembreGroupe membreGroupe) {
         if (membreGroupe != null) {
             groupes.remove(membreGroupe);
-            membreGroupe.setMembre(null);
+            membreGroupe.setMembreUtilisateur(null);
         }
     }
 

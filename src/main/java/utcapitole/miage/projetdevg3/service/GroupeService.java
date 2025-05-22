@@ -1,6 +1,7 @@
 package utcapitole.miage.projetdevg3.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,37 +21,19 @@ import utcapitole.miage.projetdevg3.model.Utilisateur;
 @Service
 public class GroupeService {
 
-    /**
-     * Référentiel pour les groupes.
-     * Utilisé pour effectuer des opérations CRUD sur les groupes.
-     */
-    @Autowired
+@Autowired
     private GroupeRepository groupeRepository;
 
-    /**
-     * Référentiel pour les membres de groupe.
-     * Utilisé pour gérer les relations entre utilisateurs et groupes.
-     */
     @Autowired
     private MembreGroupeRepository membreGroupeRepository;
 
-    /**
-     * Constructeur pour initialiser le service de groupe.
-     * 
-     * @param groupeRepository Référentiel pour les groupes.
-     */
     @Autowired
     public GroupeService(GroupeRepository groupeRepository,
-            utcapitole.miage.projetdevg3.repository.MembreGroupeRepository membreGroupeRepository) {
+            MembreGroupeRepository membreGroupeRepository) {
         this.groupeRepository = groupeRepository;
-        membreGroupeRepository = membreGroupeRepository;
+        this.membreGroupeRepository = membreGroupeRepository;  // correction ici (ajout du this)
     }
 
-    /**
-     * Récupère un groupe par son identifiant.
-     * 
-     * @param id Identifiant du groupe.
-     */
     public Groupe getGroupeById(Long id) {
         return groupeRepository.findById(id).orElseThrow();
     }
@@ -63,7 +46,6 @@ public class GroupeService {
         if (groupeRepository.existsByNomIgnoreCase(nom)) {
             throw new IllegalArgumentException("Ce nom de groupe est déjà utilisé.");
         }
-        // Création du groupe
         Groupe groupe = new Groupe();
         groupe.setNom(nom);
         groupe.setDescription(description);
@@ -71,94 +53,80 @@ public class GroupeService {
 
         groupe = groupeRepository.save(groupe);
 
-        // Le créateur devient membre accepté
         MembreGroupe membre = new MembreGroupe();
         membre.setGroupe(groupe);
-        membre.setMembre(createur);
+        membre.setMembreUtilisateur(createur);
         membre.setStatut(StatutMembre.ACCEPTE);
         membreGroupeRepository.save(membre);
 
         return groupe;
-
     }
 
-    /**
-     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
-     * 
-     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
-     */
     public List<MembreGroupe> getMembresDuGroupe(Long idGroupe) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
         return membreGroupeRepository.findByGroupe(groupe);
     }
 
-    /**
-     * Récupère tous les groupes créés par un utilisateur.
-     */
     public List<Groupe> getGroupesByCreateur(Utilisateur createur) {
         return groupeRepository.findByCreateur(createur);
     }
 
     /**
-     * Récupère tous les groupes d'un utilisateur avec un statut spécifique.
-     * 
-     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     * Demander adhésion à un groupe (statut selon type de groupe).
      */
-    public void demanderAdhesion(Long idGroupe, Utilisateur utilisateur) {
-        Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
+    public boolean demanderAdhesion(Long idGroupe, Utilisateur utilisateur) {
+        Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
 
-        boolean dejaMembreOuEnAttente = membreGroupeRepository.findByMembre(utilisateur).stream()
+        boolean dejaMembreOuEnAttente = membreGroupeRepository.findByMembreUtilisateur(utilisateur).stream()
                 .anyMatch(mg -> mg.getGroupe().getId().equals(idGroupe));
+
         if (dejaMembreOuEnAttente) {
-            return; // Ne fait rien si déjà membre ou en attente
+            return false;
         }
 
-        StatutMembre statut = (groupe.getType() == TypeGroupe.PUBLIC)
-                ? StatutMembre.ACCEPTE
-                : StatutMembre.EN_ATTENTE;
+        StatutMembre statut = (groupe.getType() == TypeGroupe.PUBLIC) ? StatutMembre.ACCEPTE : StatutMembre.EN_ATTENTE;
 
-        MembreGroupe membre = new MembreGroupe();
-        membre.setGroupe(groupe);
-        membre.setMembre(utilisateur);
+        MembreGroupe membre = new MembreGroupe(utilisateur, groupe);
         membre.setStatut(statut);
 
         membreGroupeRepository.save(membre);
+
+        return statut == StatutMembre.ACCEPTE;
     }
 
     /**
-     * Récupère tous les groupes disponibles pour un utilisateur.
-     * 
-     * @param utilisateur Utilisateur dont on veut récupérer les groupes.
+     * Récupère les groupes disponibles (créés par d'autres utilisateurs) que
+     * l'utilisateur ne suit pas encore.
      */
     public List<Groupe> getGroupesDisponiblesPour(Utilisateur utilisateur) {
-        List<MembreGroupe> dejaRejoints = membreGroupeRepository.findByMembre(utilisateur);
-        List<Long> idsGroupes = dejaRejoints.stream()
-                .map(m -> m.getGroupe().getId())
-                .toList();
+         List<Long> idsGroupesDejaRejoints = membreGroupeRepository
+            .findByMembreUtilisateur(utilisateur)
+            .stream()
+            .map(m -> m.getGroupe().getId())
+            .toList();
 
-        return groupeRepository.findAll().stream()
-                .filter(g -> !idsGroupes.contains(g.getId()))
-                .toList();
+    
+    return groupeRepository.findAll().stream()
+            .filter(g -> !idsGroupesDejaRejoints.contains(g.getId()))
+            .filter(g -> g.getCreateur() != null && !g.getCreateur().getId().equals(utilisateur.getId()))
+            .toList();
     }
 
     public void annulerDemande(Long idGroupe, Utilisateur utilisateur) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
 
-        List<MembreGroupe> membresEnAttente = membreGroupeRepository.findByMembre(utilisateur).stream()
+        List<MembreGroupe> membresEnAttente = membreGroupeRepository.findByMembreUtilisateur(utilisateur).stream()
                 .filter(m -> m.getGroupe().getId().equals(idGroupe) && m.getStatut() == StatutMembre.EN_ATTENTE)
                 .toList();
 
-        // Supprime toutes les demandes en attente trouvées
         membreGroupeRepository.deleteAll(membresEnAttente);
     }
 
-    // Pour récupérer les demandes en attente
     public List<MembreGroupe> getDemandesParGroupe(Long idGroupe) {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow();
         return membreGroupeRepository.findByGroupeAndStatut(groupe, StatutMembre.EN_ATTENTE);
     }
 
-    // Pour changer le statut (accepter ou refuser)
     public void changerStatutMembre(Long idMembre, StatutMembre statut) {
         MembreGroupe membre = membreGroupeRepository.findById(idMembre).orElseThrow();
         membre.setStatut(statut);
@@ -174,7 +142,6 @@ public class GroupeService {
         }
 
         groupeRepository.deleteById(idGroupe);
-
     }
 
     public List<Groupe> getTousLesGroupes() {
@@ -194,15 +161,51 @@ public class GroupeService {
     }
 
     public void setMembreGroupeRepository(MembreGroupeRepository membreGroupeRepository) {
-        membreGroupeRepository = membreGroupeRepository;
+        this.membreGroupeRepository = membreGroupeRepository;  // correction ici aussi
     }
 
     public StatutMembre getStatutPourUtilisateur(Groupe groupe, Utilisateur utilisateur) {
-        return membreGroupeRepository.findByMembre(utilisateur).stream()
+        return membreGroupeRepository.findByMembreUtilisateur(utilisateur).stream()
                 .filter(m -> m.getGroupe().getId().equals(groupe.getId()))
                 .map(MembreGroupe::getStatut)
                 .findFirst()
                 .orElse(null);
     }
 
+    public void sauvegarderGroupe(Groupe groupe) {
+        groupeRepository.save(groupe);
+    }
+
+    public List<Groupe> getGroupesAvecDemandeEnAttente(Utilisateur utilisateur) {
+        List<MembreGroupe> demandes = membreGroupeRepository.findByMembreUtilisateurAndStatut(utilisateur, StatutMembre.EN_ATTENTE);
+        return demandes.stream()
+                .map(MembreGroupe::getGroupe)
+                .collect(Collectors.toList());
+    }
+
+    public void supprimerGroupe(Groupe groupe) {
+        groupeRepository.delete(groupe);
+    }
+
+    public List<Groupe> getGroupesCreesPar(Utilisateur utilisateur) {
+        return groupeRepository.findByCreateur(utilisateur);
+    }
+
+    public List<MembreGroupe> getMembresDuGroupe(Groupe groupe) {
+        return membreGroupeRepository.findByGroupe(groupe);
+    }
+
+    public List<MembreGroupe> getDemandesEnAttentePourGroupe(Groupe groupe) {
+        return membreGroupeRepository.findByGroupeAndStatut(groupe, StatutMembre.EN_ATTENTE);
+    }
+
+    public void exclureMembre(Long idMembreGroupe) {
+        membreGroupeRepository.deleteById(idMembreGroupe);
+    }
+    public List<Groupe> getGroupesDisponiblesPourUtilisateur(Utilisateur utilisateur) {
+    return getGroupesDisponiblesPour(utilisateur);
+}
+    
+
+    
 }
