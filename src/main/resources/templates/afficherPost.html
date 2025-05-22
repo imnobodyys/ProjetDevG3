@@ -1,29 +1,89 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts du groupe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .group-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .post-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .badge-visibility {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .author-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Posts du groupe : [[${groupe.nom}]]</h1>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-    <a th:href="@{'/groupes/' + ${groupe.id} + '/posts/nouveau'}">+ Nouveau post</a>
-
-    <div th:if="${#lists.isEmpty(posts)}">
-        <p>Aucun post pour le moment.</p>
-    </div>
-
-    <div th:each="post : ${posts}">
-        <div>
-            <p><strong th:text="${post.auteur.nom}">Auteur</strong> - 
-             Créé le : <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Date création</span>
-</p>
-            <p th:text="${post.contenu}">Contenu</p>
-            <p><em th:text="${post.visibilite}">Visibilité</em></p>
+    <main class="container py-5">
+        <!-- En-tête -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="display-5 fw-bold text-primary">
+                <i class="bi bi-chat-square-text me-2"></i>Posts du groupe : 
+                <span class="text-dark" th:text="${groupe.nom}"></span>
+            </h1>
+            <a th:href="@{'/groupes/' + ${groupe.id} + '/posts/nouveau'}" 
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Nouveau post
+            </a>
         </div>
-        <hr>
-    </div>
+
+        <!-- Section principale -->
+        <div class="group-section">
+            <!-- Liste des posts -->
+            <div th:if="${#lists.isEmpty(posts)}" class="text-center py-4">
+                <div class="alert alert-light">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Aucun post pour le moment
+                </div>
+            </div>
+
+            <div th:each="post : ${posts}" class="post-card">
+                <!-- En-tête du post -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="author-info">
+                        <i class="bi bi-person-circle me-2"></i>
+                        <span th:text="${post.auteur.nom}"></span>
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-clock me-2"></i>
+                        <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+                    <span class="badge-visibility" 
+                          th:classappend="${post.visibilite == 'PUBLIC'} ? 'bg-primary' : 'bg-warning'"
+                          th:text="${post.visibilite}">
+                    </span>
+                </div>
+
+                <!-- Contenu du post -->
+                <p class="mb-0" th:text="${post.contenu}"></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

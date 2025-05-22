@@ -3,36 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Messages récents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .message-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        .message-section {
+            margin-bottom: 2.5rem;
+        }
+        .message-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Messages Privés Récents</h1>
-    <div th:if="${privateMessages.isEmpty()}">
-        <p>Aucun message privé récent.</p>
-    </div>
-    <div th:each="msg : ${privateMessages}">
-        <p>
-            <strong th:text="${msg.expedi.nom}">Expéditeur</strong> : 
-            <span th:text="${msg.contenu}">Contenu</span>
-            <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
-             <a th:href="@{'/messages/envoyer/' + ${msg.expedi.id}}">Répondre</a>
-        </p>
-    </div>
-    <a href="/messages/prives">Voir tous les messages privés</a>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-    <hr>
+    <main class="container py-5">
+        <div class="message-card">
+            <!-- Messages Privés -->
+            <div class="message-section">
+                <h2 class="mb-4 text-primary">
+                    <i class="bi bi-envelope me-2"></i>Messages Privés Récents
+                </h2>
+                <div th:if="${privateMessages.isEmpty()}" class="alert alert-info">
+                    Aucun message privé récent.
+                </div>
+                <div th:each="msg : ${privateMessages}" class="message-item">
+                    <p class="mb-1">
+                        <strong th:text="${msg.expedi.nom}"></strong> : 
+                        <span th:text="${msg.contenu}"></span>
+                    </p>
+                    <small class="text-muted" th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+                    <a th:href="@{'/messages/envoyer/' + ${msg.expedi.id}}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="bi bi-reply me-1"></i>Répondre
+                    </a>
+                </div>
+                <a href="/messages/prives" class="btn btn-link mt-3">
+                    Voir tous les messages privés <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
 
-    <h1>Messages de Groupes Récents</h1>
-    <div th:if="${groupMessages.isEmpty()}">
-        <p>Aucun message de groupe récent.</p>
-    </div>
-    <div th:each="msg : ${groupMessages}">
-        <p>
-            <strong th:text="${msg.expedi.nom}">Expéditeur</strong> : 
-            <span th:text="${msg.contenu}">Contenu</span>
-            <small th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
-            <a th:href="@{'/groupes/' + ${msg.conversation.groupeCon.id} + '/messages'}">Répondre</a> 
-        </p>
-    </div>
-    <a href="/messages/groupes">Voir tous les messages de groupe</a>
+            <hr class="my-5">
+
+            <!-- Messages de Groupes -->
+            <div class="message-section">
+                <h2 class="mb-4 text-primary">
+                    <i class="bi bi-people me-2"></i>Messages de Groupes Récents
+                </h2>
+                <div th:if="${groupMessages.isEmpty()}" class="alert alert-info">
+                    Aucun message de groupe récent.
+                </div>
+                <div th:each="msg : ${groupMessages}" class="message-item">
+                    <p class="mb-1">
+                        <strong th:text="${msg.expedi.nom}"></strong> : 
+                        <span th:text="${msg.contenu}"></span>
+                    </p>
+                    <small class="text-muted" th:text="${#temporals.format(msg.dtEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+                    <a th:href="@{'/groupes/' + ${msg.conversation.groupeCon.id} + '/messages'}" 
+                       class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="bi bi-reply me-1"></i>Répondre
+                    </a>
+                </div>
+                <a href="/messages/groupes" class="btn btn-link mt-3">
+                    Voir tous les messages de groupe <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
