@@ -1,7 +1,9 @@
 package utcapitole.miage.projetdevg3.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,11 +18,13 @@ import utcapitole.miage.projetdevg3.model.ConversationGrp;
 import utcapitole.miage.projetdevg3.model.ConversationPri;
 import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.TypeReaction;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.service.CommentaireService;
 import utcapitole.miage.projetdevg3.service.ConversationService;
 import utcapitole.miage.projetdevg3.service.MessageService;
 import utcapitole.miage.projetdevg3.service.PostService;
+import utcapitole.miage.projetdevg3.service.ReactionService;
 import utcapitole.miage.projetdevg3.service.UtilisateurService;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
 
@@ -31,12 +35,14 @@ public class PostController {
     private final CommentaireService commentaireService;
     private final PostService postService;
     private final UtilisateurService utilisateurService;
+    private final ReactionService reactionService;
 
     public PostController(PostService postService, UtilisateurService utilisateurService,
-            CommentaireService commentaireService) {
+            CommentaireService commentaireService, ReactionService reactionService) {
         this.postService = postService;
         this.utilisateurService = utilisateurService;
         this.commentaireService = commentaireService;
+        this.reactionService = reactionService;
     }
 
     @GetMapping("/nouveau")
@@ -58,6 +64,14 @@ public class PostController {
         return "redirect:/posts/liste";
     }
 
+    private void ajouterStatsReaction(List<Post> posts, Model model) {
+        Map<Long, Map<TypeReaction, Long>> stats = new HashMap<>();
+        for (Post post : posts) {
+            stats.put(post.getId(), reactionService.compterReactions(post));
+        }
+        model.addAttribute("reactionsStats", stats);
+    }
+
     @GetMapping("/liste")
     @PreAuthorize("isAuthenticated()")
     public String afficherPosts(Model model, Principal principal) {
@@ -70,6 +84,7 @@ public class PostController {
 
             model.addAttribute("utilisateurConnecte", utilisateur);
         }
+        ajouterStatsReaction(posts, model);
 
         return "list-post";
     }
@@ -78,9 +93,14 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     public String afficherMesPosts(Model model, Principal principal) {
         Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+        List<Post> posts = postService.getPostsParAuteur(utilisateur);
+
         model.addAttribute("posts", postService.getPostsParAuteur(utilisateur));
         model.addAttribute("utilisateurConnecte", utilisateur);
         model.addAttribute("pageType", "mes");
+
+        ajouterStatsReaction(posts, model);
+
         return "list-post";
     }
 
@@ -122,6 +142,21 @@ public class PostController {
         postService.ajouterCommentaire(postId, contenu, utilisateur);
 
         redirectAttributes.addFlashAttribute("success", "Commentaire ajouté !");
+        return "redirect:/posts/liste";
+    }
+
+    @PostMapping("/{postId}/reaction")
+    @PreAuthorize("isAuthenticated()")
+    public String reagirAuPost(@PathVariable Long postId,
+            @RequestParam("type") TypeReaction type,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        Utilisateur utilisateur = utilisateurService.findByEmail(principal.getName());
+        Post post = postService.getPostById(postId);
+
+        reactionService.ajouterOuModifierReaction(utilisateur, post, type);
+
+        redirectAttributes.addFlashAttribute("success", "Réaction enregistrée !");
         return "redirect:/posts/liste";
     }
 

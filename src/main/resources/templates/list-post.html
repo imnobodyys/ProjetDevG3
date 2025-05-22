@@ -41,6 +41,46 @@
                     <button type="submit">🗑 Supprimer</button>
                 </form>
             </div>
+            <!-- Réagir avec des emojis -->
+        <form th:action="@{'/posts/' + ${post.id} + '/reaction'}" method="post" style="display:inline;">
+            <input type="hidden" name="type" value="JAIME" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">👍 J’aime</button>
+        </form>
+
+        <form th:action="@{'/posts/' + ${post.id} + '/reaction'}" method="post" style="display:inline;">
+            <input type="hidden" name="type" value="BRAVO" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">👏 Bravo</button>
+        </form>
+
+        <form th:action="@{'/posts/' + ${post.id} + '/reaction'}" method="post" style="display:inline;">
+            <input type="hidden" name="type" value="COOL" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">😎 Cool</button>
+        </form>
+
+        <form th:action="@{'/posts/' + ${post.id} + '/reaction'}" method="post" style="display:inline;">
+            <input type="hidden" name="type" value="INTERESSANT" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">🤔 Intéressant</button>
+        </form>
+
+        <form th:action="@{'/posts/' + ${post.id} + '/reaction'}" method="post" style="display:inline;">
+            <input type="hidden" name="type" value="TRISTE" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">😢 Triste</button>
+        </form>
+
+        <div>
+            <p>
+                👍 <span th:text="${reactionsStats[post.id]['JAIME'] ?: 0}">0</span>
+                👏 <span th:text="${reactionsStats[post.id]['BRAVO'] ?: 0}">0</span>
+                😎 <span th:text="${reactionsStats[post.id]['COOL'] ?: 0}">0</span>
+                🤔 <span th:text="${reactionsStats[post.id]['INTERESSANT'] ?: 0}">0</span>
+                😢 <span th:text="${reactionsStats[post.id]['TRISTE'] ?: 0}">0</span>
+            </p>
+        </div>
 
             <!-- Liste des commentaires -->
             <div th:if="${post.commentaires != null}">
