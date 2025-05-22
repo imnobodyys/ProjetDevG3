@@ -69,5 +69,8 @@ public class Conversation {
     public void setId(Long id) {
         this.id = id;
     }
+    public void setMessages(List<Message> messages) {
+    this.messages = messages;
+}
 
 }
