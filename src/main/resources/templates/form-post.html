@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Post</title>
+</head>
+
+<body>
+    <h1>Créer un nouveau post</h1>
+
+    <!-- Affichage des messages de succès -->
+    <div th:if="${success}" style="color: green;">
+        <p th:text="${success}"></p>
+    </div>
+
+    <!-- Formulaire -->
+    <form th:action="@{/posts/publier}" method="post" th:object="${post}">
+        <!-- CSRF -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <!-- Contenu -->
+        <label for="contenu">Contenu :</label><br>
+        <textarea id="contenu" th:field="*{contenu}" rows="6" cols="60" placeholder="Exprimez-vous..." required></textarea><br><br>
+
+        <!-- Visibilité -->
+        <label for="visibilite">Visibilité :</label>
+        <select id="visibilite" th:field="*{visibilite}">
+            <option value="PUBLIC">Public</option>
+            <option value="PRIVE">Privé</option>
+        </select><br><br>
+
+        <button type="submit">Publier</button>
+    </form>
+
+    <br>
+    <a href="/posts/liste">Retour à la liste des posts</a>
+</body>
+
+</html>

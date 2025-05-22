@@ -1,181 +1,203 @@
 package utcapitole.miage.projetdevg3.service;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
-import utcapitole.miage.projetdevg3.model.*;
-import utcapitole.miage.projetdevg3.repository.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Classe de test pour {@link MessageService}
- */
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import jakarta.transaction.Transactional;
+import utcapitole.miage.projetdevg3.model.ConversationGrp;
+import utcapitole.miage.projetdevg3.model.ConversationPri;
+import utcapitole.miage.projetdevg3.model.Message;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
+import utcapitole.miage.projetdevg3.repository.ConversationGrpRepository;
+import utcapitole.miage.projetdevg3.repository.ConversationPriRepository;
+import utcapitole.miage.projetdevg3.repository.MessageRepository;
+
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {
+
+        @Mock
+        private MessageRepository messageRepository;
 
         @Mock
         private ConversationPriRepository conversationPriRepository;
 
         @Mock
-        private MessageRepository messageRepository;
+        private ConversationGrpRepository conversationGrpRepository;
 
         @InjectMocks
         private MessageService messageService;
 
-        private Utilisateur expediteur;
-        private Utilisateur destinataire;
-        private ConversationPri conversationpri;
-        private ConversationGrp conversationGrp;
+        private Utilisateur mockUser;
+        private ConversationPri mockPrivateConv;
+        private ConversationGrp mockGroupConv;
+        private Message mockMessage;
+        private static final Pageable TOP_FIVE = PageRequest.of(0, 5);
 
-        /**
-         * Initialise les données de test avant chaque méthode de test
-         */
         @BeforeEach
         void setUp() {
-                expediteur = creerUtilisateurTest(1L, "Alice");
-                destinataire = creerUtilisateurTest(2L, "Bob");
-                conversationpri = creerConversationPriveeTest(expediteur, destinataire);
-                conversationGrp = creerConversationGroupeTest();
+                mockUser = new Utilisateur();
+                mockUser.setId(1L);
+                mockUser.setEmail("test@example.com");
+
+                mockPrivateConv = new ConversationPri();
+                mockPrivateConv.setId(1L);
+
+                mockGroupConv = new ConversationGrp();
+                mockGroupConv.setId(2L);
+
+                mockMessage = new Message();
+                mockMessage.setId(1L);
+                mockMessage.setContenu("Test message");
+                mockMessage.setDtEnvoi(LocalDateTime.now());
+                mockMessage.setExpedi(mockUser);
         }
 
-        /**
-         * Teste la création d'une nouvelle conversation quand elle n'existe pas
-         */
         @Test
-        void shouldCreateNewConversationWhenNotExists() {
-                when(conversationPriRepository.findByExpediteurCPAndDestinataireCPOrExpediteurCPAndDestinataireCP(
-                                any(), any(), any(), any())).thenReturn(Optional.empty());
+        @Transactional
+        void testEnvoyerMessagePrive_Success() {
+                when(conversationPriRepository.findById(1L))
+                                .thenReturn(Optional.of(mockPrivateConv));
+                when(messageRepository.save(any(Message.class)))
+                                .thenReturn(mockMessage);
 
-                ConversationPri savedConversation = creerConversationPriveeTest(expediteur, destinataire);
-                when(conversationPriRepository.save(any())).thenReturn(savedConversation);
+                messageService.envoyerMessagePrive(1L, mockUser, "Test message");
 
-                messageService.envoyerMessage(expediteur, destinataire, "Bonjour");
-
-                verify(conversationPriRepository).save(any(ConversationPri.class));
-                verify(messageRepository).save(argThat(message -> message.getContenu().equals("Bonjour") &&
-                                message.getExpedi().getId().equals(expediteur.getId()) &&
-                                message.getConversation().getId() == savedConversation.getId()));
+                verify(conversationPriRepository).findById(1L);
+                verify(messageRepository).save(any(Message.class));
         }
 
-        /**
-         * Teste l'utilisation d'une conversation existante
-         */
         @Test
-        void shouldUseExistingConversationWhenFound() {
-                ConversationPri existingConversation = creerConversationPriveeTest(expediteur, destinataire);
+        @Transactional
+        void testEnvoyerMessagePrive_ConversationNotFound() {
+                when(conversationPriRepository.findById(1L))
+                                .thenReturn(Optional.empty());
 
-                when(conversationPriRepository.findByExpediteurCPAndDestinataireCPOrExpediteurCPAndDestinataireCP(
-                                eq(expediteur), eq(destinataire), eq(destinataire), eq(expediteur)))
-                                .thenReturn(Optional.of(existingConversation));
-
-                messageService.envoyerMessage(expediteur, destinataire, "Comment ça va?");
-
-                verify(conversationPriRepository, never()).save(any());
-                verify(messageRepository).save(argThat(
-                                message -> message.getConversation().getId() == existingConversation.getId()));
+                assertThrows(IllegalArgumentException.class, () -> {
+                        messageService.envoyerMessagePrive(1L, mockUser, "Test message");
+                });
         }
 
-        /**
-         * Teste l'envoi d'un message dans un groupe
-         */
         @Test
-        void envoyerMessageGP_shouldSaveAndReturnMessage() {
-                String contenu = "Message de test";
-                Message messageTest = creerMessageTest(contenu, conversationGrp);
+        @Transactional
+        void testEnvoyerMessageGroupe_Success() {
+                when(conversationGrpRepository.findById(2L))
+                                .thenReturn(Optional.of(mockGroupConv));
+                when(messageRepository.save(any(Message.class)))
+                                .thenReturn(mockMessage);
 
-                when(messageRepository.save(any(Message.class))).thenReturn(messageTest);
+                messageService.envoyerMessageGroupe(2L, mockUser, "Test group message");
 
-                Message result = messageService.envoyerMessageGP(expediteur, conversationGrp, contenu);
-
-                assertNotNull(result, "Le message retourné ne devrait pas être null");
-                assertEquals(expediteur.getId(), result.getExpedi().getId(), "L'expéditeur ne correspond pas");
-                assertEquals(contenu, result.getContenu(), "Le contenu ne correspond pas");
-                assertEquals(conversationGrp.getId(), result.getConversation().getId(),
-                                "La conversation ne correspond pas");
+                verify(conversationGrpRepository).findById(2L);
+                verify(messageRepository).save(any(Message.class));
         }
 
-        /**
-         * Teste la récupération des messages privés récents
-         */
         @Test
-        void getRecentPriMessages_shouldReturnLimitedMessages() {
-                Message message1 = creerMessageTest("Message 1", conversationpri);
-                Message message2 = creerMessageTest("Message 2", conversationpri);
+        @Transactional
+        void testEnvoyerMessageGroupe_ConversationNotFound() {
+                when(conversationGrpRepository.findById(2L))
+                                .thenReturn(Optional.empty());
 
-                when(messageRepository.findPrivateMessagesForUser(eq(expediteur), any(Pageable.class)))
-                                .thenReturn(Arrays.asList(message1, message2));
-
-                List<Message> result = messageService.getRecentPriMessages(expediteur);
-
-                assertEquals(2, result.size(), "Devrait retourner 2 messages");
-                assertTrue(result.stream().anyMatch(m -> m.getContenu().equals("Message 1")),
-                                "Devrait contenir le message 1");
+                assertThrows(IllegalArgumentException.class, () -> {
+                        messageService.envoyerMessageGroupe(2L, mockUser, "Test group message");
+                });
         }
 
-        // Méthodes utilitaires pour créer les objets de test
+        @Test
+        void testGetMessagesByConversationId() {
+                when(messageRepository.findByConversationId(1L))
+                                .thenReturn(Arrays.asList(mockMessage));
 
-        /**
-         * Crée un utilisateur de test
-         * 
-         * @param id  L'identifiant de l'utilisateur
-         * @param nom Le nom de l'utilisateur
-         * @return L'utilisateur créé
-         */
-        private Utilisateur creerUtilisateurTest(Long id, String nom) {
-                Utilisateur utilisateur = new Utilisateur();
-                utilisateur.setId(id);
-                utilisateur.setNom(nom);
-                return utilisateur;
+                List<Message> messages = messageService.getMessagesByConversationId(1L);
+
+                assertEquals(1, messages.size());
+                assertEquals("Test message", messages.get(0).getContenu());
         }
 
-        /**
-         * Crée une conversation privée de test
-         * 
-         * @param expediteur   L'expéditeur de la conversation
-         * @param destinataire Le destinataire de la conversation
-         * @return La conversation créée
-         */
-        private ConversationPri creerConversationPriveeTest(Utilisateur expediteur, Utilisateur destinataire) {
-                ConversationPri conversation = new ConversationPri();
-                conversation.setId(100L);
-                conversation.setExpediteurCP(expediteur);
-                conversation.setDestinataireCP(destinataire);
-                return conversation;
+        @Test
+        void testGetRecentPriMessages() {
+                when(messageRepository.findPrivateMessagesForUser(mockUser, TOP_FIVE))
+                                .thenReturn(Arrays.asList(mockMessage));
+
+                List<Message> messages = messageService.getRecentPriMessages(mockUser);
+
+                assertEquals(1, messages.size());
+                verify(messageRepository).findPrivateMessagesForUser(mockUser, TOP_FIVE);
         }
 
-        /**
-         * Crée une conversation de groupe de test
-         * 
-         * @return La conversation de groupe créée
-         */
-        private ConversationGrp creerConversationGroupeTest() {
-                ConversationGrp conversation = new ConversationGrp();
-                conversation.setId(200L);
-                // Ajouter d'autres champs nécessaires
-                return conversation;
+        @Test
+        void testGetRecentGroupMessages() {
+                when(messageRepository.findGroupMessagesForUser(mockUser, TOP_FIVE))
+                                .thenReturn(Arrays.asList(mockMessage));
+
+                List<Message> messages = messageService.getRecentGroupMessages(mockUser);
+
+                assertEquals(1, messages.size());
+                verify(messageRepository).findGroupMessagesForUser(mockUser, TOP_FIVE);
         }
 
-        /**
-         * Crée un message de test
-         * 
-         * @param contenu      Le contenu du message
-         * @param conversation La conversation associée
-         * @return Le message créé
-         */
-        private Message creerMessageTest(String contenu, Conversation conversation) {
-                Message message = new Message();
-                message.setId(300L);
-                message.setContenu(contenu);
-                message.setExpedi(expediteur);
-                message.setConversation(conversation);
-                message.setDtEnvoi(LocalDateTime.now());
-                return message;
+        @Test
+        void testListerMessagesDuGroupe_Success() {
+                // Arrange
+                ConversationGrp mockGroupConv = mock(ConversationGrp.class);
+                Message mockMessage = new Message();
+                mockMessage.setContenu("Test message");
+
+                when(conversationGrpRepository.findByGroupeCon_Id(1L))
+                                .thenReturn(Optional.of(mockGroupConv));
+                when(mockGroupConv.getMessages())
+                                .thenReturn(List.of(mockMessage));
+
+                // Act
+                List<Message> messages = messageService.listerMessagesDuGroupe(1L);
+
+                // Assert
+                assertEquals(1, messages.size());
+                assertEquals("Test message", messages.get(0).getContenu());
+        }
+
+        @Test
+        void testListerMessagesDuGroupe_GroupNotFound() {
+                when(conversationGrpRepository.findByGroupeCon_Id(1L))
+                                .thenReturn(Optional.empty());
+
+                assertThrows(IllegalArgumentException.class, () -> {
+                        messageService.listerMessagesDuGroupe(1L);
+                });
+        }
+
+        @Test
+        void testGetRecentPriMessages_EmptyList() {
+                when(messageRepository.findPrivateMessagesForUser(mockUser, TOP_FIVE))
+                                .thenReturn(Collections.emptyList());
+
+                List<Message> messages = messageService.getRecentPriMessages(mockUser);
+
+                assertTrue(messages.isEmpty());
+        }
+
+        @Test
+        void testGetRecentGroupMessages_EmptyList() {
+                when(messageRepository.findGroupMessagesForUser(mockUser, TOP_FIVE))
+                                .thenReturn(Collections.emptyList());
+
+                List<Message> messages = messageService.getRecentGroupMessages(mockUser);
+
+                assertTrue(messages.isEmpty());
         }
 }

@@ -1,92 +1,154 @@
-
 package utcapitole.miage.projetdevg3.controller;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Optional;
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-import utcapitole.miage.projetdevg3.config.SecurityConfig;
-import utcapitole.miage.projetdevg3.controller.MessageController;
+import utcapitole.miage.projetdevg3.model.Message;
 import utcapitole.miage.projetdevg3.model.Utilisateur;
-import utcapitole.miage.projetdevg3.service.MessageService;
 import utcapitole.miage.projetdevg3.repository.UtilisateurRepository;
+import utcapitole.miage.projetdevg3.service.MessageService;
+import utcapitole.miage.projetdevg3.service.UtilisateurService;
 
 @WebMvcTest(MessageController.class)
-@Import(SecurityConfig.class)
-@AutoConfigureMockMvc(addFilters = true)
-class MessageControllerWebTest {
+@WithMockUser
+class MessageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UtilisateurRepository utilisateurRepository;
-
-    @MockBean
     private MessageService messageService;
 
-    private Utilisateur mockExpediteur;
-    private Utilisateur mockDestinataire;
+    @MockBean
+    private UtilisateurService utilisateurService;
+
+    @MockBean
+    private UtilisateurRepository utilisateurRepository;
+
+    private Utilisateur mockUser;
+    private Principal mockPrincipal;
 
     @BeforeEach
     void setUp() {
-        mockExpediteur = new Utilisateur();
-        mockExpediteur.setId(1L);
-        mockExpediteur.setEmail("user@test.com");
+        mockUser = new Utilisateur();
+        mockUser.setId(1L);
+        mockUser.setEmail("test@example.com");
 
-        mockDestinataire = new Utilisateur();
-        mockDestinataire.setId(2L);
-        mockDestinataire.setEmail("dest@test.com");
+        mockPrincipal = () -> "test@example.com";
+
+        when(utilisateurRepository.findByEmail("test@example.com"))
+                .thenReturn(java.util.Optional.of(mockUser));
     }
 
-    /**
-     * test pour entrer page pour modifier message
-     * 
-     * @throws Exception
-     */
     @Test
-    @WithMockUser
-    void shouldReturnMessageForm() throws Exception {
-        mockMvc.perform(get("/messages/envoyer/2"))
+    void testFormulaireMessage() throws Exception {
+        mockMvc.perform(get("/messages/envoyer/2").principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andExpect(view().name("form-message"))
                 .andExpect(model().attribute("destinataireId", 2L));
     }
 
-    /**
-     * test pour envoyer un message
-     * 
-     * @throws Exception
-     */
     @Test
-    @WithMockUser(username = "user@test.com")
-    void shouldRedirectAfterSending() throws Exception {
-        when(utilisateurRepository.findByEmail("user@test.com"))
-                .thenReturn(Optional.of(mockExpediteur));
+    void testEnvoyerMessagePrive_Success() throws Exception {
+        Utilisateur destinataire = new Utilisateur();
+        destinataire.setId(2L);
+
         when(utilisateurRepository.findById(2L))
-                .thenReturn(Optional.of(mockDestinataire));
+                .thenReturn(java.util.Optional.of(destinataire));
 
         mockMvc.perform(post("/messages/envoyer")
+                .principal(mockPrincipal)
                 .param("destinataireId", "2")
-                .param("contenu", "Bonjour!")
-                .with(csrf()))
+                .param("contenu", "Bonjour"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/demandes/amis"))
                 .andExpect(flash().attribute("success", "Message envoyé !"));
 
-        verify(messageService).envoyerMessage(mockExpediteur, mockDestinataire, "Bonjour!");
+        verify(messageService).envoyerMessagePrive(eq(1L), eq(destinataire), eq("Bonjour"));
+    }
+
+    @Test
+    void testEnvoyerMessagePrive_DestinataireNotFound() throws Exception {
+        when(utilisateurRepository.findById(2L))
+                .thenReturn(java.util.Optional.empty());
+
+        mockMvc.perform(post("/messages/envoyer")
+                .principal(mockPrincipal)
+                .param("destinataireId", "2")
+                .param("contenu", "Bonjour"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testAfficherMessagesAccueil() throws Exception {
+        Message privateMessage = new Message();
+        Message groupMessage = new Message();
+
+        when(utilisateurService.getUtilisateurByEmail("test@example.com"))
+                .thenReturn(mockUser);
+        when(messageService.getRecentPriMessages(mockUser))
+                .thenReturn(Arrays.asList(privateMessage));
+        when(messageService.getRecentGroupMessages(mockUser))
+                .thenReturn(Arrays.asList(groupMessage));
+
+        mockMvc.perform(get("/messages/list").principal(mockPrincipal))
+                .andExpect(status().isOk())
+                .andExpect(view().name("messages"))
+                .andExpect(model().attributeExists("privateMessages"))
+                .andExpect(model().attributeExists("groupMessages"));
+    }
+
+    @Test
+    void testAfficherMessagesAccueil_NoMessages() throws Exception {
+        when(utilisateurService.getUtilisateurByEmail("test@example.com"))
+                .thenReturn(mockUser);
+        when(messageService.getRecentPriMessages(mockUser))
+                .thenReturn(Collections.emptyList());
+        when(messageService.getRecentGroupMessages(mockUser))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/messages/list").principal(mockPrincipal))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("privateMessages", Collections.emptyList()))
+                .andExpect(model().attribute("groupMessages", Collections.emptyList()));
+    }
+
+    @Test
+    void testEnvoyerMessageGroupe() throws Exception {
+        mockMvc.perform(post("/messages/3/messages")
+                .principal(mockPrincipal)
+                .param("contenu", "Message de groupe"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/groupes/3/messages"));
+
+        verify(messageService).envoyerMessageGroupe(eq(3L), any(Utilisateur.class), eq("Message de groupe"));
+    }
+
+    @Test
+    @WithMockUser(username = "unknown@example.com")
+    void testGetCurrentUser_UserNotFound() throws Exception {
+        when(utilisateurRepository.findByEmail("unknown@example.com"))
+                .thenReturn(java.util.Optional.empty());
+
+        mockMvc.perform(get("/messages/list")
+                .principal(() -> "unknown@example.com"))
+                .andExpect(status().is4xxClientError());
     }
 }

@@ -1,24 +1,33 @@
 package utcapitole.miage.projetdevg3.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+import utcapitole.miage.projetdevg3.model.Commentaire;
+import utcapitole.miage.projetdevg3.model.Post;
+import utcapitole.miage.projetdevg3.model.Utilisateur;
 import utcapitole.miage.projetdevg3.repository.CommentaireRepository;
 
-/**
- * Service pour la gestion des commentaires.
- * 
- * Fournit des méthodes pour interagir avec la couche de persistance des
- * commentaires.
- */
 @Service
+@RequiredArgsConstructor
 public class CommentaireService {
 
-    /**
-     * Référentiel pour les commentaires.
-     * Utilisé pour effectuer des opérations CRUD sur les commentaires.
-     */
-    @Autowired
-    private CommentaireRepository commentaireRepository;
+    private final CommentaireRepository commentaireRepository;
 
+    public void ajouterCommentaire(Utilisateur expediteur, Post post, String contenu) {
+        Commentaire commentaire = new Commentaire();
+        commentaire.setContenu(contenu);
+        commentaire.setExpediteur(expediteur);
+        commentaire.setPost(post);
+        commentaire.setDateEnvoi(LocalDateTime.now());
+
+        commentaireRepository.save(commentaire);
+    }
+
+    public List<Commentaire> getCommentaires(Post post) {
+        return commentaireRepository.findByPostOrderByDtEnvoiAsc(post);
+    }
 }

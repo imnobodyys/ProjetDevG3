@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Post de ' + ${post.auteur.nom}">Post</title>
+</head>
+<body>
+    <h1>Détail du Post</h1>
+
+    <div>
+        <p><strong>Contenu :</strong> <span th:text="${post.contenu}">Contenu du post</span></p>
+        <p><strong>Auteur :</strong> <span th:text="${post.auteur.nom}">Nom</span></p>
+        <p><strong>Publié le :</strong> <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Date</span></p>
+    </div>
+
+    <hr>
+
+    <h2>💬 Commentaires</h2>
+
+    <div th:if="${commentaires.isEmpty()}">
+        <p>Aucun commentaire pour l’instant.</p>
+    </div>
+
+    <ul th:each="commentaire : ${commentaires}">
+        <li>
+            <p>
+                <strong th:text="${commentaire.expediteur.nom}">Auteur</strong> : 
+                <span th:text="${commentaire.contenu}">Contenu</span>
+                <small th:text="${#temporals.format(commentaire.dateEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
+            </p>
+        </li>
+    </ul>
+
+    <hr>
+
+    <h3>Ajouter un commentaire</h3>
+    <form th:action="@{'/posts/' + ${post.id} + '/commenter'}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <textarea th:name="contenu" rows="4" cols="50" placeholder="Écrivez votre commentaire..." required></textarea><br>
+        <button type="submit">Publier</button>
+    </form>
+
+    <br>
+    <a href="/posts/liste">← Retour à la liste des posts</a>
+</body>
+</html>

@@ -29,4 +29,6 @@ public interface CommentaireRepository extends JpaRepository<Commentaire, Long> 
     // Méthode pour trouver tous les commentaires d'un utilisateur
     List<Commentaire> findByExpediteur(Utilisateur expediteur);
 
+    List<Commentaire> findByPostOrderByDtEnvoiAsc(Post post);
+
 }

@@ -1,8 +1,11 @@
 package utcapitole.miage.projetdevg3.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 
 /**
  * Classe ConversationPri
@@ -31,6 +34,17 @@ public class ConversationPri extends Conversation {
     // getters et setters
     public Utilisateur getExpediteurCP() {
         return expediteurCP;
+    }
+
+    @Transient
+    private List<Message> recentMessages;
+
+    public List<Message> getRecentMessages() {
+        return recentMessages;
+    }
+
+    public void setRecentMessages(List<Message> recentMessages) {
+        this.recentMessages = recentMessages;
     }
 
     public void setExpediteurCP(Utilisateur expediteur) {

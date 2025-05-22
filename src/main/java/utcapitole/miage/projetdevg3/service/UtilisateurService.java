@@ -133,10 +133,6 @@ public class UtilisateurService {
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
     }
 
-    public Utilisateur trouverParEmail(String email) {
-        return findByEmail(email);
-    }
-
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
     }
