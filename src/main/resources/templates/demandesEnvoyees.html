@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Demandes en attente</title>
+</head>
+<body>
+    <h2>Mes demandes en attente</h2>
+
+    <div th:if="${#lists.isEmpty(groupes)}">
+        <p>Vous n'avez fait aucune demande d'adhésion récemment.</p>
+    </div>
+
+    <ul th:if="${!#lists.isEmpty(groupes)}">
+    <li th:each="groupe : ${groupes}">
+        <strong th:text="${groupe.nom}">Nom du groupe</strong> - 
+        <span th:text="${groupe.description}">Description</span>
+
+       
+        <form th:action="@{'/groupes/annuler/' + ${groupe.id}}" method="post" style="display:inline;">
+            <button type="submit">Annuler la demande</button>
+        </form>
+    </li>
+</ul>
+
+    <a th:href="@{/accueil}">Retour à l'accueil</a>
+</body>
+</html>
