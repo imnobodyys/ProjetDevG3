@@ -39,7 +39,8 @@ public class ConversationService {
     }
 
     public List<ConversationGrp> getGroupConversationsWithRecentMessages(Utilisateur utilisateur) {
-        List<ConversationGrp> conversations = conversationGrpRepository.findByUtilisateur(utilisateur);
+        List<ConversationGrp> conversations = conversationGrpRepository
+                .findByGroupeCon_Membres_membreUtilisateur(utilisateur);
 
         conversations.forEach(conv -> {
             List<Message> recentMessages = messageRepository
