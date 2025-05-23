@@ -2,45 +2,118 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="'Post de ' + ${post.auteur.nom}">Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .post-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .post-meta {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .comment-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .comment-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 0;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        .comment-author {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .comment-date {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        .comment-form textarea {
+            width: 100%;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+        }
+    </style>
 </head>
 <body>
-    <h1>Détail du Post</h1>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-    <div>
-        <p><strong>Contenu :</strong> <span th:text="${post.contenu}">Contenu du post</span></p>
-        <p><strong>Auteur :</strong> <span th:text="${post.auteur.nom}">Nom</span></p>
-        <p><strong>Publié le :</strong> <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Date</span></p>
-    </div>
+    <main class="container py-5">
+        <div class="post-container">
+            <div class="post-header">
+                <div>
+                    <h1 class="h3 mb-2">Détail du Post</h1>
+                    <div class="post-meta">
+                        <span class="text-primary" th:text="${post.auteur.nom}">Auteur</span>
+                        <span> • </span>
+                        <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy à HH:mm')}">Date</span>
+                    </div>
+                </div>
+                <a href="/posts/liste" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+            </div>
 
-    <hr>
+            <div class="post-content" th:text="${post.contenu}">
+                Contenu du post
+            </div>
+        </div>
 
-    <h2>💬 Commentaires</h2>
+        <div class="comment-section">
+            <h2 class="h4 mb-4"><i class="bi bi-chat-square-text"></i> Commentaires</h2>
 
-    <div th:if="${commentaires.isEmpty()}">
-        <p>Aucun commentaire pour l’instant.</p>
-    </div>
+            <div th:if="${commentaires.isEmpty()}" class="alert alert-info">
+                Aucun commentaire pour l'instant. Soyez le premier à commenter !
+            </div>
 
-    <ul th:each="commentaire : ${commentaires}">
-        <li>
-            <p>
-                <strong th:text="${commentaire.expediteur.nom}">Auteur</strong> : 
-                <span th:text="${commentaire.contenu}">Contenu</span>
-                <small th:text="${#temporals.format(commentaire.dateEnvoi, 'dd/MM/yyyy HH:mm')}"></small>
-            </p>
-        </li>
-    </ul>
+            <div th:each="commentaire : ${commentaires}" class="comment-item">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="comment-author" th:text="${commentaire.expediteur.nom}">Auteur</span>
+                    <span class="comment-date" th:text="${#temporals.format(commentaire.dateEnvoi, 'dd/MM/yyyy à HH:mm')}">Date</span>
+                </div>
+                <p class="mb-0" th:text="${commentaire.contenu}">Contenu du commentaire</p>
+            </div>
 
-    <hr>
+            <hr class="my-4">
 
-    <h3>Ajouter un commentaire</h3>
-    <form th:action="@{'/posts/' + ${post.id} + '/commenter'}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <textarea th:name="contenu" rows="4" cols="50" placeholder="Écrivez votre commentaire..." required></textarea><br>
-        <button type="submit">Publier</button>
-    </form>
+            <h3 class="h5 mb-3"><i class="bi bi-pencil-square"></i> Ajouter un commentaire</h3>
+            <form th:action="@{'/posts/' + ${post.id} + '/commenter'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <textarea name="contenu" rows="4" placeholder="Écrivez votre commentaire..." required></textarea>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Publier
+                </button>
+            </form>
+        </div>
+    </main>
 
-    <br>
-    <a href="/posts/liste">← Retour à la liste des posts</a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
