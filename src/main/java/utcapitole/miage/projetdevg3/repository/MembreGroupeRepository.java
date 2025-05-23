@@ -1,6 +1,7 @@
 package utcapitole.miage.projetdevg3.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -31,4 +32,5 @@ public interface MembreGroupeRepository extends JpaRepository<MembreGroupe, Long
 
     List<MembreGroupe> findByMembreUtilisateurAndStatut(Utilisateur membreUtilisateur, StatutMembre statut);
 
+    Optional<MembreGroupe> findByGroupeAndMembreUtilisateur(Groupe groupe, Utilisateur utilisateur);
 }
