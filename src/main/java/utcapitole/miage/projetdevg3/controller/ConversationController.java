@@ -56,22 +56,6 @@ public class ConversationController {
                 return "conversation"; // Correspond au nouveau template HTML
         }
 
-        /**
-         * Envoyer un message de groupe
-         */
-        @PostMapping("/groupe/{conversationId}")
-        @PreAuthorize("isAuthenticated()")
-        public String envoyerMessageGroupe(
-                        @PathVariable Long conversationId,
-                        @RequestParam String contenu,
-                        Principal principal) {
-                Utilisateur expediteur = getCurrentUser(principal);
-
-                messageService.envoyerMessageGroupe(conversationId, expediteur, contenu);
-
-                return "redirect:/conversations#groupe-" + conversationId;
-        }
-
         private Utilisateur getCurrentUser(Principal principal) {
                 return utilisateurRepository.findByEmail(principal.getName())
                                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));

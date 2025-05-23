@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import utcapitole.miage.projetdevg3.model.Utilisateur;
@@ -214,6 +215,9 @@ class UtilisateurServiceTest {
         verify(utilisateurRepository).searchByKeyword("ali");
     }
 
+    /**
+     * test pour rechercher no result
+     */
     @Test
     void testRechercheNoResult() {
         when(utilisateurRepository.searchByKeyword("zzz")).thenReturn(Collections.emptyList());
@@ -222,4 +226,110 @@ class UtilisateurServiceTest {
 
         assertTrue(result.isEmpty());
     }
+
+    /**
+     * Test - Authentification réussie
+     * Vérifie que l'utilisateur est retourné si les identifiants sont corrects.
+     */
+    @Test
+    void authentifier_QuandIdentifiantsCorrects_DoitRetournerUtilisateur() {
+        Utilisateur user = new Utilisateur("Jean", "Dupont", "jean@example.com", "encodedPass");
+        when(utilisateurRepository.findByEmail("jean@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("monMotDePasse", "encodedPass")).thenReturn(true);
+
+        Utilisateur result = utilisateurService.authentifier("jean@example.com", "monMotDePasse");
+
+        assertNotNull(result);
+        assertEquals("jean@example.com", result.getEmail());
+    }
+
+    /**
+     * Test - Authentification échouée
+     * Vérifie que null est retourné si le mot de passe est incorrect.
+     */
+    @Test
+    void authentifier_QuandMotDePasseIncorrect_DoitRetournerNull() {
+        Utilisateur user = new Utilisateur("Jean", "Dupont", "jean@example.com", "encodedPass");
+        when(utilisateurRepository.findByEmail("jean@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("faux", "encodedPass")).thenReturn(false);
+
+        Utilisateur result = utilisateurService.authentifier("jean@example.com", "faux");
+
+        assertNull(result);
+    }
+
+    /**
+     * Test - Authentification utilisateur inexistant
+     * Vérifie que null est retourné si l'utilisateur n'existe pas.
+     */
+    @Test
+    void authentifier_QuandEmailInconnu_DoitRetournerNull() {
+        when(utilisateurRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+
+        Utilisateur result = utilisateurService.authentifier("notfound@example.com", "motdepasse");
+
+        assertNull(result);
+    }
+
+    /**
+     * Test - Recherche d'utilisateur par email
+     * Vérifie que l'utilisateur est retourné si l'email existe.
+     */
+    @Test
+    void findByEmail_QuandEmailExiste_DoitRetournerUtilisateur() {
+        Utilisateur user = new Utilisateur();
+        user.setEmail("contact@exemple.com");
+
+        when(utilisateurRepository.findByEmail("contact@exemple.com"))
+                .thenReturn(Optional.of(user));
+
+        Utilisateur result = utilisateurService.findByEmail("contact@exemple.com");
+
+        assertEquals("contact@exemple.com", result.getEmail());
+    }
+
+    /**
+     * Test - Email non trouvé
+     * Doit lever UsernameNotFoundException si l'utilisateur n'existe pas.
+     */
+    @Test
+    void findByEmail_QuandEmailInexistant_DoitLeverException() {
+        when(utilisateurRepository.findByEmail("unknown@example.com"))
+                .thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () -> {
+            utilisateurService.findByEmail("unknown@example.com");
+        });
+    }
+
+    /**
+     * Test - Trouver utilisateur par ID
+     * Vérifie que l'utilisateur est retourné si l'ID existe.
+     */
+    @Test
+    void trouverParId_QuandIdValide_DoitRetournerUtilisateur() {
+        Utilisateur user = new Utilisateur();
+        user.setId(42L);
+
+        when(utilisateurRepository.findById(42L)).thenReturn(Optional.of(user));
+
+        Utilisateur result = utilisateurService.trouverParId(42L);
+
+        assertNotNull(result);
+        assertEquals(42L, result.getId());
+    }
+
+    /**
+     * Test - ID inconnu
+     * Vérifie que null est retourné si aucun utilisateur n'est trouvé.
+     */
+    @Test
+    void trouverParId_QuandIdInvalide_DoitRetournerNull() {
+        when(utilisateurRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Utilisateur result = utilisateurService.trouverParId(999L);
+
+        assertNull(result);
+    }
+
 }
