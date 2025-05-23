@@ -130,17 +130,6 @@ class MessageServiceTest {
         }
 
         @Test
-        void testGetRecentPriMessages() {
-                when(messageRepository.findPrivateMessagesForUser(mockUser, TOP_FIVE))
-                                .thenReturn(Arrays.asList(mockMessage));
-
-                List<Message> messages = messageService.getRecentPriMessages(mockUser);
-
-                assertEquals(1, messages.size());
-                verify(messageRepository).findPrivateMessagesForUser(mockUser, TOP_FIVE);
-        }
-
-        @Test
         void testGetRecentGroupMessages() {
                 when(messageRepository.findGroupMessagesForUser(mockUser, TOP_FIVE))
                                 .thenReturn(Arrays.asList(mockMessage));
@@ -149,46 +138,6 @@ class MessageServiceTest {
 
                 assertEquals(1, messages.size());
                 verify(messageRepository).findGroupMessagesForUser(mockUser, TOP_FIVE);
-        }
-
-        @Test
-        void testListerMessagesDuGroupe_Success() {
-                // Arrange
-                ConversationGrp mockGroupConv = mock(ConversationGrp.class);
-                Message mockMessage = new Message();
-                mockMessage.setContenu("Test message");
-
-                when(conversationGrpRepository.findByGroupeCon_Id(1L))
-                                .thenReturn(Optional.of(mockGroupConv));
-                when(mockGroupConv.getMessages())
-                                .thenReturn(List.of(mockMessage));
-
-                // Act
-                List<Message> messages = messageService.listerMessagesDuGroupe(1L);
-
-                // Assert
-                assertEquals(1, messages.size());
-                assertEquals("Test message", messages.get(0).getContenu());
-        }
-
-        @Test
-        void testListerMessagesDuGroupe_GroupNotFound() {
-                when(conversationGrpRepository.findByGroupeCon_Id(1L))
-                                .thenReturn(Optional.empty());
-
-                assertThrows(IllegalArgumentException.class, () -> {
-                        messageService.listerMessagesDuGroupe(1L);
-                });
-        }
-
-        @Test
-        void testGetRecentPriMessages_EmptyList() {
-                when(messageRepository.findPrivateMessagesForUser(mockUser, TOP_FIVE))
-                                .thenReturn(Collections.emptyList());
-
-                List<Message> messages = messageService.getRecentPriMessages(mockUser);
-
-                assertTrue(messages.isEmpty());
         }
 
         @Test

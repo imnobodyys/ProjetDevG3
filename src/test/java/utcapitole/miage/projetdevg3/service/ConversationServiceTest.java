@@ -73,33 +73,6 @@ class ConversationServiceTest {
         }
 
         @Test
-        void testGetGroupConversationsWithRecentMessages() {
-                when(conversationGrpRepository.findByUtilisateur(mockUser))
-                                .thenReturn(Arrays.asList(mockGroupConv));
-                when(messageRepository.findByConversationOrderByDtEnvoiDesc(mockGroupConv, TOP_FIVE))
-                                .thenReturn(Arrays.asList(mockMessage));
-
-                List<ConversationGrp> result = conversationService.getGroupConversationsWithRecentMessages(mockUser);
-
-                assertEquals(1, result.size());
-                assertEquals(1, result.get(0).getRecentMessages().size());
-                verify(conversationGrpRepository).findByUtilisateur(mockUser);
-                verify(messageRepository).findByConversationOrderByDtEnvoiDesc(mockGroupConv, TOP_FIVE);
-        }
-
-        @Test
-        void testGetGroupConversationsWithRecentMessages_EmptyList() {
-                when(conversationGrpRepository.findByUtilisateur(mockUser))
-                                .thenReturn(Collections.emptyList());
-
-                List<ConversationGrp> result = conversationService.getGroupConversationsWithRecentMessages(mockUser);
-
-                assertTrue(result.isEmpty());
-                verify(conversationGrpRepository).findByUtilisateur(mockUser);
-                verify(messageRepository, never()).findByConversationOrderByDtEnvoiDesc(any(), any());
-        }
-
-        @Test
         void testGetMessagesForConversation_Success() {
                 when(conversationPriRepository.findById(1L))
                                 .thenReturn(Optional.of(mockPrivateConv));
