@@ -349,9 +349,5 @@ public class Utilisateur {
                 '}';
     }
 
-    public String getMotDePasse() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMotDePasse'");
-    }
 
 }

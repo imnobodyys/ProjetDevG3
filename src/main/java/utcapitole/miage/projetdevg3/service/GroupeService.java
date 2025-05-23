@@ -203,7 +203,14 @@ public class GroupeService {
         membreGroupeRepository.deleteById(idMembreGroupe);
     }
     public List<Groupe> getGroupesDisponiblesPourUtilisateur(Utilisateur utilisateur) {
-    return getGroupesDisponiblesPour(utilisateur);
+    List<Groupe> tous = groupeRepository.findAll();
+
+    return tous.stream()
+        .filter(g -> {
+            StatutMembre statut = getStatutPourUtilisateur(g, utilisateur);
+            return statut == null || statut == StatutMembre.REFUSE;
+        })
+        .collect(Collectors.toList());
 }
     
 
